@@ -1,0 +1,13 @@
+logs
+target
+/.idea
+/.idea_modules
+/.classpath
+/.project
+/.pro
+/.settings
+/RUNNING_PID
+.sbtserver
+/bin
+/project/.sbtserver.lock
+activator-launch-1.3.10.jar
