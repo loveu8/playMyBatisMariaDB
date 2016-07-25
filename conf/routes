@@ -8,8 +8,15 @@ GET		/user						controllers.Application.name(name : String)
 
 GET		/user/:name					controllers.Application.name(name : String)
 
+GET		/userJson/:name			    controllers.Application.nameJson(name : String)
 
 GET		/celebrate					controllers.Application.userBirthday(name : String , birthday : Int )
+
+#取得登入頁面
+GET		/login			    		controllers.Application.login()
+#帳號登入頁面
+POST    /auth			    		controllers.Application.auth()
+
 
 
 
