@@ -34,6 +34,10 @@ public class Application extends Controller{
     	return ok(login.render());
     }
     
+    public Result changeToLogin( ){
+    	return redirect(controllers.routes.Application.login().url());
+    }
+    
     // 預設帳號密碼是tom , 密碼123
     public Result auth(){
 		// 動態取得頁面上的表單
@@ -41,6 +45,8 @@ public class Application extends Controller{
 
 		// 取得Request的內容,表單回傳會是Map資料
 		Map<String, String> formMap = form.get().getData();
+		
+		controllers.routes.Application.auth().url();
 		
     	return ok();
     }

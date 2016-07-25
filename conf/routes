@@ -16,7 +16,8 @@ GET		/celebrate					controllers.Application.userBirthday(name : String , birthda
 GET		/login			    		controllers.Application.login()
 #帳號登入頁面
 POST    /auth			    		controllers.Application.auth()
-
+#帳號登入防呆
+GET     /auth			    		controllers.Application.ChangeToLogin()
 
 
 
