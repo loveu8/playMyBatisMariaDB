@@ -1,0 +1,11 @@
+@** 這是play再scala.html的註解 **@
+@** 
+*   我們特別注意到action的網址，其實是play roues 與 contoller 搭配寫出的服務，缺一都不可，這樣
+*   可以藉由play幫我們找出要執行的方法
+*   注意到input欄位的name需要是之後controller要取出表單的key，以免取不到資料
+**@
+<form action="@controllers.routes.Application.auth.url" method="post">
+	帳號 <input type="text" autocomplete="off" name="account" ></input><br>
+	密碼 <input type="password" autocomplete="off" name="password"></input><br>
+	<input type="submit" value="登入">
+</form>

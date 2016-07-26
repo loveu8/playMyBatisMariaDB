@@ -14,10 +14,18 @@ GET		/celebrate					controllers.Application.userBirthday(name : String , birthda
 
 #取得登入頁面
 GET		/login			    		controllers.Application.login()
-#帳號登入頁面
-POST    /auth			    		controllers.Application.auth()
 #帳號登入防呆
-GET     /auth			    		controllers.Application.ChangeToLogin()
+GET     /auth			    		controllers.Application.changeToLogin()
+#帳號登入防呆，以免有人用GET方式呼叫auth檢查
+POST    /auth			    		controllers.Application.auth()
+
+#取得登入頁面
+GET		/advLogin			    	controllers.Application.advLogin(errorMessage : String)
+#帳號登入防呆
+GET     /advAuth			    	controllers.Application.advChangeToLogin()
+#帳號登入防呆，以免有人用GET方式呼叫advAuth檢查
+POST    /advAuth			    	controllers.Application.advAuth()
+
 
 
 
