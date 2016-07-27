@@ -76,7 +76,7 @@ public class Application extends Controller{
     
     
     // 登入頁面
-    public Result advLogin(){
+    public Result advLogin(String errorMessage){
     	return ok(advLogin.render(""));
     }
     
@@ -86,30 +86,25 @@ public class Application extends Controller{
     }	
     
 	// 開始檢查登入資訊
-    public Result advAuth(String errorMessage){
+    public Result advAuth(){
     	
     	User user = formFactory.form(User.class).bindFromRequest().get();	// 使用Play內建formFactory來對應到User物件
     	    	    	
-    	String account 	= user.getAccount();							// 找出對應物件後，就可以取得表單所儲存的值
+    	String account 	= user.getAccount();								// 找出對應物件後，就可以取得表單所儲存的值
     	
     	String password = user.getPassword();
     	    	
     	play.Logger.info("account = " + account + " , password = " + password);	// 使用內建play logger 印出表單資料
 		
-    	// 預設帳號密碼是tom , 密碼123
-    	if(!"".equals(user.validate())){
-	    	if("tom".equals(account) && "123".equals(password)){			// 測試帳號密碼是否正確
-	        	// 成功導到成功頁面
-	    		return ok(advOk.render());
-	    	} else {
-	    		// 導回到登入頁面
-	    		return ok(advLogin.render(""));
-	    	}
+    	// 預設帳號密碼是tom , 密碼123 , 測試帳號密碼是否正確
+    	if("pass".equals(user.validate("tom","123"))){
+	    	return ok(advOk.render());
     	} else {
     		// 導回到登入頁面
-    		return ok(advLogin.render(user.validate()));
+    		String errorMessage = user.validate("tom","123");
+    		play.Logger.info("login errorMessage = " + errorMessage);	// log 印出 錯誤訊息
+    		return ok(advLogin.render(errorMessage));			// 回傳檢查後錯誤的資訊
     	}
-    
     }
     
     

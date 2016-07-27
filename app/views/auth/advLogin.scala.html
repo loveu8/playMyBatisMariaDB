@@ -1,11 +1,11 @@
-@** 用來接，錯誤資訊**@
+@** errorMessage 用來接帳號登入錯誤資訊，若是沒有錯誤資訊不會顯示出來 **@
 @(errorMessage : String)
 
 <form action='@controllers.routes.Application.advAuth.url' method="post">
 	帳號 <input type="text" autocomplete="off" name="account" ></input><br>
 	密碼 <input type="password" autocomplete="off" name="password"></input><br>
-	<input type="submit" value="登入">
 	@if(!"".equals(errorMessage)){
-		@errorMessage
+		<span style="color:red;">@errorMessage</span><br>
 	}
+	<input type="submit" value="登入">
 </form>

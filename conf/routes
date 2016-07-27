@@ -20,7 +20,7 @@ GET     /auth			    		controllers.Application.changeToLogin()
 POST    /auth			    		controllers.Application.auth()
 
 #取得登入頁面
-GET		/advLogin			    	controllers.Application.advLogin(errorMessage : String)
+GET		/advLogin			    	controllers.Application.advLogin(errorMessage : String ?="")
 #帳號登入防呆
 GET     /advAuth			    	controllers.Application.advChangeToLogin()
 #帳號登入防呆，以免有人用GET方式呼叫advAuth檢查
