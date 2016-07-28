@@ -1,9 +1,10 @@
-@** errorMessage 用來接帳號登入錯誤資訊，若是沒有錯誤資訊不會顯示出來 **@
+@** errorMessage 用來提示帳號登入錯誤資訊，若是沒有錯誤資訊不會顯示出來 **@
 @(errorMessage : String)
 
 <form action='@controllers.routes.Application.advAuth.url' method="post">
 	帳號 <input type="text" autocomplete="off" name="account" ></input><br>
 	密碼 <input type="password" autocomplete="off" name="password"></input><br>
+    @** Play可以在xxx.scala.html，寫scala語言程式，前面需要多增加"@"符號才可以使用**@
 	@if(!"".equals(errorMessage)){
 		<span style="color:red;">@errorMessage</span><br>
 	}
