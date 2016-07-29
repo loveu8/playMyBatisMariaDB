@@ -1,5 +1,12 @@
 package pojo.login;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+
+import views.html.main;
+
 public class User {
 	
 	private String account;
@@ -41,4 +48,24 @@ public class User {
 			   && dbAccount.equals(userAccount) && dbPassword.equals(userPassword);
 	}
 	
+	public boolean isNotEmpty (User bean){
+		boolean isNotEmpty = true;
+		BeanInfo beanInfo;
+		try {
+			beanInfo = Introspector.getBeanInfo(User.class);
+			for (PropertyDescriptor propertyDesc : beanInfo.getPropertyDescriptors()) {
+			    String propertyName = propertyDesc.getName();
+			    Object value = propertyDesc.getReadMethod().invoke(bean);
+			    System.out.println(propertyName + " , " + value);
+			    if(value == null){
+			    	isNotEmpty = false;
+			    }
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 }

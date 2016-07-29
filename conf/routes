@@ -2,6 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+#------------------------------------
+# chapter 5 - start
+
 GET     /home                       controllers.Application.index
 
 GET		/user						controllers.Application.name(name : String)
@@ -26,10 +29,20 @@ GET     /advAuth			    	controllers.Application.advChangeToLogin()
 #帳號登入防呆，以免有人用GET方式呼叫advAuth檢查
 POST    /advAuth			    	controllers.Application.advAuth()
 
+# chapter 5 - end
+#------------------------------------
+# chapter 6 - start
+
+# http://127.0.0.1:9000/scala/string 	取得ScalaController.String回傳結果
+GET     /scala/string                 controllers.ScalaController.String()
+
+# http://127.0.0.1:9000/scala/oneBook 	取得ScalaController.oneBook回傳結果
+GET     /scala/oneBook                controllers.ScalaController.oneBook()
 
 
 
-
+# chapter 6 - end
+#------------------------------------
 
 # An example controller showing a sample home page
 #GET     /                           controllers.HomeController.index
