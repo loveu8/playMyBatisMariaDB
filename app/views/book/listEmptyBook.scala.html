@@ -1,0 +1,12 @@
+@(books : ArrayList[pojo.scala.Book]) 
+
+@for(book <- books) {
+  @* 如果書本不是空的，且有書名與ISBN才顯示內容*@
+  @if(book!=null && book.getName() !=null && book.getIsbn()!=null){
+	  書名 	: @book.getName()<br>
+	  ISBN 	: @book.getIsbn()<hr>
+  } else {
+  	  @* 沒有資料的話，會跑else其他類型狀況 *@
+  	  查無書本資料<hr>
+  }
+} 

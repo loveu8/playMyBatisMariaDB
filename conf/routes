@@ -33,12 +33,29 @@ POST    /advAuth			    	controllers.Application.advAuth()
 #------------------------------------
 # chapter 6 - start
 
-# http://127.0.0.1:9000/scala/string 	取得ScalaController.String回傳結果
+# http://127.0.0.1:9000/scala/string 	
 GET     /scala/string                 controllers.ScalaController.String()
 
-# http://127.0.0.1:9000/scala/oneBook 	取得ScalaController.oneBook回傳結果
+# http://127.0.0.1:9000/scala/varPage 	
+GET     /scala/varPage                controllers.ScalaController.varPage()
+
+# http://127.0.0.1:9000/scala/method 	
+GET     /scala/method                 controllers.ScalaController.method()
+
+# http://127.0.0.1:9000/scala/arrayInt 	
+GET     /scala/arrayInt               controllers.ScalaController.arrayInt()
+
+# http://127.0.0.1:9000/scala/oneBook 	
 GET     /scala/oneBook                controllers.ScalaController.oneBook()
 
+# http://127.0.0.1:9000/scala/listBook 	取得ScalaController.listBook回傳結果
+GET     /scala/listBook               controllers.ScalaController.listBook()
+
+# http://127.0.0.1:9000/scala/mapBook 	
+GET     /scala/mapBook                controllers.ScalaController.mapBook()
+
+# http://127.0.0.1:9000/scala/listEmptyBook 	
+GET     /scala/listEmptyBook          controllers.ScalaController.listEmptyBook()
 
 
 # chapter 6 - end

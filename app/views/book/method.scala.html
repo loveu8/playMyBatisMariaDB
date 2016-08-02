@@ -1,0 +1,17 @@
+@import java.math.BigInteger; var index = 0
+
+@* 我們可以設定一個method來被呼叫到 
+   裡面接收的參數，需要指定物件型態  *@
+
+@*每次被呼叫到就+1*@   
+@count(temp_index :Int ) = @{
+  var result = 0 
+  result = temp_index + 1
+  
+  @* 這邊要特別注意，最後都需要回傳值回去*@
+  result
+}
+
+@for(timer <-0 until 10){
+	@count(timer) <br>
+}

@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import play.data.DynamicForm;
-import play.data.Form;
 import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Controller;

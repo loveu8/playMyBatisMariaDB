@@ -1,0 +1,14 @@
+@** 傳遞Map物件 **@
+
+@(mapBook : Map [String , String]) 
+
+@*
+  這是Scala使用foreach迴圈的範例，
+  利用key value方式取出mapBook裏的資料
+  利用這樣的方式,取出Map裡的資料
+*@
+
+@*利用這樣的方式,取出Map裏的資料*@
+@for((key, value) <- mapBook) { 
+    <a>Key = @key , 書名 = @mapBook(key)</a><hr>
+}
