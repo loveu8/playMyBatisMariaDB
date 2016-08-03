@@ -1,15 +1,9 @@
 @* 
-  對應到pojp scala Book類別
-  可以看到，物件的路徑需要正確 
+  對應到pojo scala Book類別
+  物件的路徑需要正確，才可以正確被呼叫到
 *@
 
 @(book : pojo.scala.Book) 
-
-@* 
-* 如果要在頁面上操作傳遞進來的物件
-* 前面要使用小老鼠的符號
-* 才可以使用該傳遞的物件
-*@
 
 書名 	: @book.getName()<br>
 ISBN 	: @book.getIsbn() 
