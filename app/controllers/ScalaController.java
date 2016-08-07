@@ -117,4 +117,27 @@ public class ScalaController extends Controller{
 		return ok(testSwitch.render());
 	}
 	
+	
+	// 測試引用靜態檔案
+	public Result testStatic() {
+		return ok(testStatic.render());
+	}
+	
+	
+	// 測試傳送參數到子頁面
+	public Result includePage() {
+		return ok(mainPage.render("我是子頁面"));
+	}
+	
+	
+	// JS主要呼叫頁面
+	public Result jsCaller() {
+		return ok(jsCaller.render());
+	}
+	
+	// JS呼叫Play的內容
+	public Result playCaller() {
+		return ok("我被呼叫到了!!");
+	}
+	
 }

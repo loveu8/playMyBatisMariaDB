@@ -63,6 +63,18 @@ GET     /scala/showHtml          	  controllers.ScalaController.showHtml()
 # http://127.0.0.1:9000/scala/testSwitch 	
 GET     /scala/testSwitch          	  controllers.ScalaController.testSwitch()
 
+# http://127.0.0.1:9000/scala/testStatic	
+GET     /scala/testStatic          	  controllers.ScalaController.testStatic()
+
+# http://127.0.0.1:9000/scala/includePage	
+GET     /scala/includePage            controllers.ScalaController.includePage()
+
+# http://127.0.0.1:9000/scala/jsCaller	
+GET     /scala/jsCaller               controllers.ScalaController.jsCaller()
+
+# http://127.0.0.1:9000/scala/playCaller	
+GET     /scala/playCaller             controllers.ScalaController.playCaller()
+
 # chapter 6 - end
 #------------------------------------
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>靜態引用測試頁面</title>
+</head>
+
+<body>
+
+<h3>測試JS</h3>
+<input id="testJS"></input>
+<script src='@routes.Assets.versioned("javascripts/static.js")'></script> 
+ 
+<hr>
+ 
+<h3 class="testCss">測試CSS</h3>
+<link rel="stylesheet" type="text/css" href='@routes.Assets.versioned("stylesheets/static.css")'>
+
+<hr>
+
+<h3>測試圖片</h3>
+<img src='@routes.Assets.versioned("images/static.png")' > 
+
+<hr>
+
+<h3>被引用頁面</h3>
+<a href='@routes.Assets.versioned("html/static.html")'>點我!</a>
+
+</body>
+
+</html> 

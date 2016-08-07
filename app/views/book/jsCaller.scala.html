@@ -1,0 +1,21 @@
+<input id = 'playCaller'></input>
+
+<script>
+	// 組出要被呼叫到的url ex : http://127.0.0.1:9000/scala/playCaller
+	// request.host = 127.0.0.1:9000/
+	// controllers.routes.ScalaController.playCaller.url = scala/playCaller	
+	// 使用@符號與小括號包起來得範圍，代表都是scala語言作用範圍
+	var content = httpGet('@("http://" + request.host + controllers.routes.ScalaController.playCaller.url)');
+	
+	document.getElementById('playCaller').value = content;
+
+	// JS http GET 取得網頁內容
+	function httpGet(theUrl){
+	  var xmlHttp = null;
+	  xmlHttp = new XMLHttpRequest();
+	  xmlHttp.open( "GET", theUrl, false );
+	  xmlHttp.send( null );
+	  return xmlHttp.responseText;
+	}
+
+</script>

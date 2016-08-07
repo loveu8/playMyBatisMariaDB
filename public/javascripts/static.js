@@ -1,0 +1,1 @@
+document.getElementById('testJS').value = '呼叫到的JS';
