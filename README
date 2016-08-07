@@ -1,49 +1,13 @@
-This is your new Play application
-=================================
+各位大家好~我是阿星! 一個潛水許久的小螺絲鄉民，個人還是新手時期，受惠於*Soft_Job*版良多，看到各位大神很棒的經驗分享後，思考自己，雖然力量微小，自己能幫助大家做什麼? 身為一個*JAVA*開發者，想了好了段時間後，覺得寫一本不同於，*Java Spring + Struts + Herinate*(SSH)的教學書。
 
-This file will be packaged with your application when using `activator dist`.
+而是寫國外近幾年新技術*Play Framework*，以及現有常見*MyBaits*，來達成*Java*開發者，最常見的*MVC*架構，雖然這個時代上，*Google*帶給大家超多便利性，但我還是寫這本書著重的重點在這個框架的基礎知識建設，並且免費公佈在網路上。
 
-There are several demonstration files available in this template.
+若是原本就是*Java*熟悉*SSH*架構的開發者，相信熟練一段時間後，會很快就上手的!! 是新手也沒關係，你可以按照我每個章結的步調，好好練習做下去，希望會帶給你*Play*一些基本架構與的特點，章節也會盡量簡單而容易上手。   
+    
+基本上我不會把*Play*全部細節介紹完畢，若是在操作與練習，發現疑問時，可以學習找上網答案，可以讓你對於學習任何一種語言都是很好的幫助，也會養成自我學習的好習慣。   
 
-Controllers
-===========
+因為本人開發過*SSH*經驗目前是沒有，最多使有用過*Spring*的部分，所以我無法客觀比較優缺點，若是原本*SSH*開發者，可以從我的介紹去體會兩者不同之處。   
 
-- HomeController.java:
-
-  Shows how to handle simple HTTP requests.
-
-- AsyncController.java:
-
-  Shows how to do asynchronous programming when handling a request.
-
-- CountController.java:
-
-  Shows how to inject a component into a controller and use the component when
-  handling requests.
-
-Components
-==========
-
-- Module.java:
-
-  Shows how to use Guice to bind all the components needed by your application.
-
-- Counter.java:
-
-  An example of a component that contains state, in this case a simple counter.
-
-- ApplicationTimer.java:
-
-  An example of a component that starts when the application starts and stops
-  when the application stops.
-
-Filters
-=======
-
-- Filters.java:
-
-  Creates the list of HTTP filters used by your application.
-
-- ExampleFilter.java
-
-  A simple filter that adds a header to every response.
+書本一定會不完善的地方，歡迎大家建議，有任何問題，可以發問唷!!雖然本人技術力與知識相對於其它開發者還是很微弱，若有觀念與技術有錯誤描述，歡迎指正，我也希望這本書能更完善，造福大家!!
+  
+書本連結 : https://loveu8.gitbooks.io/playframework-with-mybatis/content/
