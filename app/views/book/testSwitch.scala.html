@@ -1,0 +1,28 @@
+@*
+   把num數字轉換成字串
+   定義color來接收numStr判斷後的結果
+   依序回傳紅橙黃綠藍靛紫
+   最後一個判斷是，當沒有符合條件時
+  預設進入的判斷式
+*@
+
+@backgroundColor(num : Int) = @{
+
+  var numStr = num.toString    
+
+  var color = numStr  match {
+  	case "0" => "background:#FF0000"	
+  	case "1" => "background:#FF4500"	
+  	case "2" => "background:#FFFF00"	
+  	case "3" => "background:#008000"	
+  	case "4" => "background:#0000FF"	
+  	case "5" => "background:#1E90FF"	
+  	case "6" => "background:#800080"	
+  	case  _  => "background:white"	
+  }
+  color
+}
+
+@for(index <-0 until 8){
+	<div style="@backgroundColor(index);">@index</div>
+}

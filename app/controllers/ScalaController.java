@@ -104,4 +104,17 @@ public class ScalaController extends Controller{
 	    return ok(listEmptyBook.render(books));
 	}
 	
+	
+	// 傳送網頁文字
+	public Result showHtml() {
+		// 使用H1文字格式，指定內容是Html頁面，編碼使用UTF-8
+		return ok("<h1>測試網頁文字!</h1>", "UTF-8").as("text/html; charset=UTF-8");
+	}
+	
+	
+	// 在頁面上寫Switch
+	public Result testSwitch() {
+		return ok(testSwitch.render());
+	}
+	
 }

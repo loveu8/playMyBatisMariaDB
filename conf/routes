@@ -57,6 +57,11 @@ GET     /scala/mapBook                controllers.ScalaController.mapBook()
 # http://127.0.0.1:9000/scala/listEmptyBook 	
 GET     /scala/listEmptyBook          controllers.ScalaController.listEmptyBook()
 
+# http://127.0.0.1:9000/scala/showHtml 	
+GET     /scala/showHtml          	  controllers.ScalaController.showHtml()
+
+# http://127.0.0.1:9000/scala/testSwitch 	
+GET     /scala/testSwitch          	  controllers.ScalaController.testSwitch()
 
 # chapter 6 - end
 #------------------------------------
