@@ -4,7 +4,7 @@
 	// 組出要被呼叫到的url ex : http://127.0.0.1:9000/scala/playCaller
 	// request.host = 127.0.0.1:9000/
 	// controllers.routes.ScalaController.playCaller.url = scala/playCaller	
-	// 使用@符號與小括號包起來得範圍，代表都是scala語言作用範圍
+	// 使用小老鼠符號與小括號包起來得範圍，代表都是scala語言作用範圍
 	var content = httpGet('@("http://" + request.host + controllers.routes.ScalaController.playCaller.url)');
 	
 	document.getElementById('playCaller').value = content;

@@ -1,11 +1,8 @@
 package pojo.login;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-
-import views.html.main;
 
 public class User {
 	
@@ -28,10 +25,11 @@ public class User {
 	
 	// 簡單驗證帳號密碼
     public String validate(String dbAccount , String dbPassword) {
-        if (nullOrEmptyCheck(account, password)) {
+    	
+    	if (nullOrEmptyCheck(account, password)) {
             return "請輸入帳號與密碼";
         }
-        if(!accountCheck(dbAccount ,dbPassword , account , password)){
+        if (!accountCheck(dbAccount ,dbPassword , account , password)){
         	return "請確認帳號與密碼是否輸入正確";
         }
         // 通過檢查，回傳pass
@@ -40,11 +38,11 @@ public class User {
 	
     
 	private boolean nullOrEmptyCheck(String account2, String password2) {
-		return account2 == null || password2 == null || "".equals(account2) || "".equals(password2);
+		return "".equals(account2) || "".equals(password2);
 	}
 	
 	private boolean accountCheck(String dbAccount , String dbPassword , String userAccount , String userPassword){
-		return dbAccount != null && dbPassword != null && "".equals(dbAccount) && "".equals(dbPassword)
+		return dbAccount != null && dbPassword != null && !"".equals(dbAccount) && !"".equals(dbPassword)
 			   && dbAccount.equals(userAccount) && dbPassword.equals(userPassword);
 	}
 	

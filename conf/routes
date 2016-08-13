@@ -77,6 +77,19 @@ GET     /scala/playCaller             controllers.ScalaController.playCaller()
 
 # chapter 6 - end
 #------------------------------------
+# chapter 7 - start
+
+# http://127.0.0.1:9000/session/login
+GET		/session/login			      controllers.SessionController.login(errorMessage : String ?= "")
+
+# http://127.0.0.1:9000/session/logout
+GET		/session/logout			      controllers.SessionController.logout()
+
+# http://127.0.0.1:9000/session/login
+POST	/session/login			      controllers.SessionController.auth()
+
+# chapter 7 - end
+#------------------------------------
 
 # An example controller showing a sample home page
 #GET     /                           controllers.HomeController.index
