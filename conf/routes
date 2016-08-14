@@ -88,6 +88,12 @@ GET		/session/logout			      controllers.SessionController.logout()
 # http://127.0.0.1:9000/session/login
 POST	/session/login			      controllers.SessionController.auth()
 
+# http://127.0.0.1:9000/session/flashPage
+GET		/session/flashTest			  controllers.SessionController.flashPage()
+
+# http://127.0.0.1:9000/session/flashCheck
+POST	/session/flashTest			  controllers.SessionController.flashCheck()
+
 # chapter 7 - end
 #------------------------------------
 

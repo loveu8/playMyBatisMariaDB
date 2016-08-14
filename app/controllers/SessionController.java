@@ -1,7 +1,12 @@
 package controllers;
 
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
+import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -88,5 +93,46 @@ public class SessionController extends Controller{
     		return ok(login.render(errorMessage));						// 回傳檢查後錯誤的資訊
     	}
 	}
+	
+	
+	// flash測試頁面
+	public Result flashPage(){
+		// 清除暫存資訊
+		flash().clear();
+		return ok(flashTest.render(""));
+	}
+	
+	
+	// 檢查後，flash提示訊息
+	public Result flashCheck(){
+		
+    	DynamicForm requestData = formFactory.form().bindFromRequest();	// 動態取得頁面上的表單
+    	
+    	Map <String , String> formData = requestData.get().getData();	// 把form轉換成Map物件
+    	    	
+    	String account 	= formData.get("account");						// 根據表單欄位的name名稱，取出表單裡面的值
+    	
+    	String patternStr = "[a-zA-Z]{4,10}$";							// 只接受英文4的字串
+    	
+        Pattern pattern = Pattern.compile(patternStr);
+        
+        Matcher matcher = pattern.matcher(account);
+    	
+        boolean isMatcher = matcher.find();								// 是否符合規則
+        
+        // 清除上次訊息
+        flash().clear();
+        
+        if(isMatcher){
+        	flash().put("success", "帳號可以使用");
+        	play.Logger.info("success 	= " + flash().get("success"));
+        } else {
+        	flash().put("error", "帳號格式錯誤");
+        	play.Logger.info("error 	= " + flash().get("error"));
+        }
+        
+		return ok(flashTest.render(account));
+	}
+	
 	
 }

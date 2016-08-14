@@ -1,0 +1,14 @@
+@(account : String )
+@* 檢查後接收 account ，使用者可以不用重新再輸入ㄧ次 *@
+<form action='@controllers.routes.SessionController.flashCheck.url' method="post">
+	申請的帳號 : <input type="text" autocomplete="off" name="account" @if(!"".equals(account)){ value = "@account" }></input>
+	@if(flash.containsKey("error")) {
+		<span style="color:red;">@flash.get("error")</span>
+	}
+	@if(flash.containsKey("success")) {
+		<span style="color:green;">@flash.get("success")</span>
+	}
+	<br>
+	*只接收4~10個字數的英文字*<br>
+	<input type="submit" value="檢查">
+</form>
