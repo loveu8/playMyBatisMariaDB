@@ -96,6 +96,14 @@ POST	/session/flashTest			  controllers.SessionController.flashCheck()
 
 # chapter 7 - end
 #------------------------------------
+# chapter 8 - start
+
+# http://127.0.0.1:9000/session/getGameMasterData
+GET		/api/getGameMasterData		  controllers.ApiController.getGameMasterData()
+
+
+# chapter 8 - end
+#------------------------------------
 
 # An example controller showing a sample home page
 #GET     /                           controllers.HomeController.index
