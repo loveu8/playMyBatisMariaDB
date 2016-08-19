@@ -98,8 +98,11 @@ POST	/session/flashTest			  controllers.SessionController.flashCheck()
 #------------------------------------
 # chapter 8 - start
 
-# http://127.0.0.1:9000/session/getGameMasterData
+# http://127.0.0.1:9000/api/getGameMasterData
 GET		/api/getGameMasterData		  controllers.ApiController.getGameMasterData()
+
+# http://127.0.0.1:9000/api/findPokemon?pokemonName=Pikachu
+GET		/api/findPokemon		  	  controllers.ApiController.findPokemon(pokemonName : String)
 
 
 # chapter 8 - end

@@ -21,5 +21,5 @@ EclipseKeys.projectFlavor := EclipseProjectFlavor.Java
 // Use .class files instead of generated .scala files for views and routes        
 EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources) 
 
-
-fork in run := true
+// if you want to running compile , this "fork in run" must set false
+fork in run := false
