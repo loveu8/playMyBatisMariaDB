@@ -1,9 +1,11 @@
 package controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.libs.Json;
 import play.mvc.Controller;
@@ -24,11 +26,11 @@ public class ApiController extends Controller{
 	}
 	
 	// 取得神奇寶貝基本資料
-	public Result findPokemon(String monsterName){
+	public Result findPokemon(String pokemonName){
 
 		// 利用神奇寶貝姓名，找出對應的怪獸資料
-		if(PokemonDB.findPokemon(monsterName) != null){
-			return ok (Json.toJson(PokemonDB.valueOf(monsterName).getPokemon()));
+		if(PokemonDB.findPokemon(pokemonName) != null){
+			return ok (Json.toJson(PokemonDB.valueOf(pokemonName).getPokemon()));
 		} else {
 			return ok (Json.toJson("查無神奇寶貝資料"));
 		}
@@ -39,7 +41,7 @@ public class ApiController extends Controller{
 	public Result findPokemons(){
 		
 		// 把傳過的Body資料，轉換成Json格式
-		JsonNode 	 requestJson  = request().body().asJson();
+		JsonNode 	 requestJson  = request().body().asJson(); 
 		
 		// 預定要找的神奇寶貝資料
 		List<String> pokemonNames = new ArrayList<String>();
@@ -71,5 +73,10 @@ public class ApiController extends Controller{
 		return ok(Json.toJson(pokemonResult));
 	}
 	
+	
+	public static void main(String[] args) {
+		String str = "[\"Pikachu\",\"Bulbasaur\",\"XXXX\",\"Charmander\"]";
+		System.out.println(str.replaceAll("\\\\", ""));
+	}
 	
 }
