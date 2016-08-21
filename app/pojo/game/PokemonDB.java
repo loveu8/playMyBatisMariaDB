@@ -24,7 +24,6 @@ public enum PokemonDB {
 	// 找出神奇寶貝
 	public static Pokemon findPokemon(String pokemonName) {
 	    for (PokemonDB pokemon : PokemonDB.values()) {
-	    	System.out.println(pokemon.toString());
 	        if(pokemon.toString().equals(pokemonName)){
 	           return pokemon.valueOf(pokemonName).getPokemon();
 	        }

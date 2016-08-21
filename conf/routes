@@ -104,6 +104,13 @@ GET		/api/getGameMasterData		  controllers.ApiController.getGameMasterData()
 # http://127.0.0.1:9000/api/findPokemon?pokemonName=Pikachu
 GET		/api/findPokemon		  	  controllers.ApiController.findPokemon(pokemonName : String)
 
+# http://127.0.0.1:9000/api/findPokemons
+POST	/api/findPokemons		  	  controllers.ApiController.findPokemons()
+
+
+# http://127.0.0.1:9000/call/gameMasterData
+GET		/call/gameMasterData          controllers.CallController.gameMasterData()
+
 
 # chapter 8 - end
 #------------------------------------
