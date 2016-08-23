@@ -14,16 +14,16 @@ public class Pokemon {
 	// 等級
 	private String lv;
 	
-	// 種族
-	private String race;
+	// 屬性
+	private String type;
 	
 	
-	public Pokemon(String name, int hp , String skill , String lv ,String race) {
+	public Pokemon(String name, int hp , String skill , String lv ,String type) {
 		this.name 	= name;
 		this.hp   	= hp;
 		this.skill 	= skill;
 		this.lv   	= lv;
-		this.race 	= race;
+		this.type 	= type;
 	}
 
 	public String getName() {
@@ -58,11 +58,11 @@ public class Pokemon {
 		this.lv = lv;
 	}
 
-	public String getRace() {
-		return race;
+	public String getType() {
+		return type;
 	}
 
-	public void setRace(String race) {
-		this.race = race;
+	public void setType(String type) {
+		this.type = type;
 	}
 }
