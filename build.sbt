@@ -10,9 +10,10 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  "org.mybatis" % "mybatis" % "3.4.1",
+  // 增加mybatis , google Inject 與 mariadb 需要的jar檔
+  "org.mybatis" % "mybatis" % "3.4.1",		
   "org.mybatis" % "mybatis-guice" % "3.8",
-  "com.google.inject.extensions" % "guice-multibindings" % "4.0",
+  "com.google.inject.extensions" % "guice-multibindings" % "4.1.0",
   "org.mariadb.jdbc" % "mariadb-java-client" % "1.4.6"
 )
 
@@ -28,6 +29,8 @@ EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClass
 // if you want to running compile , this "fork in run" must set false
 fork in run := false
 
+// 以下這兩段必須要增加到sbt檔案，目的是要把我們mybaits的xml，編譯到classpath
+// 讓myBaits知道要執行那個編譯過後的xml檔案
 // Add app folder as resource directory so that mapper xml files are in the classpath
 unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "app" )
   

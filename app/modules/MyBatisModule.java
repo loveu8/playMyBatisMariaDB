@@ -20,10 +20,11 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule {
                 to(true);
         bindDataSourceProviderType(PlayDataSourceProvider.class);
         bindTransactionFactoryType(JdbcTransactionFactory.class);
+        // 把我們要呼叫DB的類別，增加到MapperClass
         addMapperClass(UserService.class);
     }
 
-    /* Provides a {@link DataSource} from the {@link Database} which can be injected from Play. */
+    // 產出一個單例模式的連線
     @Singleton
     public static class PlayDataSourceProvider implements Provider<DataSource> {
         final Database db;
