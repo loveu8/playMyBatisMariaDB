@@ -126,7 +126,6 @@ GET		/db/listUsers		  	  controllers.DbController.listUsers()
 # http://127.0.0.1:9000/db/showUser?id=0001
 GET		/db/showUser		  	  controllers.DbController.showUser(id : Long)
 
-
 # chapter 9 - end
 #------------------------------------
 

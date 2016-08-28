@@ -30,6 +30,8 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule {
 
         @Inject
         public PlayDataSourceProvider(final Database db) {
+        	play.Logger.info("db name = " + db.getName());
+        	play.Logger.info("db url  = " + db.getUrl());
             this.db = db;
         }
 

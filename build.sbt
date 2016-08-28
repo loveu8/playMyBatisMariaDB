@@ -10,9 +10,9 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  // https://mvnrepository.com/artifact/org.mybatis/mybatis
   "org.mybatis" % "mybatis" % "3.4.1",
   "org.mybatis" % "mybatis-guice" % "3.8",
+  "com.google.inject.extensions" % "guice-multibindings" % "4.0",
   "org.mariadb.jdbc" % "mariadb-java-client" % "1.4.6"
 )
 
