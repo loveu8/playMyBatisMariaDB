@@ -1,0 +1,20 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="services.UserService">
+    <resultMap id="userMap" type="pojo.db.User">
+        <constructor>
+            <idArg column="id" javaType="Long"/>
+            <arg column="name" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <select id="all" resultMap="userMap">
+        SELECT * FROM Users ORDER BY id
+    </select>
+
+    <select id="getUserById" parameterType="Long" resultMap="userMap">
+        SELECT * FROM Users WHERE id = #{value}
+    </select>
+</mapper>

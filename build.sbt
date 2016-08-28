@@ -9,7 +9,11 @@ scalaVersion := "2.11.7"
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
-  javaWs
+  javaWs,
+  // https://mvnrepository.com/artifact/org.mybatis/mybatis
+  "org.mybatis" % "mybatis" % "3.4.1",
+  "org.mybatis" % "mybatis-guice" % "3.8",
+  "org.mariadb.jdbc" % "mariadb-java-client" % "1.4.6"
 )
 
 // Compile the project before generating Eclipse files, so that .class files for views and routes are present
@@ -23,3 +27,9 @@ EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClass
 
 // if you want to running compile , this "fork in run" must set false
 fork in run := false
+
+// Add app folder as resource directory so that mapper xml files are in the classpath
+unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "app" )
+  
+// but filter out java and html files that would then also be copied to the classpath
+excludeFilter in Compile in unmanagedResources := "*.java" || "*.html"
