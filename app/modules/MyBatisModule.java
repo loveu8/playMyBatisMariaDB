@@ -39,16 +39,27 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
 
         @Inject
         public PlayDataSourceProvider(Configuration config) {
+        	
         	this.configuration = config;
+        	
+        	// 取得conf檔案 資料庫設定
+        	String dataBaseName = "play";
+        	String driver		= configuration.getString("db.play.driver");
+        	String url			= configuration.getString("db.play.url");
+        	String user			= configuration.getString("db.play.user");
+        	String password		= configuration.getString("db.play.password");
+
+        	// 建立Database物件
         	Database database = Databases.createFrom(
-        	        "play",
-        	        configuration.getString("db.play.driver"),
-        	        configuration.getString("db.play.url"),
+        			dataBaseName,
+        			driver,
+        			url,
         	        ImmutableMap.of(
-        	                "user", configuration.getString("db.play.user"),
-        	                "password", configuration.getString("db.play.password")
+        	        		"user", user,
+        	                "password", password
         	        )
         	);
+        	
             this.db = database;
         }
 
