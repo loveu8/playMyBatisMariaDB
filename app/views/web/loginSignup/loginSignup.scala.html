@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>登入/註冊</title>
+	
+	@views.html.web.headerLibs()
+	
+	@views.html.web.loginSignup.loginSignupLibs()
+		
+	
+  </head>
+
+  <body>
+	<div id="page-wrapper">
+		@views.html.web.headerNav()
+	</div>
+    <div class="form">
+      
+      <ul class="tab-group">
+	    <li class="tab active"><a href="#login">登入</a></li>
+        <li class="tab"><a href="#signup">註冊</a></li>
+      </ul>
+      
+      <div class="tab-content">
+        <div id="login" >   
+          
+          <form action="/" method="post" id="loginForm">
+            <div class="field-wrap">
+				<label>
+				電子信箱<span class="req">*</span>
+				</label>
+				<input type="email" required autocomplete="off"/>
+			</div>
+			<div class="field-wrap">
+				<label>
+				密碼<span class="req">*</span>
+				</label>
+				<input type="password" required autocomplete="off"/>
+			</div>
+			 <ul>
+				<li class="home"><a href="#login">回首頁</a></li>
+				<li class="forgot"><a href="#signup">忘記密碼?</a></li>
+			 </ul>
+			<a>
+				<input type="submit" value="Login" class="button button-block">
+			</a>
+			</form>
+        </div>
+		 
+		<div id="signup">   
+			<form action="/" method="post" id="signupForm">
+
+			<div class="field-wrap">
+				<label>
+				帳號名稱<span class="req">*</span>
+				</label>
+		    <input type="text" required autocomplete="off" />
+			</div>
+			<div class="field-wrap">
+				<label>
+				電子信箱<span class="req">*</span>
+				</label>
+				<input type="email"required autocomplete="off"/>
+			</div>
+			<div class="field-wrap">
+				<label>
+				密碼<span class="req">*</span>
+				</label>
+				<input type="password"required autocomplete="off"/>
+			</div>
+			<div class="field-wrap">
+				<label>
+				確認密碼<span class="req">*</span>
+				</label>
+				<input type="password"required autocomplete="off"/>
+			</div>
+			<a>
+				<input type="submit" value="Signup" class="button button-block">
+			</a>
+			</form>
+          </div> 
+		</div><!-- tab-content -->   
+	</div> <!-- /form -->
+	<div id="titleBar"></div>
+	<script src='@routes.Assets.versioned("javascripts/loginSignup.js")'></script>
+  </body>
+</html>

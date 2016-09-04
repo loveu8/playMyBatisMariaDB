@@ -129,6 +129,17 @@ GET		/db/showUser		  	  controllers.DbController.showUser(id : Long)
 
 # chapter 9 - end
 #------------------------------------
+# chapter 10 - start
+
+# http://127.0.0.1:9000/web/index
+GET		/web/index		  	  	  controllers.WebController.index()
+
+# http://127.0.0.1:9000/web/loginAndSign
+GET		/web/loginSignup		  controllers.WebController.loginSignup()
+
+
+# chapter 10 - end
+#------------------------------------
 
 # An example controller showing a sample home page
 #GET     /                           controllers.HomeController.index
