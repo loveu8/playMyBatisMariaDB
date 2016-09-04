@@ -138,6 +138,13 @@ GET		/web/index		  	  	  controllers.WebController.index()
 GET		/web/loginSignup		  controllers.WebController.loginSignup()
 
 
+# http://127.0.0.1:9000/cache/putUser?name=Tom
+GET		/cache/putUser		  	  	  controllers.CacheController.putUser(name : String)
+
+# http://127.0.0.1:9000/cache/listCacheUser
+GET		/cache/listCacheUser		  controllers.CacheController.listCacheUser()
+
+
 # chapter 10 - end
 #------------------------------------
 
