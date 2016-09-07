@@ -134,9 +134,11 @@ GET		/db/showUser		  	  controllers.DbController.showUser(id : Long)
 # http://127.0.0.1:9000/web/index
 GET		/web/index		  	  	  controllers.WebController.index()
 
-# http://127.0.0.1:9000/web/loginAndSign
-GET		/web/loginSignup		  controllers.WebController.loginSignup()
+# http://127.0.0.1:9000/web/login
+GET		/web/login		  controllers.WebController.login()
 
+# http://127.0.0.1:9000/web/signup
+GET		/web/signup		  controllers.WebController.signup()
 
 # http://127.0.0.1:9000/cache/putUser?name=Tom
 GET		/cache/putUser		  	  	  controllers.CacheController.putUser(name : String)

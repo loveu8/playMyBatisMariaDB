@@ -12,8 +12,13 @@ public class WebController extends Controller{
 		return ok(index.render());
 	}
 	
-	// 登入/註冊
-	public Result loginSignup(){
-		return ok(loginSignup.render());
+	// 登入
+	public Result login(){
+		return ok(login.render());
+	}
+	
+	// 註冊
+	public Result signup(){
+		return ok(signup.render());
 	}
 }

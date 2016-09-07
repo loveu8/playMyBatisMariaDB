@@ -8,10 +8,6 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 /* a */
-a:hover {
-  font-size: 20px;
-  color: #1ab188;
-}
 
 a {
   font-size: 18px;
@@ -1522,7 +1518,7 @@ a {
 
 	form label {
 		display: block;
-		margin: 0 0 1em 0;
+		margin: 0 0 2em 0;
 		font-weight: 700;
 		text-transform: uppercase;
 		color: #6b7770;
@@ -1552,7 +1548,7 @@ a {
 	form input[type="email"],
 	form input[type="password"],
 	form select {
-		line-height: 3em;
+		line-height: 2em;
 		padding: 0 1em;
 	}
 
@@ -1988,6 +1984,7 @@ a {
 						-ms-transition: background-color .075s ease-in-out, color .075s ease-in-out;
 						transition: background-color .075s ease-in-out, color .075s ease-in-out;
 						position: relative;
+						text-align: center;
 						display: block;
 						text-decoration: none;
 						color: #6b7770;
@@ -2027,7 +2024,7 @@ a {
 				font-weight: 700;
 				text-transform: uppercase;
 				padding: 1em 0;
-				text-align: left;
+				text-align: center;
 				min-width: 14em;
 				margin-top: -1em;
 				box-shadow: 0 1em 2em 0 rgba(0, 0, 0, 0.1);

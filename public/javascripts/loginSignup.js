@@ -1,9 +1,3 @@
-// 避免記憶表單
-$( document ).ready(function() {
-	document.getElementById("loginForm").reset();
-	document.getElementById("signupForm").reset();
-});
-
 $('.form').find('input, textarea').on('keyup blur focus', function (e) {
   
   var $this = $(this),
@@ -32,6 +26,7 @@ $('.form').find('input, textarea').on('keyup blur focus', function (e) {
     }
 
 });
+
 
 $('.tab a').on('click', function (e) {
   

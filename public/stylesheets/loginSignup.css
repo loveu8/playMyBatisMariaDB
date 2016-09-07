@@ -39,25 +39,16 @@ body {
   color: #a0b3b0;
   font-size: 20px;
   float: left;
-  width: 50%;
+  width: 100%;
   text-align: center;
   cursor: pointer;
   -webkit-transition: .5s ease;
   transition: .5s ease;
 }
 
-.tab-group li a:hover {
-  background: #179b77;
-  color: #ffffff;
-}
-
 .tab-group .active a {
   background: #1ab188;
   color: #ffffff;
-}
-
-.tab-content > div:last-child {
-  display: none;
 }
 
 h1 {
@@ -69,15 +60,15 @@ h1 {
 
 label {
   position: absolute;
-  -webkit-transform: translateY(19px);
-          transform: translateY(19px);
+  -webkit-transform: translateY(15px);
+          transform: translateY(15px);
   left: 13px;
   color: rgba(0, 0, 0, 0.9);
   -webkit-transition: all 0.25s ease;
   transition: all 0.25s ease;
   -webkit-backface-visibility: hidden;
   pointer-events: none;
-  font-size: 22px;
+  font-size: 18px;
 }
 
 label .req {
@@ -125,7 +116,7 @@ textarea {
 
 .field-wrap {
   position: relative;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 }
 
 .top-row:after {

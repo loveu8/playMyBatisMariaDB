@@ -2,7 +2,7 @@
 <html >
   <head>
     <meta charset="UTF-8">
-    <title>登入/註冊</title>
+    <title>註冊</title>
 	
 	@views.html.web.headerLibs()
 	
@@ -18,36 +18,10 @@
     <div class="form">
       
       <ul class="tab-group">
-	    <li class="tab active"><a href="#login">登入</a></li>
-        <li class="tab"><a href="#signup">註冊</a></li>
+        <li class="tab active"><a href="#signup">註冊</a></li>
       </ul>
       
-      <div class="tab-content">
-        <div id="login" >   
-          
-          <form action="/" method="post" id="loginForm">
-            <div class="field-wrap">
-				<label>
-				電子信箱<span class="req">*</span>
-				</label>
-				<input type="email" required autocomplete="off"/>
-			</div>
-			<div class="field-wrap">
-				<label>
-				密碼<span class="req">*</span>
-				</label>
-				<input type="password" required autocomplete="off"/>
-			</div>
-			 <ul>
-				<li class="home"><a href="#login">回首頁</a></li>
-				<li class="forgot"><a href="#signup">忘記密碼?</a></li>
-			 </ul>
-			<a>
-				<input type="submit" value="Login" class="button button-block">
-			</a>
-			</form>
-        </div>
-		 
+      <div class="tab-content"> 
 		<div id="signup">   
 			<form action="/" method="post" id="signupForm">
 
@@ -84,5 +58,8 @@
 	</div> <!-- /form -->
 	<div id="titleBar"></div>
 	<script src='@routes.Assets.versioned("javascripts/loginSignup.js")'></script>
+	<script>$( document ).ready(function() {
+		document.getElementById("signupForm").reset();
+	});</script>
   </body>
 </html>
