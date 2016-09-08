@@ -23,31 +23,31 @@
       
       <div class="tab-content"> 
 		<div id="signup">   
-			<form action="/" method="post" id="signupForm">
+			<form action="@controllers.routes.WebController.goToSignup.url" method="post" id="signupForm">
 
 			<div class="field-wrap">
 				<label>
 				帳號名稱<span class="req">*</span>
 				</label>
-		    <input type="text" required autocomplete="off" />
+		    <input type="text" required autocomplete="off" name="username"/>
 			</div>
 			<div class="field-wrap">
 				<label>
 				電子信箱<span class="req">*</span>
 				</label>
-				<input type="email"required autocomplete="off"/>
+				<input type="email"required autocomplete="off" name="email"/>
 			</div>
 			<div class="field-wrap">
 				<label>
 				密碼<span class="req">*</span>
 				</label>
-				<input type="password"required autocomplete="off"/>
+				<input type="password"required autocomplete="off" name="password"/>
 			</div>
 			<div class="field-wrap">
 				<label>
 				確認密碼<span class="req">*</span>
 				</label>
-				<input type="password"required autocomplete="off"/>
+				<input type="password"required autocomplete="off" name="password2"/>
 			</div>
 			<a>
 				<input type="submit" value="Signup" class="button button-block">

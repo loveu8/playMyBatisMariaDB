@@ -1,0 +1,19 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="services.WebService">
+
+	<!-- 註冊會員 -->
+ 	<insert id="signupNewMember" parameterType="pojo.web.signup.request.SignupRequest">
+ 		insert into member_main (memberNo ,email , password , username , createDate , modifyDate)
+ 			values 
+		( null , #{signupRequest.email} , #{signupRequest.password}, #{signupRequest.username} , DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'));
+ 	</insert>
+ 	
+ 	<!-- 根據email查詢會員資料 -->
+    <select id="findMemberByEmail" parameterType="String" resultType="pojo.web.Member" >
+        SELECT * FROM member_main WHERE email = #{email}
+    </select>
+    
+</mapper>

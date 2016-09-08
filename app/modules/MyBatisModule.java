@@ -14,6 +14,7 @@ import play.Configuration;
 import play.db.Database;
 import play.db.Databases;
 import services.UserService;
+import services.WebService;
 
 public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
 
@@ -27,6 +28,7 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
         bindTransactionFactoryType(JdbcTransactionFactory.class);
         // 把我們要呼叫DB的類別，增加到MapperClass
         addMapperClass(UserService.class);
+        addMapperClass(WebService.class);
     }
 
 	// 產出一個單例模式的連線
