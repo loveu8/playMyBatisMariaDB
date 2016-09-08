@@ -1,12 +1,6 @@
 @import url("font-awesome.min.css");
-/*@import url("http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic|Open+Sans+Condensed:700");*/
 @import url("https://fonts.googleapis.com/css?family=Inconsolata");
 
-/*
-	TXT by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
 /* a */
 
 a {
@@ -1518,10 +1512,25 @@ a {
 
 	form label {
 		display: block;
-		/*margin: 0 0 2em 0;*/
+		position: relative;
+		font-size: 16px;
+		left : 5px;
 		font-weight: 700;
 		text-transform: uppercase;
 		color: #6b7770;
+	}
+	
+	form label.req {
+	  margin: 0px;
+	  color: #000000;
+	}
+
+	form label.active .req {
+	  opacity: 0;
+	}
+
+	form label.highlight {
+	  color: #ff0000;
 	}
 
 	form input[type="text"],

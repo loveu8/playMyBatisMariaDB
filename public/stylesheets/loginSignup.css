@@ -58,45 +58,6 @@ h1 {
   margin: 0 0 40px;
 }
 
-label {
-  position: absolute;
-  left: 2%;
-  right: 0;
-  top :10%;
-  bottom: 1%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top  : auto;
-  margin-bottom: auto;
-  /*-webkit-transform: translateY(13px);
-          transform: translateY(13px);*/
-  color: rgba(0, 0, 0, 0.9);
-  -webkit-transition: all 0.25s ease;
-  transition: all 0.25s ease;
-  -webkit-backface-visibility: hidden;
-  pointer-events: none;
-  font-size: 18px;
-}
-
-label .req {
-  margin: 0px;
-  color: #000000;
-}
-
-label.active {
-  -webkit-transform: translateY(-20px);
-          transform: translateY(-30px);
-  left: 2px;
-  font-size: 16px;
-}
-label.active .req {
-  opacity: 0;
-}
-
-label.highlight {
-  color: #ff0000;
-}
-
 input, textarea {
   font-size: 22px;
   display: block;
@@ -123,7 +84,7 @@ textarea {
 
 .field-wrap {
   position: relative;
-  margin-bottom: 50px;
+  margin-bottom: 25px;
 }
 
 .top-row:after {
