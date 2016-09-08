@@ -1518,7 +1518,7 @@ a {
 
 	form label {
 		display: block;
-		margin: 0 0 2em 0;
+		/*margin: 0 0 2em 0;*/
 		font-weight: 700;
 		text-transform: uppercase;
 		color: #6b7770;

@@ -60,9 +60,16 @@ h1 {
 
 label {
   position: absolute;
-  -webkit-transform: translateY(13px);
-          transform: translateY(13px);
-  left: 13px;
+  left: 2%;
+  right: 0;
+  top :10%;
+  bottom: 1%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top  : auto;
+  margin-bottom: auto;
+  /*-webkit-transform: translateY(13px);
+          transform: translateY(13px);*/
   color: rgba(0, 0, 0, 0.9);
   -webkit-transition: all 0.25s ease;
   transition: all 0.25s ease;
