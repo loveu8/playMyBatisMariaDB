@@ -1548,7 +1548,8 @@ a {
 	form input[type="email"],
 	form input[type="password"],
 	form select {
-		line-height: 2em;
+		/*line-height: 2em;*/
+		height: 44px;
 		padding: 0 1em;
 	}
 
