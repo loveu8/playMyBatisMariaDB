@@ -13,13 +13,8 @@ import services.WebService;
 
 public class Utils_Signup {
 	
-	private WebService webService;
 
-	public Utils_Signup (WebService webService){
-		this.webService = webService;
-	}
-
-	public Map<String , DefaultFormErrorMessage>checkSingupRequest(SignupRequest reqeuest ){
+	public Map<String , DefaultFormErrorMessage>checkSingupRequest(SignupRequest reqeuest , boolean isRegEmail){
 		
 		Map<String , DefaultFormErrorMessage> info = new HashMap<String , DefaultFormErrorMessage>();
 		
@@ -28,7 +23,7 @@ public class Utils_Signup {
 		String password			= reqeuest.getPassword();
 		String retypepassword   = reqeuest.getRetypePassword();
 
-		info.put("email", checkEmail(email));
+		info.put("email", checkEmail(email , isRegEmail));
 		info.put("username", checkUsername(username));
 		info.put("password", checkPassword(password , retypepassword));
 		
@@ -36,22 +31,20 @@ public class Utils_Signup {
 	}
 	
 
-	public DefaultFormErrorMessage checkEmail(String email){
+	public DefaultFormErrorMessage checkEmail(String email , boolean isRegEmail){
 		DefaultFormErrorMessage message = new DefaultFormErrorMessage();
 		
 		message.setInputName("email");
 		
 	    String emailRegex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
 	    
-	    play.Logger.info("info = "+Json.toJson(webService));
-		
 		if("".equals(email) || email == null){
 			message.setStatus(EmailStatus.S1.status);
 			message.setStatusDesc(EmailStatus.S1.statusDesc);
 		} else if(! email.matches(emailRegex)){
 			message.setStatus(EmailStatus.S2.status);
 			message.setStatusDesc(EmailStatus.S2.statusDesc);
-		} else if(webService.checkMemberByEmail(email)){ 
+		} else if(isRegEmail){ 
 			message.setStatus(EmailStatus.S3.status);
 			message.setStatusDesc(EmailStatus.S3.statusDesc);
 		} else {

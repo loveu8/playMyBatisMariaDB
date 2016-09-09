@@ -42,14 +42,10 @@ public class WebController extends Controller{
 	// 相依性注入Play的formFactory，可參考reference介紹
 	FormFactory formFactory;
 	
-
+	@Inject
 	private WebService webService;
 	
-    @Inject
-    public WebController(WebService webService) {
-        this.webService = webService;
-    }
-	
+
 	// 進行註冊 
 	public Result goToSignup(){
 
@@ -90,7 +86,7 @@ public class WebController extends Controller{
 	
 	// 檢查註冊資訊
 	private Map<String , DefaultFormErrorMessage> checkSingupRequest(SignupRequest request){
-		return new Utils_Signup(webService).checkSingupRequest(request);
+		return new Utils_Signup().checkSingupRequest(request , webService.checkMemberByEmail(request.getEmail()));
 	}
 	
 	

@@ -61,7 +61,6 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
         	                "password", password
         	        )
         	);
-        	
             this.db = database;
         }
 
