@@ -18,7 +18,7 @@ ENGINE=InnoDB
 
 SELECT * FROM member_main;
 
---建立member流水號表單，用於取得最新的ㄧ筆auto key
+-- 建立member流水號表單，用於取得最新的ㄧ筆auto key
 
 CREATE TABLE member_main_seq
 (
