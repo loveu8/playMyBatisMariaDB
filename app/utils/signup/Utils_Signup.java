@@ -3,8 +3,6 @@ package utils.signup;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import play.libs.Json;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.EmailStatus;
@@ -15,16 +13,12 @@ import services.WebService;
 
 public class Utils_Signup {
 	
-	
 	private WebService webService;
-	
-	
-	@Inject
-	public Utils_Signup( WebService webService){
+
+	public Utils_Signup (WebService webService){
 		this.webService = webService;
 	}
-	
-	
+
 	public Map<String , DefaultFormErrorMessage>checkSingupRequest(SignupRequest reqeuest ){
 		
 		Map<String , DefaultFormErrorMessage> info = new HashMap<String , DefaultFormErrorMessage>();
@@ -48,6 +42,8 @@ public class Utils_Signup {
 		message.setInputName("email");
 		
 	    String emailRegex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+	    
+	    play.Logger.info("info = "+Json.toJson(webService));
 		
 		if("".equals(email) || email == null){
 			message.setStatus(EmailStatus.S1.status);
