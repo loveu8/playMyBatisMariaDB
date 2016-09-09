@@ -11,6 +11,11 @@
 		( null , #{signupRequest.email} , #{signupRequest.password}, #{signupRequest.username} , DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'));
  	</insert>
  	
+ 	<!-- 檢查是否有重覆註冊的會員 -->
+ 	<select id="checkMemberByEmail" parameterType="String" resultType="boolean" >
+ 		SELECT count(1) FROM member_main WHERE email=#{email}
+ 	</select>
+ 	
  	<!-- 根據email查詢會員資料 -->
     <select id="findMemberByEmail" parameterType="String" resultType="pojo.web.Member" >
         SELECT * FROM member_main WHERE email = #{email}
