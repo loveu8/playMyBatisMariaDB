@@ -3,7 +3,7 @@ package pojo.web.signup.error;
 /**
  * 預設表單錯誤訊息 
  */
-public class DefaultFormErrorMessage {
+public class VerificFormMessage {
 	
 	// 錯誤的欄位名稱
 	private String inputName;

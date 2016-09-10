@@ -3,20 +3,25 @@ package utils.signup;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import play.libs.Json;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
-import pojo.web.signup.error.DefaultFormErrorMessage;
+import pojo.web.signup.error.VerificFormMessage;
 import services.WebService;
 
 public class Utils_Signup {
 	
 
-	public Map<String , DefaultFormErrorMessage>checkSingupRequest(SignupRequest reqeuest , boolean isRegEmail){
+	public Map<String , VerificFormMessage>checkSingupRequest(SignupRequest reqeuest , boolean isRegEmail){
 		
-		Map<String , DefaultFormErrorMessage> info = new HashMap<String , DefaultFormErrorMessage>();
+		Map<String , VerificFormMessage> info = new HashMap<String , VerificFormMessage>();
 		
 		String email 			= reqeuest.getEmail();
 		String username			= reqeuest.getUsername();
@@ -31,8 +36,8 @@ public class Utils_Signup {
 	}
 	
 
-	public DefaultFormErrorMessage checkEmail(String email , boolean isRegEmail){
-		DefaultFormErrorMessage message = new DefaultFormErrorMessage();
+	public VerificFormMessage checkEmail(String email , boolean isRegEmail){
+		VerificFormMessage message = new VerificFormMessage();
 		
 		message.setInputName("email");
 		
@@ -58,8 +63,8 @@ public class Utils_Signup {
 	}
 	
 
-	private DefaultFormErrorMessage checkUsername(String username) {
-		DefaultFormErrorMessage message = new DefaultFormErrorMessage();
+	private VerificFormMessage checkUsername(String username) {
+		VerificFormMessage message = new VerificFormMessage();
 		
 		message.setInputName("username");
 		
@@ -80,8 +85,8 @@ public class Utils_Signup {
 	}
 	
 	
-	private DefaultFormErrorMessage checkPassword(String password, String retypepassword) {
-		DefaultFormErrorMessage message = new DefaultFormErrorMessage();
+	private VerificFormMessage checkPassword(String password, String retypepassword) {
+		VerificFormMessage message = new VerificFormMessage();
 		
 		message.setInputName("password");
 		
@@ -112,4 +117,9 @@ public class Utils_Signup {
 		return message;
 	}
 	
+	public static void main(String[] args) {
+		Injector injector = Guice.createInjector(new modules.MyBatisModule());
+		WebService webService = injector.getInstance(WebService.class);
+		System.out.println(webService.checkMemberByEmail("123"));
+	}
 }

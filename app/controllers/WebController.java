@@ -10,14 +10,13 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.Member;
-import pojo.web.signup.error.DefaultFormErrorMessage;
+import pojo.web.signup.error.VerificFormMessage;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.login;
 import views.html.web.loginSignup.signup;
-
 import utils.signup.*;
 
 public class WebController extends Controller{
@@ -42,10 +41,10 @@ public class WebController extends Controller{
 	// 相依性注入Play的formFactory，可參考reference介紹
 	FormFactory formFactory;
 	
-	@Inject
+	@Inject 
 	private WebService webService;
 	
-
+	
 	// 進行註冊 
 	public Result goToSignup(){
 
@@ -85,7 +84,7 @@ public class WebController extends Controller{
 	}
 	
 	// 檢查註冊資訊
-	private Map<String , DefaultFormErrorMessage> checkSingupRequest(SignupRequest request){
+	private Map<String , VerificFormMessage> checkSingupRequest(SignupRequest request){
 		return new Utils_Signup().checkSingupRequest(request , webService.checkMemberByEmail(request.getEmail()));
 	}
 	
