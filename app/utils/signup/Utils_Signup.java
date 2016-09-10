@@ -15,6 +15,7 @@ import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
 import pojo.web.signup.error.VerificFormMessage;
 import services.WebService;
+import services.WebServiceImpl;
 
 public class Utils_Signup {
 	
@@ -117,9 +118,4 @@ public class Utils_Signup {
 		return message;
 	}
 	
-	public static void main(String[] args) {
-		Injector injector = Guice.createInjector(new modules.MyBatisModule());
-		WebService webService = injector.getInstance(WebService.class);
-		System.out.println(webService.checkMemberByEmail("123"));
-	}
 }

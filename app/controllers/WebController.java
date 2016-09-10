@@ -13,6 +13,7 @@ import pojo.web.Member;
 import pojo.web.signup.error.VerificFormMessage;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
+import services.WebServiceImpl;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.login;
@@ -41,7 +42,7 @@ public class WebController extends Controller{
 	// 相依性注入Play的formFactory，可參考reference介紹
 	FormFactory formFactory;
 	
-	@Inject 
+	@Inject
 	private WebService webService;
 	
 	
@@ -90,7 +91,13 @@ public class WebController extends Controller{
 	
 	
 	public Result findMemberByEmail(String email){
-		return ok(Json.toJson(webService.findMemberByEmail(email)));
+		Member member = webService.findMemberByEmail(email);
+		System.out.println("member = " + member);
+		if(member!=null){
+			return ok(Json.toJson(member));
+		} else{
+			return ok(Json.toJson("查無資料"));
+		}
 	}
 	
 }

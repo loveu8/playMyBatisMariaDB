@@ -40,7 +40,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-insert member_main values(null,'playStar@gmail.com','2','Abc123','Star','20160906083500','20160906083500');
+insert member_main values(null,'playStar@gmail.com','2','Abc123','playStar','20160906083500','20160906083500');
 
 -- 刪除預設會員資料
 -- DELETE FROM member_main WHERE username = 'Star';

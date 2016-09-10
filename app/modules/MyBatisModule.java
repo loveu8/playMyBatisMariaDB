@@ -1,8 +1,5 @@
 package modules;
 
-import java.io.InputStream;
-import java.util.Properties;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -44,36 +41,17 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
        
         private Configuration configuration;
 
-        /*
         public PlayDataSourceProvider(){
     		
-        	String dataBaseName = "";
-        	String driver		= "";
-        	String url			= "";
-        	String user			= "";
-        	String password		= "";
+			Config config = ConfigFactory.load();
+			this.configuration = new Configuration(config);
 
-        	try {
-        		ClassLoader classLoader = modules.MyBatisModule.class.getClassLoader();
-				Config config = ConfigFactory.load(classLoader);
-				configuration = new Configuration(config);
-
-		
-	        	dataBaseName = "play";
-	        	driver		= configuration.getString("db.play.driver");
-	        	url			= configuration.getString("db.play.url");
-	        	user		= configuration.getString("db.play.user");
-	        	password	= configuration.getString("db.play.password");
-	        	
-	        	System.out.println("driver = " + driver);
-	        	System.out.println("url = " + url);
-	        	System.out.println("user = " + user);
-	        	System.out.println("password = " + password);
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			String dataBaseName = "play";
+			String driver		= configuration.getString("db.play.driver");
+			String url			= configuration.getString("db.play.url");
+			String user		= configuration.getString("db.play.user");
+			String password	= configuration.getString("db.play.password");
+        	
         	// 建立Database物件
         	Database database = Databases.createFrom(
         			dataBaseName,
@@ -86,9 +64,9 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
         	);
             this.db = database;
         }
-        */
         
         
+        /*
         @Inject
         public PlayDataSourceProvider(Configuration config) {
         	        	
@@ -113,7 +91,7 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
         	);
             this.db = database;
         }
-        
+        */
         
         @Override
         public DataSource get() {
