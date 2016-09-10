@@ -1,4 +1,4 @@
-package services;
+package services.Impl;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -7,6 +7,7 @@ import com.google.inject.Injector;
 
 import pojo.web.Member;
 import pojo.web.signup.request.SignupRequest;
+import services.WebService;
 
 public class WebServiceImpl implements WebService {
 	
