@@ -11,8 +11,10 @@ import pojo.web.signup.request.SignupRequest;
 public class WebServiceImpl implements WebService {
 	
 	private WebService webService;
-	
+		
 	public WebServiceImpl(){
+		// 建立Inject modules.MyBatisModule()
+		// 讓WebService藉由 injector 可以跟DB建立連線
 		Injector injector = Guice.createInjector(new modules.MyBatisModule());
 		this.webService = injector.getInstance(WebService.class);
 	}

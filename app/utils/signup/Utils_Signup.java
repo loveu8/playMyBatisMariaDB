@@ -3,19 +3,13 @@ package utils.signup;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
 import play.libs.Json;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
 import pojo.web.signup.error.VerificFormMessage;
-import services.WebService;
-import services.WebServiceImpl;
+
 
 public class Utils_Signup {
 	

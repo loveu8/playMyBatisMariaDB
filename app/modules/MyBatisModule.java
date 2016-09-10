@@ -41,16 +41,16 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
        
         private Configuration configuration;
 
+        // 利用 ConfigFactory，自動取得application.conf設定檔
         public PlayDataSourceProvider(){
     		
 			Config config = ConfigFactory.load();
 			this.configuration = new Configuration(config);
-
 			String dataBaseName = "play";
 			String driver		= configuration.getString("db.play.driver");
 			String url			= configuration.getString("db.play.url");
-			String user		= configuration.getString("db.play.user");
-			String password	= configuration.getString("db.play.password");
+			String user			= configuration.getString("db.play.user");
+			String password		= configuration.getString("db.play.password");
         	
         	// 建立Database物件
         	Database database = Databases.createFrom(
@@ -67,6 +67,8 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
         
         
         /*
+        // 可參考，若只希望給Contorller自動Inject，不期望被其它方法呼叫時
+        // 可以利用Inject，自動取得Configuration設定檔，取得DB連線資訊
         @Inject
         public PlayDataSourceProvider(Configuration config) {
         	        	
