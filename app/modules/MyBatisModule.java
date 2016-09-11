@@ -43,8 +43,8 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule  {
 
         // 利用 ConfigFactory，自動取得application.conf設定檔
         public PlayDataSourceProvider(){
-    		
-			Config config = ConfigFactory.load();
+        	ClassLoader classLoader = modules.MyBatisModule.class.getClassLoader();
+			Config config = ConfigFactory.load(classLoader);
 			this.configuration = new Configuration(config);
 			String dataBaseName = "play";
 			String driver		= configuration.getString("db.play.driver");
