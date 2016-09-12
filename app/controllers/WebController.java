@@ -10,8 +10,8 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.Member;
-import pojo.web.signup.error.VerificFormMessage;
 import pojo.web.signup.request.SignupRequest;
+import pojo.web.signup.verific.VerificFormMessage;
 import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
@@ -54,7 +54,16 @@ public class WebController extends Controller{
 			return ok("錯誤");
 		}
 		
-		checkSingupRequest(request);
+		Map<String , VerificFormMessage> verificInfo = checkSingupRequest(request);
+		
+		Logger.info("verificInfo = " + Json.toJson(verificInfo));
+		
+		for(String key : verificInfo.keySet()){
+			if(!"200".equals(verificInfo.get(key).getStatus())){
+				flash("", "");
+				return ok(signup.render());
+			}
+		}
 		
 //		if(){
 //			

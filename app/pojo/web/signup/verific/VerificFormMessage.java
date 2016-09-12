@@ -1,4 +1,4 @@
-package pojo.web.signup.error;
+package pojo.web.signup.verific;
 
 /**
  * 預設表單錯誤訊息 

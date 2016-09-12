@@ -8,7 +8,7 @@ import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
-import pojo.web.signup.error.VerificFormMessage;
+import pojo.web.signup.verific.VerificFormMessage;
 
 
 public class Utils_Signup {
