@@ -25,7 +25,7 @@ CREATE TABLE member_main_seq
   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY
 );
  
-DROP tables member_main_seq;
+-- DROP tables member_main_seq;
  
 -- 建立觸發器，在insert member_main之前
 -- 會自動取得member_main_seq一組最新的 memberNo 

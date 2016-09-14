@@ -1,24 +1,24 @@
 package pojo.scala;
 
 public class Book {
-	public String name;
-	
-	public String isbn;
+  public String name;
 
-	public String getName() {
-		return name;
-	}
+  public String isbn;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getIsbn() {
-		return isbn;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setIsbn(String isbn) {
-		this.isbn = isbn;
-	}
-	
+  public String getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
+
 }

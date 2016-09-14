@@ -4,75 +4,75 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Member {
-	
-	private String memberNo;
-	
-	private String email;
-	
-	private String status;
-	
-	private String password;
-	
-	private String username;
-	
-	private String createDate;
-	
-	private String modifyDate;
 
-	public String getMemberNo() {
-		return memberNo;
-	}
+  private String memberNo;
 
-	public void setMemberNo(String memberNo) {
-		this.memberNo = memberNo;
-	}
+  private String email;
 
-	public String getEmail() {
-		return email;
-	}
+  private String status;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+  private String password;
 
-	public String getStatus() {
-		return status;
-	}
+  private String username;
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+  private String createDate;
 
-	public String getPassword() {
-		return password;
-	}
+  private String modifyDate;
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+  public String getMemberNo() {
+    return memberNo;
+  }
 
-	public String getUsername() {
-		return username;
-	}
+  public void setMemberNo(String memberNo) {
+    this.memberNo = memberNo;
+  }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+  public String getEmail() {
+    return email;
+  }
 
-	public String getCreateDate() {
-		return createDate;
-	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
-	}
+  public String getStatus() {
+    return status;
+  }
 
-	public String getModifyDate() {
-		return modifyDate;
-	}
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-	public void setModifyDate(String modifyDate) {
-		this.modifyDate = modifyDate;
-	}
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getCreateDate() {
+    return createDate;
+  }
+
+  public void setCreateDate(String createDate) {
+    this.createDate = createDate;
+  }
+
+  public String getModifyDate() {
+    return modifyDate;
+  }
+
+  public void setModifyDate(String modifyDate) {
+    this.modifyDate = modifyDate;
+  }
 
 }
