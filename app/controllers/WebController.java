@@ -33,6 +33,8 @@ public class WebController extends Controller {
 
   // 註冊頁面
   public Result signup() {
+    // 清除暫存錯誤訊息
+    // flash().clear();
     return ok(signup.render());
   }
 
@@ -45,30 +47,37 @@ public class WebController extends Controller {
   private WebService webService;
 
 
-  // 進行註冊
+  /**
+   * 進行註冊檢查
+   * 
+   * Step 1 : 取得表單註冊資訊，若錯誤，回到註冊頁面，彈跳錯誤訊息。
+   * Step 2 : 進行表單驗證，是否正確。若錯誤，回到註冊頁面顯示錯誤訊息。
+   * Step 3 : 檢核通過，進行寄送認證信動作。
+   * 
+   */
   public Result goToSignup() {
 
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
     SignupRequest request = this.getSignupRequest();
-
     if (request == null) {
-      return ok("錯誤");
+      flash().put("errorForm","註冊資料錯誤，請重新嘗試!!");
+      return ok(signup.render());
     }
 
-    Map<String, VerificFormMessage> verificInfo = checkSingupRequest(request);
-
-    Logger.info("verificInfo = " + Json.toJson(verificInfo));
-
+    Map<String, VerificFormMessage> verificInfo = this.checkSingupRequest(request);
     for (String key : verificInfo.keySet()) {
+      // 發現驗證沒過，擺入錯誤訊息
       if (!"200".equals(verificInfo.get(key).getStatus())) {
-        flash("", "");
-        return ok(signup.render());
+        flash().put(key, verificInfo.get(key).getStatusDesc());
       }
     }
-
-    // if(){
-    //
-    // }
-
+    if(!flash().isEmpty()){
+      return ok(signup.render());
+    }
+ 
+    
     try {
       // webService.signupNewMember(request);
     } catch (Exception e) {
@@ -80,32 +89,26 @@ public class WebController extends Controller {
     return ok("");
   }
 
-  // 取得註冊資訊請求
+  // Step 1 : 取得註冊資訊請求
   private SignupRequest getSignupRequest() {
     SignupRequest request = null;
     try {
       request = formFactory.form(SignupRequest.class).bindFromRequest().get();
       Logger.info("before , new member request data = " + Json.toJson(request));
+      // 測試錯誤訊息
+      // request = null;
     } catch (Exception e) {
       Logger.error("表單內容非註冊資訊，轉換類別錯誤，回傳空物件");
     }
     return request;
   }
 
-  // 檢查註冊資訊
+  // Step 2 : 檢查註冊資訊
   private Map<String, VerificFormMessage> checkSingupRequest(SignupRequest request) {
-    return new Utils_Signup().checkSingupRequest(request, webService.checkMemberByEmail(request.getEmail()));
-  }
-
-
-  public Result findMemberByEmail(String email) {
-    Member member = webService.findMemberByEmail(email);
-    System.out.println("member = " + member);
-    if (member != null) {
-      return ok(Json.toJson(member));
-    } else {
-      return ok(Json.toJson("查無資料"));
-    }
+    Map<String, VerificFormMessage> verificInfo 
+        = new Utils_Signup(). checkSingupRequest(request, webService.checkMemberByEmail(request.getEmail()));
+    Logger.info("verificInfo = " + Json.toJson(verificInfo));
+    return verificInfo;
   }
 
 }

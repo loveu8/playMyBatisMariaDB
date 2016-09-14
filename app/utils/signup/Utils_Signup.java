@@ -85,7 +85,7 @@ public class Utils_Signup {
 		
 		message.setInputName("password");
 		
-		String passwordRegex = "[0-9a-zA-Z]{4,15}";
+		String passwordRegex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{4,15}$";
 		
 		if("".equals(password) || password == null){
 			message.setStatus(PasswordStatus.S1.status);
@@ -99,9 +99,6 @@ public class Utils_Signup {
 		} else if(!password.matches(passwordRegex)){
 			message.setStatus(PasswordStatus.S4.status);
 			message.setStatusDesc(PasswordStatus.S4.statusDesc);
-		} else if(password.length() < 4 || password.length() > 15){
-			message.setStatus(PasswordStatus.S5.status);
-			message.setStatusDesc(PasswordStatus.S5.statusDesc);
 		} else {
 			message.setStatus(PasswordStatus.S200.status);
 			message.setStatusDesc(PasswordStatus.S200.statusDesc);

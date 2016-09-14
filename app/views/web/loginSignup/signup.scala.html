@@ -28,10 +28,16 @@
 			<div class="field-wrap">
 				<label class="lable-field-wrap">帳號名稱</label>
 				<input type="text" required autocomplete="off" name="username"/>
+				@if(flash.containsKey("username")) {
+					<span style="color:red;">@flash.get("username")</span>
+				}
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">電子信箱</label>
 				<input type="email" required autocomplete="off" name="email"/>
+				@if(flash.containsKey("email")) {
+					<span style="color:red;">@flash.get("email")</span>
+				}
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">密碼</label>
@@ -40,6 +46,9 @@
 			<div class="field-wrap">
 				<label class="lable-field-wrap">確認密碼</label>
 				<input type="password" required autocomplete="off" name="retypePassword"/>
+				@if(flash.containsKey("password")) {
+					<span style="color:red;">@flash.get("password")</span>
+				}
 			</div>
 			<a>
 				<input type="submit" value="Signup" class="button button-block">
@@ -50,8 +59,13 @@
 	</div> <!-- /form -->
 	<div id="titleBar"></div>
 	<script src='@routes.Assets.versioned("javascripts/loginSignup.js")'></script>
-	<script>$( document ).ready(function() {
-		document.getElementById("signupForm").reset();
-	});</script>
+	<script>
+		$( document ).ready(function() {
+			document.getElementById("signupForm").reset();
+		});
+		@if(flash.containsKey("errorForm")) {
+			alert('@flash.get("errorForm")');
+		}
+	</script>
   </body>
 </html>
