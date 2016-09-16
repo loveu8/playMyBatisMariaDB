@@ -70,8 +70,14 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule {
      * configuration.getString("db.play.user"); String password =
      * configuration.getString("db.play.password");
      * 
-     * // 建立Database物件 Database database = Databases.createFrom( dataBaseName, driver, url,
-     * ImmutableMap.of( "user", user, "password", password ) ); this.db = database; }
+     * // 建立Database物件
+     * Database database 
+     * = Databases.createFrom( dataBaseName, driver, url,
+     *          ImmutableMap.of( "user", user, 
+     *                           "password", password ) 
+     *                         ); 
+     * this.db = database; 
+     * }
      */
 
     @Override

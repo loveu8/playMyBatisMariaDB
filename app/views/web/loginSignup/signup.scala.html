@@ -24,9 +24,8 @@
       <div class="tab-content"> 
 		<div id="signup">   
 			<form action="@controllers.routes.WebController.goToSignup.url" method="post" id="signupForm">
-
 			<div class="field-wrap">
-				<label class="lable-field-wrap">帳號名稱</label>
+				<label class="lable-field-wrap">使用者名稱</label>
 				<input type="text" required autocomplete="off" name="username"/>
 				@if(flash.containsKey("username")) {
 					<span style="color:red;">@flash.get("username")</span>

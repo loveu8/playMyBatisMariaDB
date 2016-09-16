@@ -4,12 +4,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+
+
 import play.Logger;
 import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import pojo.web.Member;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.verific.VerificFormMessage;
 import services.WebService;
@@ -17,6 +18,7 @@ import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.login;
 import views.html.web.loginSignup.signup;
+import utils.mail.Utils_Email;
 import utils.signup.*;
 
 public class WebController extends Controller {
@@ -106,9 +108,15 @@ public class WebController extends Controller {
   // Step 2 : 檢查註冊資訊
   private Map<String, VerificFormMessage> checkSingupRequest(SignupRequest request) {
     Map<String, VerificFormMessage> verificInfo 
-        = new Utils_Signup(). checkSingupRequest(request, webService.checkMemberByEmail(request.getEmail()));
+        = new Utils_Signup().checkSingupRequest(request, webService.checkMemberByEmail(request.getEmail()));
     Logger.info("verificInfo = " + Json.toJson(verificInfo));
     return verificInfo;
   }
 
+
+  
+  public Result sendSignMail(){
+    new Utils_Email().sendMail();
+    return ok("");
+  }
 }

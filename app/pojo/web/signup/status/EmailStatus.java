@@ -14,7 +14,6 @@ public enum EmailStatus {
     this.statusDesc = statusDesc;
   }
 
-
   public final String status; // 狀態代碼
 
   public final String statusDesc; // 狀態說明

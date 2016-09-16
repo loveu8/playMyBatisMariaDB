@@ -3,9 +3,9 @@ package pojo.web.signup.status;
 public enum UsernameStatus {
 
 
-  S1("1", "請輸入帳號名稱。"),
-  S2("2", "帳號名稱，需要介於4個字~15字之間。"), 
-  S200("200", "帳號名稱可以使用。");
+  S1("1", "請輸入使用者名稱。"),
+  S2("2", "使用者名稱只能使用英文字，且介於4個字~15字之間。"), 
+  S200("200", "使用者名稱可以使用。");
 
 
   UsernameStatus(String status, String statusDesc) {

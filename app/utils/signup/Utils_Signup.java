@@ -3,12 +3,16 @@ package utils.signup;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import play.libs.Json;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
 import pojo.web.signup.verific.VerificFormMessage;
+import services.WebService;
 
 
 public class Utils_Signup {
@@ -63,10 +67,12 @@ public class Utils_Signup {
 		
 		message.setInputName("username");
 		
+		String usernameRegex = "^[a-zA-Z]{4,15}$";
+		
 		if("".equals(username) || username == null){
 			message.setStatus(UsernameStatus.S1.status);
 			message.setStatusDesc(UsernameStatus.S1.statusDesc);
-		} else if(username.length() > 16 || username.length() < 4 ){
+		} else if(!username.matches(usernameRegex)){
 			message.setStatus(UsernameStatus.S2.status);
 			message.setStatusDesc(UsernameStatus.S2.statusDesc);
 		} else {

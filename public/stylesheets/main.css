@@ -1532,7 +1532,11 @@ a {
 	form label.highlight {
 	  color: #ff0000;
 	}
-
+	
+	form input {
+		display: inline;
+	}
+	
 	form input[type="text"],
 	form input[type="email"],
 	form input[type="password"],
