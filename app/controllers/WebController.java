@@ -54,7 +54,9 @@ public class WebController extends Controller {
    * 
    * Step 1 : 取得表單註冊資訊，若錯誤，回到註冊頁面，彈跳錯誤訊息。
    * Step 2 : 進行表單驗證，是否正確。若錯誤，回到註冊頁面顯示錯誤訊息。
-   * Step 3 : 檢核通過，進行寄送認證信動作。
+   * Step 3 : 檢核通過，新增會員資料，且尚未認證動作。
+   * Step 4 : 註冊新增成功，進行寄送認證信動作。
+   * Step 5 : 以上都順利完成，導入成功註冊頁面。
    * 
    */
   public Result goToSignup() {
@@ -62,12 +64,14 @@ public class WebController extends Controller {
     // 清除暫存錯誤訊息
     flash().clear();
     
+    // Step 1
     SignupRequest request = this.getSignupRequest();
     if (request == null) {
       flash().put("errorForm","註冊資料錯誤，請重新嘗試!!");
       return ok(signup.render());
     }
 
+    // Step 2
     Map<String, VerificFormMessage> verificInfo = this.checkSingupRequest(request);
     for (String key : verificInfo.keySet()) {
       // 發現驗證沒過，擺入錯誤訊息
@@ -81,13 +85,24 @@ public class WebController extends Controller {
  
     
     try {
+      // Step 3
+      int isInsertOk = 0;
       // webService.signupNewMember(request);
+      
+      // Step 4
+      if(isInsertOk > 0){
+        // to do 實作產生認證連結
+        Utils_Email utils_Email = new Utils_Email();
+        utils_Email.genSinupAuthEmail(null, null);
+      }
+      
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     // Member member = webService.findMemberByEmail(request.getEmail());
     // Logger.info("after , new member data = " + Json.toJson(member));
+    // Step 5
     return ok("");
   }
 
@@ -112,11 +127,10 @@ public class WebController extends Controller {
     Logger.info("verificInfo = " + Json.toJson(verificInfo));
     return verificInfo;
   }
-
-
   
-  public Result sendSignMail(){
-    new Utils_Email().sendMail();
-    return ok("");
+  
+  
+  public Result authMember(String auth){
+    return ok(auth);
   }
 }

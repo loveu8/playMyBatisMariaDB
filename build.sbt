@@ -15,6 +15,7 @@ libraryDependencies ++= Seq(
   "org.mybatis" % "mybatis-guice" % "3.8",
   "com.google.inject.extensions" % "guice-multibindings" % "4.1.0",
   "org.mariadb.jdbc" % "mariadb-java-client" % "1.4.6",
+  // Java寄信功能
   "javax.mail" % "javax.mail-api" % "1.5.6"
 )
 
