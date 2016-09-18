@@ -13,20 +13,23 @@
 
   <body>
 	<div id="page-wrapper">
-		@views.html.web.headerNav()
+		<div id="select_nav_signup">@views.html.web.headerNav()</div>
 	</div>
     <div class="form">
       
       <ul class="tab-group">
-        <li class="tab active"><a href="#signup">註冊成功</a></li>
+        <li class="tab active"><a href="#">註冊成功</a></li>
       </ul>
       
       <div class="tab-content"> 
 		<div id="signup">   
-			<h2>您已註冊成功，請至信箱收取註冊認證信件，謝謝。</h2>
+			<span>您已註冊成功，請至您申請的信箱，收取認證信件，認證有效時間為24小時內，謝謝。</span>
         </div> 
 	  </div><!-- tab-content -->   
 	</div> <!-- /form -->
 	<div id="titleBar"></div>
   </body>
+  <script>
+	$('#nav_signup').addClass('current');
+  </script>
 </html>

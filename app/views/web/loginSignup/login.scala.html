@@ -13,7 +13,7 @@
 
   <body>
 	<div id="page-wrapper">
-		@views.html.web.headerNav()
+		<div id="select_nav_user">@views.html.web.headerNav()</div>
 	</div>
     <div class="form">
       
@@ -45,8 +45,10 @@
 	</div> <!-- /form -->
 	<div id="titleBar"></div>
 	<script src='@routes.Assets.versioned("javascripts/loginSignup.js")'></script>
-	<script>$( document ).ready(function() {
-		document.getElementById("loginForm").reset();
-	});</script>
+	<script>
+		$( document ).ready(function() {
+			document.getElementById("loginForm").reset();
+		});
+	</script>
   </body>
 </html>

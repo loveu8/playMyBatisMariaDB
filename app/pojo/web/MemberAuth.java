@@ -11,13 +11,15 @@ public class MemberAuth {
 
   private String sendDate;
 
-  private String isUse;
+  private boolean isUse;
 
   private String createDate;
 
   private String modifyDate;
 
   private String expiryDate;
+  
+  private String dbTime;
 
   public String getAuthString() {
     return authString;
@@ -43,11 +45,11 @@ public class MemberAuth {
     this.sendDate = sendDate;
   }
 
-  public String getIsUse() {
+  public boolean getIsUse() {
     return isUse;
   }
 
-  public void setIsUse(String isUse) {
+  public void setIsUse(boolean isUse) {
     this.isUse = isUse;
   }
 
@@ -75,4 +77,16 @@ public class MemberAuth {
     this.expiryDate = expiryDate;
   }
 
+  public String getDbTime() {
+    return dbTime;
+  }
+
+  public void setDbTime(String dbTime) {
+    this.dbTime = dbTime;
+  }
+
+  public void setUse(boolean isUse) {
+    this.isUse = isUse;
+  }
+  
 }

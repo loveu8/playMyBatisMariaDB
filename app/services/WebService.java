@@ -26,6 +26,6 @@ public interface WebService {
   public int genMemberLoginLog(@Param("memberLoginData") Map<String , String> memberLoginData);
   
   /** 驗證會員連結 */
-  public MemberAuth getSignupAuthData(String auth);
+  public MemberAuth getMemberAuthData(String auth);
   
 }

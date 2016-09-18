@@ -140,6 +140,9 @@ GET		/web/login		  		controllers.WebController.login()
 # http://127.0.0.1:9000/web/signup
 GET		/web/signup		  		controllers.WebController.signup()
 
+# http://127.0.0.1:9000/web/signupOk
+GET		/web/signupOk		  	controllers.WebController.signupOk()
+
 # http://127.0.0.1:9000/web/signup
 POST	/web/signup		  		controllers.WebController.goToSignup()
 

@@ -1,15 +1,29 @@
 <!-- Nav -->
 <nav id="nav">
 	<ul>
-		<li class="current"><a href="@controllers.routes.WebController.index.url">首頁</a></li>
-		<li>
+		<li id="nav_index"><a href="@controllers.routes.WebController.index.url">首頁</a></li>
+		<li id="nav_user">
 			<a href="#">我的世界</a>
 			<ul>
 				<li><a href="@controllers.routes.WebController.login.url">登入</a></li>
 			</ul>
 		</li>
-		<li><a href="@controllers.routes.WebController.signup.url">註冊</a></li>
+		<li id="nav_signup"><a href="@controllers.routes.WebController.signup.url">註冊</a></li>
 	</ul>
 </nav>
+<script>
+	<!-- 來偵測，外面的Div被誰使用到，而去增加class current屬性-->
+	$(document).ready(function() {
+	  if ( $('#select_nav_index').length ){
+	  	$('#nav_index').addClass('current');
+	  }
+	  if ( $('#select_nav_user').length ){
+	  	$('#nav_user').addClass('current');
+	  }
+	  if ( $('#select_nav_signup').length ){
+	  	$('#nav_signup').addClass('current');
+	  }
+	});
+</script>
 <a href="index.html" id="logo">Star</a>
 

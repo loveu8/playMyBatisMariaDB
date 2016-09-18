@@ -1,5 +1,4 @@
 -- 會員表單
-
 CREATE TABLE `member_main` (
   `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`email`  		 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
@@ -15,11 +14,10 @@ COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
 ;
 
-
 SELECT * FROM member_main;
 -- Drop tables member_main;
 -- 刪除預設會員資料
--- insert member_main values(null,'qkpigstar@gmail.com','1','Abc123','playStar','20160918083500','20160918083500');
+-- insert member_main values(null,'playStar@gmail.com','1','Abc123','playStar','20160918083500','20160918083500');
 -- DELETE FROM member_main WHERE username = 'playStar';
 
 -- 建立member流水號表單，用於取得最新的ㄧ筆auto key
@@ -42,8 +40,6 @@ BEGIN
   SET NEW.memberNo = CONCAT('mem', LPAD(LAST_INSERT_ID(), 12, '0'));
 END$$
 DELIMITER ;
-
--- Drop tables member_main_seq;
 
 -- 會員修改紀錄表單
 CREATE TABLE `member_main_log` (
@@ -78,7 +74,6 @@ ENGINE=InnoDB
 SELECT * FROM member_login_log;
 
 -- 認證表單
-
 CREATE TABLE `member_auth` (
 	`authString`   VARCHAR(100) NOT NULL NULL COLLATE  'utf8_unicode_ci',
   `memberNo`     VARCHAR(15)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
@@ -96,7 +91,8 @@ ENGINE=InnoDB
 
 -- +1天
 -- SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 1 DAY),'%Y%m%d%H%i%s');
-
+-- 撈出目前DB時間
+-- SELECT *,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_main;
 SELECT * FROM member_auth;
 -- DROP tables member_auth;
 

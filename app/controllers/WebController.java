@@ -1,11 +1,12 @@
 package controllers;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-
+import org.h2.value.Value;
 
 import play.Logger;
 import play.data.FormFactory;
@@ -13,6 +14,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.Member;
+import pojo.web.MemberAuth;
 import pojo.web.MemberLoginStatus;
 import pojo.web.email.Email;
 import pojo.web.signup.request.SignupRequest;
@@ -54,15 +56,14 @@ public class WebController extends Controller {
   @Inject
   private WebService webService;
 
-
   /**
    * <pre>
    * 進行註冊
    * 
-   * Step 1 : 取得表單註冊資訊，若錯誤，回到註冊頁面，彈跳錯誤訊息。
+   * Step 1 : 取得表單註冊資料，若錯誤，回到註冊頁面，警告錯誤訊息。
    * Step 2 : 進行表單驗證，是否正確。若錯誤，回到註冊頁面顯示錯誤訊息。
-   * Step 3 : 檢核通過，新增會員資料，且尚未認證動作。
-   * Step 4 : 註冊新增成功，新增認證記錄資料。
+   * Step 3 : 檢核通過，新增會員資料，且尚未認證。
+   * Step 4 : 註冊新增成功，新增認證連結資料。
    * Step 5 : 新增會員記錄檔。
    * Step 6 : 進行寄送認證信動作。
    * Step 7 : 以上都順利完成，導入成功註冊頁面。
@@ -93,7 +94,6 @@ public class WebController extends Controller {
       return ok(signup.render());
     }
  
-    
     try {
       // Step 3
       int isSignOk = webService.signupNewMember(request);
@@ -166,9 +166,34 @@ public class WebController extends Controller {
     return verificInfo;
   }
   
+  public Result signupOk(){
+    return ok(signupOk.render());
+  }
   
   // 檢查註冊認證信
   public Result authMember(String auth){
+    MemberAuth memberAuth = webService.getMemberAuthData(auth);
+    if(memberAuth != null){
+      long dbTime = Long.parseLong(memberAuth.getDbTime());
+      long expiryDate = Long.parseLong(memberAuth.getExpiryDate());
+      boolean isUse = memberAuth.getIsUse();
+      
+      if (isUse){
+        // 已使用過
+        
+      } else {
+        if(dbTime < expiryDate){
+          // 認證連結尚未使用，且尚未逾期，進行更新
+          
+        } else {
+          // 認證連結已逾期
+          
+        }
+      }
+      
+    } else {
+      
+    }
     return ok(auth);
   }
   

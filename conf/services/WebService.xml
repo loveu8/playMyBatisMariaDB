@@ -67,8 +67,8 @@
 	
 	
 	<!-- 撈出會員認證資訊 -->
-	<select id="getSignupAuthData" parameterType="String" resultType="pojo.web.MemberAuth">
-		SELECT * FROM member_auth WHERE authString=#{auth}
+	<select id="getMemberAuthData" parameterType="String" resultType="pojo.web.MemberAuth">
+		SELECT *,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_auth WHERE authString=#{auth}
 	</select>
 	
 	

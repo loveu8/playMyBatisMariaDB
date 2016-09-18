@@ -8,12 +8,12 @@
 	
 	@views.html.web.loginSignup.loginSignupLibs()
 		
-	
   </head>
 
   <body>
+  	
 	<div id="page-wrapper">
-		@views.html.web.headerNav()
+		<div id="select_nav_signup">@views.html.web.headerNav()</div>
 	</div>
     <div class="form">
       
@@ -62,9 +62,7 @@
 	<div id="titleBar"></div>
 	<script src='@routes.Assets.versioned("javascripts/loginSignup.js")'></script>
 	<script>
-		$( document ).ready(function() {
-			document.getElementById("signupForm").reset();
-		});
+		$('#signupForm')[0].reset();
 		@if(flash.containsKey("errorForm")) {
 			alert('@flash.get("errorForm")');
 		}

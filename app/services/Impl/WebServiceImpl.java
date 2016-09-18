@@ -43,7 +43,7 @@ public class WebServiceImpl implements WebService {
     return this.webService.genMemberLoginLog(memberLoginData);
   }
   
-  public MemberAuth getSignupAuthData(String auth){
-    return this.webService.getSignupAuthData(auth);
+  public MemberAuth getMemberAuthData(String auth){
+    return this.webService.getMemberAuthData(auth);
   }
 }
