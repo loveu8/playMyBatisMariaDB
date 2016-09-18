@@ -48,6 +48,9 @@
 				@if(flash.containsKey("password")) {
 					<span style="color:red;">@flash.get("password")</span>
 				}
+				@if(flash.containsKey("signupError")) {
+					<span style="color:red;">@flash.get("signupError")</span>
+				}
 			</div>
 			<a>
 				<input type="submit" value="Signup" class="button button-block">

@@ -17,6 +17,10 @@ ENGINE=InnoDB
 
 
 SELECT * FROM member_main;
+-- Drop tables member_main;
+-- 刪除預設會員資料
+-- insert member_main values(null,'qkpigstar@gmail.com','1','Abc123','playStar','20160918083500','20160918083500');
+-- DELETE FROM member_main WHERE username = 'playStar';
 
 -- 建立member流水號表單，用於取得最新的ㄧ筆auto key
 
@@ -29,7 +33,6 @@ CREATE TABLE member_main_seq
  
 -- 建立觸發器，在insert member_main之前
 -- 會自動取得member_main_seq一組最新的 memberNo 
--- 在insert到表單member_login_log
 DELIMITER $$
 CREATE TRIGGER tg_member_main_insert
 BEFORE INSERT ON member_main
@@ -40,10 +43,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-insert member_main values(null,'playStar@gmail.com','2','Abc123','playStar','20160906083500','20160906083500');
-
--- 刪除預設會員資料
--- DELETE FROM member_main WHERE username = 'Star';
+-- Drop tables member_main_seq;
 
 -- 會員修改紀錄表單
 
@@ -86,7 +86,6 @@ CREATE TABLE `member_auth` (
   `memberNo`     VARCHAR(15)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
   `sendDate`		 VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`isUse`        BOOL				  NOT NULL NULL COLLATE  'utf8_unicode_ci',
-	`lastAuthDate` VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`createDate`   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`modifyDate`   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	 CONSTRAINT pk_authString PRIMARY KEY (authString),
@@ -97,6 +96,7 @@ ENGINE=InnoDB
 ;
 
 SELECT * FROM member_auth;
+-- DROP tables member_auth;
 
 -- 表單狀態對照表
 CREATE TABLE `table_status_desc` (

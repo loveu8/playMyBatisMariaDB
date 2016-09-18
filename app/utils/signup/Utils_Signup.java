@@ -1,10 +1,11 @@
 package utils.signup;
 
+import java.security.MessageDigest;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 import play.libs.Json;
 import pojo.web.signup.request.SignupRequest;
@@ -12,7 +13,6 @@ import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
 import pojo.web.signup.verific.VerificFormMessage;
-import services.WebService;
 
 
 public class Utils_Signup {
@@ -115,4 +115,46 @@ public class Utils_Signup {
 		return message;
 	}
 	
+	
+	/**
+	 * 產生sha-256認證字串
+	 * @param email 使用者信箱
+	 * @return authString
+	 */
+	public String genAuthString(String email){
+	  String authString = "";
+      try {
+        Format formatter = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+        String time = formatter.format(new Date());
+        
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        String text = email + time;
+        md.update(text.getBytes("UTF-8")); 
+        byte[] digest = md.digest();
+        
+        // %064x 意思是，產生64個字串長的字串
+        authString = String.format("%064x", new java.math.BigInteger(1, digest));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      return authString;
+	}
+	
+	
+	/**
+     * 產生會員記錄檔
+     * @param memberNo 
+     * @param device 
+     * @param ipAddress 
+     * @param status 
+     * @return Map<String , String>
+     */
+	public Map<String , String> genMemberLoginData(String memberNo , String device , String ipAddress , String status){
+	  Map<String , String> memberLoginLog = new HashMap<String , String>();
+	  memberLoginLog.put("memberNo", memberNo);
+	  memberLoginLog.put("device",device);
+	  memberLoginLog.put("ipAddress",ipAddress);
+	  memberLoginLog.put("status",status);
+	  return memberLoginLog;
+	}
 }

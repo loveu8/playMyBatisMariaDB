@@ -13,8 +13,11 @@ import javax.mail.internet.MimeMessage;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+import play.libs.Json;
 import pojo.web.Member;
 import pojo.web.email.Email;
+import services.Impl.WebServiceImpl;
+import utils.signup.Utils_Signup;
 
 public class Utils_Email {
   
@@ -22,20 +25,28 @@ public class Utils_Email {
     Email email = new Email();
     email.setFrom("playStar@gmail.com");
     email.setTo(member.getEmail());
+    email.setText("");
     email.setContent("您好你已經註冊成功，請點選以下連結，驗證信箱，謝謝!! "
                       + "<a href='" +"http://127.0.0.1:9000/web/authMember?auth="+authString+"'>認證連結</a>");
     return email;
   }
   
-  public void sendMail(Email email) {
-    
-    // 取得SMTP設定檔
-    Properties props = this.getMailSMTPConf();
-
-    // 進行授權認證動作
-    Session session  = this.createAuthSession(props);
+  public boolean sendMail(Email email) {
 
     try {
+      
+      // 取得SMTP設定檔
+      Properties props = this.getMailSMTPConf();
+      String user = props.getProperty("user");
+      String password = props.getProperty("password");
+
+      // 進行授權認證動作
+      Session session  = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+          return new PasswordAuthentication(user, password);                                                      
+        }
+      });
+      
       MimeMessage message = new MimeMessage(session);
       
       String to = email.getTo();
@@ -52,10 +63,11 @@ public class Utils_Email {
       // 寄送訊息
       Transport.send(message);
       play.Logger.info("信件寄送成功");
-
+      return true;
     } catch (MessagingException e) {
       play.Logger.error("信件寄送失敗");
-      throw new RuntimeException(e);
+      e.printStackTrace();
+      return false;
     }
   }
   
@@ -66,10 +78,10 @@ public class Utils_Email {
     Config config = ConfigFactory.load(classLoader);
     
     String host         = config.getString("mail.smtp.host");
-    String port         = config.getString("mail.smtp.port");
+    int port            = config.getInt("mail.smtp.port");
     final String user   = config.getString("mail.smtp.user");
-    final String auth   = config.getString("mail.smtp.auth");
     String password     = config.getString("mail.smtp.password");
+    final boolean auth  = config.getBoolean("mail.smtp.auth");
     String ssl_trust    = config.getString("mail.smtp.ssl.trust");
     String socketFactory_class = config.getString("mail.smtp.socketFactory.class");
     
@@ -84,23 +96,21 @@ public class Utils_Email {
     Properties props = new Properties();
     props.put("mail.smtp.host", host);
     props.put("mail.smtp.socketFactory.port", port);
-    props.put("mail.smtp.socketFactory.class", socketFactory_class);
+    props.put("mail.smtp.socketFactory.class", "");
     props.put("mail.smtp.port", port);
     props.put("mail.smtp.auth", auth);
     props.put("mail.smtp.ssl.trust", ssl_trust);
+    props.put("mail.smtp.socketFactory.fallback", "false");
     
     return props;
   }
   
   
-  
-  public Session createAuthSession(Properties props){
-   return Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-      protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(props.getProperty("user"), props.getProperty("password"));                                                      
-      }
-    });
+  public static void main(String[] args) {
+    Member newMember = new WebServiceImpl().findMemberByEmail("qkpigstar@gmail.com");
+    String authString = new Utils_Signup().genAuthString(newMember.getEmail());
+    Utils_Email utils_Email = new Utils_Email();
+    Email email = utils_Email.genSinupAuthEmail(newMember, authString);
+    boolean isSeadMailOk = utils_Email.sendMail(email);
   }
-  
-
 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -11,13 +12,18 @@ import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import pojo.web.Member;
+import pojo.web.MemberLoginStatus;
+import pojo.web.email.Email;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.verific.VerificFormMessage;
 import services.WebService;
+import services.Impl.WebServiceImpl;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.login;
 import views.html.web.loginSignup.signup;
+import views.html.web.loginSignup.signupOk;
 import utils.mail.Utils_Email;
 import utils.signup.*;
 
@@ -50,14 +56,18 @@ public class WebController extends Controller {
 
 
   /**
-   * 進行註冊檢查
+   * <pre>
+   * 進行註冊
    * 
    * Step 1 : 取得表單註冊資訊，若錯誤，回到註冊頁面，彈跳錯誤訊息。
    * Step 2 : 進行表單驗證，是否正確。若錯誤，回到註冊頁面顯示錯誤訊息。
    * Step 3 : 檢核通過，新增會員資料，且尚未認證動作。
-   * Step 4 : 註冊新增成功，進行寄送認證信動作。
-   * Step 5 : 以上都順利完成，導入成功註冊頁面。
+   * Step 4 : 註冊新增成功，新增認證記錄資料。
+   * Step 5 : 新增會員記錄檔。
+   * Step 6 : 進行寄送認證信動作。
+   * Step 7 : 以上都順利完成，導入成功註冊頁面。
    * 
+   * </pre>
    */
   public Result goToSignup() {
 
@@ -70,7 +80,7 @@ public class WebController extends Controller {
       flash().put("errorForm","註冊資料錯誤，請重新嘗試!!");
       return ok(signup.render());
     }
-
+    
     // Step 2
     Map<String, VerificFormMessage> verificInfo = this.checkSingupRequest(request);
     for (String key : verificInfo.keySet()) {
@@ -86,26 +96,53 @@ public class WebController extends Controller {
     
     try {
       // Step 3
-      int isInsertOk = 0;
-      // webService.signupNewMember(request);
+      int isSignOk = webService.signupNewMember(request);
       
-      // Step 4
-      if(isInsertOk > 0){
-        // to do 實作產生認證連結
+      if(isSignOk > 0){
+        
+        Utils_Signup utils_Signup = new Utils_Signup();
+        
+        // Step 4
+        Member newMember = webService.findMemberByEmail(request.getEmail());
+        String authString = utils_Signup.genAuthString(newMember.getEmail());
+        
+        Map<String , String> memberAuth = new HashMap<String , String>();
+        memberAuth.put("memberNo", newMember.getMemberNo());
+        memberAuth.put("authString", authString);
+        int isSingAuthStringOk = webService.genSignupAuthData(memberAuth);
+        
+        // Step 5
+        Map<String , String> memberLoginData 
+            = utils_Signup.genMemberLoginData(newMember.getMemberNo() ,
+                                              "PC" , 
+                                              request().remoteAddress() , 
+                                              MemberLoginStatus.S1.getStatus());
+        int isMemberLoginLogOk = webService.genMemberLoginLog(memberLoginData);
+        
+        // Step 6
         Utils_Email utils_Email = new Utils_Email();
-        utils_Email.genSinupAuthEmail(null, null);
+        Email email = utils_Email.genSinupAuthEmail(newMember, authString);
+        boolean isSeadMailOk = utils_Email.sendMail(email);
+        
+        // Step 7
+        if(isSingAuthStringOk > 0 && isSeadMailOk && isMemberLoginLogOk > 0){
+          return ok(signupOk.render());
+        } else {
+          flash().put("signupError", "註冊會員失敗，請重新註冊，謝謝。");
+          return ok(signup.render());
+        }
+      } else {
+        flash().put("signupError", "註冊會員失敗，請重新註冊，謝謝。");
+        return ok(signup.render());
       }
-      
     } catch (Exception e) {
       e.printStackTrace();
+      flash().put("signupError", "註冊會員失敗，請重新註冊，謝謝。");
+      return ok(signup.render());
     }
-
-    // Member member = webService.findMemberByEmail(request.getEmail());
-    // Logger.info("after , new member data = " + Json.toJson(member));
-    // Step 5
-    return ok("");
   }
 
+  
   // Step 1 : 取得註冊資訊請求
   private SignupRequest getSignupRequest() {
     SignupRequest request = null;
@@ -120,6 +157,7 @@ public class WebController extends Controller {
     return request;
   }
 
+  
   // Step 2 : 檢查註冊資訊
   private Map<String, VerificFormMessage> checkSingupRequest(SignupRequest request) {
     Map<String, VerificFormMessage> verificInfo 
@@ -129,8 +167,19 @@ public class WebController extends Controller {
   }
   
   
-  
+  // 檢查註冊認證信
   public Result authMember(String auth){
     return ok(auth);
+  }
+  
+  public static void main(String[] args) {
+    WebService test = new WebServiceImpl();
+    String authString = new Utils_Signup().genAuthString("playStar@gmail.com");
+
+    Map<String , String> memberAuth = new HashMap<String , String>();
+    memberAuth.put("memberNo", "mem000000000001");
+    memberAuth.put("authString", authString);
+    System.out.println(test.genSignupAuthData(memberAuth));
+    
   }
 }

@@ -1,5 +1,7 @@
 package services.Impl;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.google.inject.Guice;
@@ -30,5 +32,13 @@ public class WebServiceImpl implements WebService {
 
   public Member findMemberByEmail(String email) {
     return this.webService.findMemberByEmail(email);
+  }
+  
+  public int genSignupAuthData(@Param("memberAuth") Map<String , String> memberAuth){
+    return this.webService.genSignupAuthData(memberAuth);
+  }
+  
+  public int genMemberLoginLog(@Param("memberLoginData") Map<String , String> memberLoginData){
+    return this.webService.genMemberLoginLog(memberLoginData);
   }
 }

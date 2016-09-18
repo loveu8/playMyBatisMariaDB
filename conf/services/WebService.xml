@@ -7,16 +7,16 @@
 	<!-- 註冊會員 -->
 	<insert id="signupNewMember" parameterType="pojo.web.signup.request.SignupRequest">
 		insert into
-		member_main (memberNo ,email , password , username , createDate
-		,
-		modifyDate)
+		member_main (memberNo ,email , password , username , createDate, modifyDate)
 		values
-		( null , #{signupRequest.email} ,
-		#{signupRequest.password},
-		#{signupRequest.username} ,
-		DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') ,
-		DATE_FORMAT(NOW(),
-		'%Y%m%d%H%i%s'));
+		( 
+			null , 
+			#{signupRequest.email} ,
+			#{signupRequest.password},
+			#{signupRequest.username} ,
+			DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') ,
+			DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		);
 	</insert>
 
 	<!-- 檢查是否有重覆註冊的會員 -->
@@ -31,4 +31,35 @@
 		SELECT * FROM member_main WHERE email = #{email}
 	</select>
 
+
+	<!-- 註冊認證連結 -->
+	<insert id="genSignupAuthData" parameterType="Map">
+		insert into
+		member_auth (authString ,memberNo , sendDate , isUse , createDate , modifyDate)
+		values
+		( 
+			#{memberAuth.authString} , 
+			#{memberAuth.memberNo} ,
+			DATE_FORMAT(NOW() , '%Y%m%d%H%i%s'),
+			0,
+			DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') ,
+			DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		);
+	</insert>
+	
+	
+	<!-- 會員記錄檔 -->
+	<insert id="genMemberLoginLog" parameterType="Map">
+		insert into
+		member_login_log (memberNo , status , ipAddress , device , loginDate)
+		values
+		( 
+			#{memberLoginData.memberNo} , 
+			#{memberLoginData.status} ,
+			#{memberLoginData.ipAddress} ,
+			#{memberLoginData.device} ,
+			DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		);
+	</insert>
+	
 </mapper>
