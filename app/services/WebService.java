@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import pojo.web.Member;
+import pojo.web.MemberAuth;
 import pojo.web.signup.request.SignupRequest;
 
 public interface WebService {
@@ -23,4 +24,8 @@ public interface WebService {
   
   /** 會員記錄檔  */
   public int genMemberLoginLog(@Param("memberLoginData") Map<String , String> memberLoginData);
+  
+  /** 驗證會員連結 */
+  public MemberAuth getSignupAuthData(String auth);
+  
 }

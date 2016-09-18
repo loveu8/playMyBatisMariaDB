@@ -46,7 +46,6 @@ DELIMITER ;
 -- Drop tables member_main_seq;
 
 -- 會員修改紀錄表單
-
 CREATE TABLE `member_main_log` (
   `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`email`  		 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
@@ -64,7 +63,6 @@ ENGINE=InnoDB
 SELECT * FROM member_main_log;
 
 -- 會員登入紀錄
-
 CREATE TABLE `member_login_log` (
   `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`status` 		 VARCHAR(2)  	NOT NULL NULL COLLATE 'utf8_unicode_ci',
@@ -88,12 +86,16 @@ CREATE TABLE `member_auth` (
 	`isUse`        BOOL				  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`createDate`   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`modifyDate`   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
+	`expiryDate`   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	 CONSTRAINT pk_authString PRIMARY KEY (authString),
 	 index (memberNo)
 )
 COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
 ;
+
+-- +1天
+-- SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 1 DAY),'%Y%m%d%H%i%s');
 
 SELECT * FROM member_auth;
 -- DROP tables member_auth;

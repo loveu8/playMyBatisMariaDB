@@ -144,7 +144,7 @@ GET		/web/signup		  		controllers.WebController.signup()
 POST	/web/signup		  		controllers.WebController.goToSignup()
 
 # http://127.0.0.1:9000/web/authMember
-POST	/web/authMember		  	controllers.WebController.authMember(auth : String)
+GET		/web/authMember		  	controllers.WebController.authMember(auth : String)
 
 # http://127.0.0.1:9000/cache/putUser?name=Tom
 GET		/cache/putUser		  	  	  controllers.CacheController.putUser(name : String)

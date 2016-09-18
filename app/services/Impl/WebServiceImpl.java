@@ -8,6 +8,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import pojo.web.Member;
+import pojo.web.MemberAuth;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
@@ -40,5 +41,9 @@ public class WebServiceImpl implements WebService {
   
   public int genMemberLoginLog(@Param("memberLoginData") Map<String , String> memberLoginData){
     return this.webService.genMemberLoginLog(memberLoginData);
+  }
+  
+  public MemberAuth getSignupAuthData(String auth){
+    return this.webService.getSignupAuthData(auth);
   }
 }

@@ -172,14 +172,4 @@ public class WebController extends Controller {
     return ok(auth);
   }
   
-  public static void main(String[] args) {
-    WebService test = new WebServiceImpl();
-    String authString = new Utils_Signup().genAuthString("playStar@gmail.com");
-
-    Map<String , String> memberAuth = new HashMap<String , String>();
-    memberAuth.put("memberNo", "mem000000000001");
-    memberAuth.put("authString", authString);
-    System.out.println(test.genSignupAuthData(memberAuth));
-    
-  }
 }
