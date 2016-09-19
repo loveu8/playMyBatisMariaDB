@@ -19,6 +19,9 @@ public interface WebService {
   /** 用Email 尋找會員資料 */
   public Member findMemberByEmail(String email);
   
+  /** 用會員編號 尋找會員資料 */
+  public Member findMemberByMemberNo(String memberNo);
+  
   /** 產生會員認證資料  */
   public int genSignupAuthData(@Param("memberAuth") Map<String , String> memberAuth);
   

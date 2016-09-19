@@ -32,6 +32,13 @@
 		resultType="pojo.web.Member">
 		SELECT * FROM member_main WHERE email = #{email}
 	</select>
+	
+	
+	<!-- 根據memberNo查詢會員資料 -->
+	<select id="findMemberByEmail" parameterType="String"
+		resultType="pojo.web.Member">
+		SELECT * FROM member_main WHERE memberNo = #{memberNo}
+	</select>
 
 
 	<!-- 註冊認證連結 -->

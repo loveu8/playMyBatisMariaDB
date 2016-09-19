@@ -46,4 +46,9 @@ public class WebServiceImpl implements WebService {
   public MemberAuth getMemberAuthData(String auth){
     return this.webService.getMemberAuthData(auth);
   }
+  
+  public Member findMemberByMemberNo(String memberNo){
+    return this.webService.findMemberByMemberNo(memberNo);
+  }
+  
 }

@@ -1,12 +1,9 @@
 package controllers;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import org.h2.value.Value;
 
 import play.Logger;
 import play.data.FormFactory;
@@ -16,11 +13,11 @@ import play.mvc.Result;
 import pojo.web.Member;
 import pojo.web.MemberAuth;
 import pojo.web.MemberLoginStatus;
+import pojo.web.MemberStatus;
 import pojo.web.email.Email;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.verific.VerificFormMessage;
 import services.WebService;
-import services.Impl.WebServiceImpl;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.login;
@@ -96,41 +93,39 @@ public class WebController extends Controller {
  
     try {
       // Step 3
-      int isSignOk = webService.signupNewMember(request);
+      int isSignupOk = webService.signupNewMember(request);
       
-      if(isSignOk > 0){
-        
-        Utils_Signup utils_Signup = new Utils_Signup();
-        
-        // Step 4
-        Member newMember = webService.findMemberByEmail(request.getEmail());
-        String authString = utils_Signup.genAuthString(newMember.getEmail());
-        
-        Map<String , String> memberAuth = new HashMap<String , String>();
-        memberAuth.put("memberNo", newMember.getMemberNo());
-        memberAuth.put("authString", authString);
-        int isSingAuthStringOk = webService.genSignupAuthData(memberAuth);
-        
-        // Step 5
-        Map<String , String> memberLoginData 
-            = utils_Signup.genMemberLoginData(newMember.getMemberNo() ,
-                                              "PC" , 
-                                              request().remoteAddress() , 
-                                              MemberLoginStatus.S1.getStatus());
-        int isMemberLoginLogOk = webService.genMemberLoginLog(memberLoginData);
-        
-        // Step 6
-        Utils_Email utils_Email = new Utils_Email();
-        Email email = utils_Email.genSinupAuthEmail(newMember, authString);
-        boolean isSeadMailOk = utils_Email.sendMail(email);
-        
-        // Step 7
-        if(isSingAuthStringOk > 0 && isSeadMailOk && isMemberLoginLogOk > 0){
-          return ok(signupOk.render());
-        } else {
-          flash().put("signupError", "註冊會員失敗，請重新註冊，謝謝。");
-          return ok(signup.render());
-        }
+      if(isSignupOk == 0){
+        flash().put("signupError", "註冊會員失敗，請重新註冊，謝謝。");
+        return ok(signup.render());
+      }
+            
+      // Step 4
+      Utils_Signup utils_Signup = new Utils_Signup();
+      Member newMember = webService.findMemberByEmail(request.getEmail());
+      String authString = utils_Signup.genAuthString(newMember.getEmail());
+      
+      Map<String , String> memberAuth = new HashMap<String , String>();
+      memberAuth.put("memberNo", newMember.getMemberNo());
+      memberAuth.put("authString", authString);
+      int isSingAuthStringOk = webService.genSignupAuthData(memberAuth);
+      
+      // Step 5
+      Map<String , String> memberLoginData 
+          = utils_Signup.genMemberLoginData(newMember.getMemberNo() ,
+                                            "PC" , 
+                                            request().remoteAddress() , 
+                                            MemberLoginStatus.S1.getStatus());
+      int isMemberLoginLogOk = webService.genMemberLoginLog(memberLoginData);
+      
+      // Step 6
+      Utils_Email utils_Email = new Utils_Email();
+      Email email = utils_Email.genSinupAuthEmail(newMember, authString);
+      boolean isSeadMailOk = utils_Email.sendMail(email);
+      
+      // Step 7
+      if(isSingAuthStringOk > 0 && isMemberLoginLogOk > 0 && isSeadMailOk ){
+        return ok(signupOk.render());
       } else {
         flash().put("signupError", "註冊會員失敗，請重新註冊，謝謝。");
         return ok(signup.render());
@@ -166,34 +161,60 @@ public class WebController extends Controller {
     return verificInfo;
   }
   
+  
+  // test signupOk
   public Result signupOk(){
     return ok(signupOk.render());
   }
   
-  // 檢查註冊認證信
+  
+  /**
+   * 檢查註冊認證信連結
+   * Step1 : 檢查認證是否存在。
+   * Step2 : 有認證資料，檢查會員是否已經認證過。
+   * Step3 : 檢查連結是否使用過。
+   * Step4 : 檢查是否有逾期。
+   * Step5 : 檢查通過。該會員尚未認證且連結還可以使用，更新帳號資料。
+   */
   public Result authMember(String auth){
+    
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
     MemberAuth memberAuth = webService.getMemberAuthData(auth);
-    if(memberAuth != null){
-      long dbTime = Long.parseLong(memberAuth.getDbTime());
-      long expiryDate = Long.parseLong(memberAuth.getExpiryDate());
-      boolean isUse = memberAuth.getIsUse();
-      
-      if (isUse){
-        // 已使用過
-        
-      } else {
-        if(dbTime < expiryDate){
-          // 認證連結尚未使用，且尚未逾期，進行更新
-          
-        } else {
-          // 認證連結已逾期
-          
-        }
-      }
-      
-    } else {
-      
+    
+    // Step 1
+    if(memberAuth == null){
+      flash().put("authError", "認證連結有誤，請重新從信中點選連結，謝謝。");
+      return ok("");
     }
+    
+    Member member = webService.findMemberByEmail(memberAuth.getMemberNo());
+    
+    // Step 2
+    if(!MemberStatus.S1.getStatus().equals(member.getStatus())){
+      flash().put("authError", "您的帳號，已經認證成功，不需再認證，謝謝。");
+      return ok("");
+    }
+    
+    // Step 3
+    boolean isUse       = memberAuth.getIsUse(); // 認證字串是否使用過
+    if (isUse){
+      flash().put("authError", "該連結已成功認證過，不需要再次認證，謝謝。");
+      return ok("");
+    } 
+    
+    // Step 4
+    long    dbTime      = Long.parseLong(memberAuth.getDbTime());       // 資料庫時間
+    long    expiryDate  = Long.parseLong(memberAuth.getExpiryDate());   // 逾期時間
+    if(dbTime > expiryDate){
+      flash().put("authError", "認證時間已經逾期，請重新使用重發認證信功能謝謝。");
+      return ok("");
+    } 
+
+    // Step 5
+    // to do 檢查通過，進行更新資料
+
     return ok(auth);
   }
   
