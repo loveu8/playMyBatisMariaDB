@@ -29,18 +29,21 @@ public class Utils_Email {
     email.setText("");
     email.setContent("<h2>您好 "+ member.getUsername()+"，你已經成功註冊，請在24小時內，點選以下驗證連結後，便會啟用帳號，謝謝!!</h2> "
                       + "<a href='" +"http://127.0.0.1:9000/web/authMember?auth="+authString+"'>認證連結</a>");
+    play.Logger.info("auth email = " + Json.toJson(email));
     return email;
   }
   
+  // 寄信
   public boolean sendMail(Email email) {
 
+    Session session  = null;
+    
     try {
-      
       // 取得SMTP設定檔
       Properties props = this.getMailSMTPConf();
 
       // 進行授權認證動作
-      Session session  = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+      session  = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
         protected PasswordAuthentication getPasswordAuthentication() {
           return new PasswordAuthentication(props.getProperty("user"), props.getProperty("password"));                                                      
         }
@@ -67,6 +70,9 @@ public class Utils_Email {
       play.Logger.error("信件寄送失敗");
       e.printStackTrace();
       return false;
+    } finally {
+      // 成功寄信完，清除Session
+      session = null;
     }
   }
   

@@ -15,6 +15,9 @@ public interface WebService {
 
   /** 檢查是否有該會員存在 */
   public boolean checkMemberByEmail(String email);
+  
+  /** 檢查是否有該會員使用者名稱是否存在 */
+  public boolean checkMemberByUsername(String username);
 
   /** 用Email 尋找會員資料 */
   public Member findMemberByEmail(String email);
@@ -30,5 +33,14 @@ public interface WebService {
   
   /** 驗證會員連結 */
   public MemberAuth getMemberAuthData(String auth);
+  
+  /** 更新認證連結*/
+  public int updateMemberAuth(String memberNo);
+  
+  /** 更新會員資料*/
+  public int updateMemberToAuthOk(String memberNo);
+  
+  /** 新增會員紀錄檔資料 */
+  public int genMemberChangeLog(@Param("member") Member member);
   
 }

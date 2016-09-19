@@ -31,6 +31,10 @@ public class WebServiceImpl implements WebService {
     return this.webService.checkMemberByEmail(email);
   }
 
+  public boolean checkMemberByUsername(String username){
+    return this.webService.checkMemberByUsername(username);
+  }
+  
   public Member findMemberByEmail(String email) {
     return this.webService.findMemberByEmail(email);
   }
@@ -49,6 +53,18 @@ public class WebServiceImpl implements WebService {
   
   public Member findMemberByMemberNo(String memberNo){
     return this.webService.findMemberByMemberNo(memberNo);
+  }
+  
+  public int updateMemberAuth(String memberNo){
+    return this.webService.updateMemberAuth(memberNo);
+  }
+  
+  public int updateMemberToAuthOk(String memberNo){
+    return this.webService.updateMemberToAuthOk(memberNo);
+  }
+  
+  public int genMemberChangeLog(Member member){
+    return this.webService.genMemberChangeLog(member);
   }
   
 }

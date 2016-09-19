@@ -26,6 +26,13 @@
 		SELECT count(1) FROM member_main WHERE email=#{email}
 	</select>
 	
+	
+	<!-- 檢查是否有重覆的使用者名稱 -->
+	<select id="checkMemberByUsername" parameterType="String"
+		resultType="boolean">
+		SELECT count(1) FROM member_main WHERE username=#{username}
+	</select>
+	
 
 	<!-- 根據email查詢會員資料 -->
 	<select id="findMemberByEmail" parameterType="String"
@@ -35,7 +42,7 @@
 	
 	
 	<!-- 根據memberNo查詢會員資料 -->
-	<select id="findMemberByEmail" parameterType="String"
+	<select id="findMemberByMemberNo" parameterType="String"
 		resultType="pojo.web.Member">
 		SELECT * FROM member_main WHERE memberNo = #{memberNo}
 	</select>
@@ -77,6 +84,35 @@
 	<select id="getMemberAuthData" parameterType="String" resultType="pojo.web.MemberAuth">
 		SELECT *,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_auth WHERE authString=#{auth}
 	</select>
+	
+	
+	<!--  更新會員認證-->
+	<update id="updateMemberAuth">
+		UPDATE member_auth SET isUse = 1 , modifyDate = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		WHERE memberNo = #{memberNo} AND isUse = 0
+	</update>
+	
+	
+	<!--  更新會員資料 -->
+	<update id="updateMemberToAuthOk">
+		UPDATE member_main SET status = '2' , modifyDate = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		WHERE memberNo = #{memberNo}
+	</update>
+	
+	
+	<!-- 會員記錄檔 -->
+	<insert id="genMemberChangeLog" parameterType="pojo.web.Member">
+		insert into
+		member_main_log(memberNo , email , password , username , createDate)
+		values
+		( 
+			#{member.memberNo} , 
+			#{member.email} ,
+			#{member.password},
+			#{member.username} ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		);
+	</insert>
 	
 	
 </mapper>

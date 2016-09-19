@@ -18,7 +18,7 @@ import pojo.web.signup.verific.VerificFormMessage;
 public class Utils_Signup {
 	
 
-	public Map<String , VerificFormMessage>checkSingupRequest(SignupRequest reqeuest , boolean isRegEmail){
+	public Map<String , VerificFormMessage>checkSingupRequest(SignupRequest reqeuest , boolean isRegEmail , boolean isUsedUsername){
 		
 		Map<String , VerificFormMessage> info = new HashMap<String , VerificFormMessage>();
 		
@@ -28,7 +28,7 @@ public class Utils_Signup {
 		String retypepassword   = reqeuest.getRetypePassword();
 
 		info.put("email", checkEmail(email , isRegEmail));
-		info.put("username", checkUsername(username));
+		info.put("username", checkUsername(username , isUsedUsername));
 		info.put("password", checkPassword(password , retypepassword));
 		
 		return info;
@@ -62,7 +62,7 @@ public class Utils_Signup {
 	}
 	
 
-	private VerificFormMessage checkUsername(String username) {
+	private VerificFormMessage checkUsername(String username , boolean isUsedUsername) {
 		VerificFormMessage message = new VerificFormMessage();
 		
 		message.setInputName("username");
@@ -75,6 +75,9 @@ public class Utils_Signup {
 		} else if(!username.matches(usernameRegex)){
 			message.setStatus(UsernameStatus.S2.status);
 			message.setStatusDesc(UsernameStatus.S2.statusDesc);
+		} else if(isUsedUsername){
+          message.setStatus(UsernameStatus.S3.status);
+          message.setStatusDesc(UsernameStatus.S3.statusDesc);
 		} else {
 			message.setStatus(UsernameStatus.S200.status);
 			message.setStatusDesc(UsernameStatus.S200.statusDesc);

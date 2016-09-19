@@ -23,6 +23,7 @@ import views.html.web.index;
 import views.html.web.loginSignup.login;
 import views.html.web.loginSignup.signup;
 import views.html.web.loginSignup.signupOk;
+import views.html.web.loginSignup.checkMemberAuth;
 import utils.mail.Utils_Email;
 import utils.signup.*;
 
@@ -82,7 +83,7 @@ public class WebController extends Controller {
     // Step 2
     Map<String, VerificFormMessage> verificInfo = this.checkSingupRequest(request);
     for (String key : verificInfo.keySet()) {
-      // 發現驗證沒過，擺入錯誤訊息
+      // 發現驗證沒過，放入錯誤訊息
       if (!"200".equals(verificInfo.get(key).getStatus())) {
         flash().put(key, verificInfo.get(key).getStatusDesc());
       }
@@ -155,8 +156,17 @@ public class WebController extends Controller {
   
   // Step 2 : 檢查註冊資訊
   private Map<String, VerificFormMessage> checkSingupRequest(SignupRequest request) {
+    
+    boolean isRegEmail = true;
+    boolean isUsedUsername = true;
+    try{
+      isRegEmail = webService.checkMemberByEmail(request.getEmail());
+      isUsedUsername = webService.checkMemberByUsername(request.getUsername());
+    } catch(Exception e){
+      e.printStackTrace();
+    }
     Map<String, VerificFormMessage> verificInfo 
-        = new Utils_Signup().checkSingupRequest(request, webService.checkMemberByEmail(request.getEmail()));
+        = new Utils_Signup().checkSingupRequest(request , isRegEmail , isUsedUsername);
     Logger.info("verificInfo = " + Json.toJson(verificInfo));
     return verificInfo;
   }
@@ -170,38 +180,52 @@ public class WebController extends Controller {
   
   /**
    * 檢查註冊認證信連結
-   * Step1 : 檢查認證是否存在。
-   * Step2 : 有認證資料，檢查會員是否已經認證過。
-   * Step3 : 檢查連結是否使用過。
-   * Step4 : 檢查是否有逾期。
-   * Step5 : 檢查通過。該會員尚未認證且連結還可以使用，更新帳號資料。
+   * Step1   : 檢查認證是否存在。
+   * Step2   : 檢查會員是否已經認證過。
+   * Step3   : 檢查連結是否使用過。
+   * Step4   : 檢查是否有逾期。
+   * Step5   : 檢查通過，開始更新與新增相關表單。
+   * Step5.1 : 更新會員認證表單
+   * Step5.2 : 更新會員表單
+   * Step5.3 : 新增會員紀錄表單
    */
   public Result authMember(String auth){
     
     // 清除暫存錯誤訊息
     flash().clear();
-    
-    MemberAuth memberAuth = webService.getMemberAuthData(auth);
-    
+
     // Step 1
-    if(memberAuth == null){
-      flash().put("authError", "認證連結有誤，請重新從信中點選連結，謝謝。");
-      return ok("");
+    MemberAuth memberAuth = null ;
+    try{
+     memberAuth = webService.getMemberAuthData(auth);
+    } catch(Exception e){
+      e.printStackTrace();
     }
     
-    Member member = webService.findMemberByEmail(memberAuth.getMemberNo());
+    if(memberAuth == null){
+      flash().put("authError", "認證連結有誤，請重新點選信中認證連結，或使用重發認證信，謝謝。");
+      play.Logger.warn("memberAuth  = " + Json.toJson(memberAuth));
+      return ok(checkMemberAuth.render());
+    }
     
     // Step 2
-    if(!MemberStatus.S1.getStatus().equals(member.getStatus())){
+    Member member = null;
+    try{
+     member = webService.findMemberByMemberNo(memberAuth.getMemberNo());
+    } catch(Exception e){
+      e.printStackTrace();
+    }
+    if( member==null || !MemberStatus.S1.getStatus().equals(member.getStatus())){
       flash().put("authError", "您的帳號，已經認證成功，不需再認證，謝謝。");
-      return ok("");
+      play.Logger.warn("member      = " + Json.toJson(member));
+      return ok(checkMemberAuth.render());
     }
     
     // Step 3
     boolean isUse       = memberAuth.getIsUse(); // 認證字串是否使用過
     if (isUse){
-      flash().put("authError", "該連結已成功認證過，不需要再次認證，謝謝。");
-      return ok("");
+      flash().put("authError", "該連結已成功認證，不需要再次認證，謝謝。");
+      return ok(checkMemberAuth.render());
     } 
     
     // Step 4
@@ -209,13 +233,23 @@ public class WebController extends Controller {
     long    expiryDate  = Long.parseLong(memberAuth.getExpiryDate());   // 逾期時間
     if(dbTime > expiryDate){
       flash().put("authError", "認證時間已經逾期，請重新使用重發認證信功能謝謝。");
-      return ok("");
+      play.Logger.warn("dbTime      = " + dbTime);
+      play.Logger.warn("expiryDate  = " + expiryDate);
+      return ok(checkMemberAuth.render());
     } 
 
     // Step 5
-    // to do 檢查通過，進行更新資料
-
-    return ok(auth);
+    try{
+      int isUpdateMemberAuthOk = webService.updateMemberAuth(member.getMemberNo());
+      int isUpdateMemberMainOk = webService.updateMemberToAuthOk(member.getMemberNo());
+      int isGenMemberChangeLogOk = webService.genMemberChangeLog(member);
+      play.Logger.info("isUpdateMemberAuthOk  = " + isUpdateMemberAuthOk);
+      play.Logger.info("isUpdateMemberMainOk  = " + isUpdateMemberMainOk);
+      play.Logger.info("isGenMemberChangeLogOk = " + isGenMemberChangeLogOk);
+    } catch(Exception e){
+      e.printStackTrace();
+    }
+    return ok(checkMemberAuth.render());
   }
   
 }
