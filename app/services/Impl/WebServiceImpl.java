@@ -38,6 +38,10 @@ public class WebServiceImpl implements WebService {
   public Member findMemberByEmail(String email) {
     return this.webService.findMemberByEmail(email);
   }
+
+  public Member findMemberByEmailAndUserName(String email , String username) {
+    return this.webService.findMemberByEmailAndUserName(email , username );
+  }
   
   public int genSignupAuthData(@Param("memberAuth") Map<String , String> memberAuth){
     return this.webService.genSignupAuthData(memberAuth);
@@ -66,5 +70,5 @@ public class WebServiceImpl implements WebService {
   public int genMemberChangeLog(Member member){
     return this.webService.genMemberChangeLog(member);
   }
-  
+
 }

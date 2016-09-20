@@ -48,6 +48,12 @@
 	</select>
 
 
+	<!-- 根據 email與username查尋會員資料 -->
+	<select id="findMemberByEmailAndUserName" parameterType="String"
+		resultType="pojo.web.Member">
+		SELECT * FROM member_main WHERE email = #{email} AND username =#{username}
+	</select>
+
 	<!-- 註冊認證連結 -->
 	<insert id="genSignupAuthData" parameterType="Map">
 		insert into

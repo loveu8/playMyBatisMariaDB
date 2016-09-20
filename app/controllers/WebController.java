@@ -20,10 +20,7 @@ import pojo.web.signup.verific.VerificFormMessage;
 import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
-import views.html.web.loginSignup.login;
-import views.html.web.loginSignup.signup;
-import views.html.web.loginSignup.signupOk;
-import views.html.web.loginSignup.checkMemberAuth;
+import views.html.web.loginSignup.*;
 import utils.mail.Utils_Email;
 import utils.signup.*;
 
@@ -145,8 +142,6 @@ public class WebController extends Controller {
     try {
       request = formFactory.form(SignupRequest.class).bindFromRequest().get();
       Logger.info("before , new member request data = " + Json.toJson(request));
-      // 測試錯誤訊息
-      // request = null;
     } catch (Exception e) {
       Logger.error("表單內容非註冊資訊，轉換類別錯誤，回傳空物件");
     }
@@ -214,8 +209,11 @@ public class WebController extends Controller {
      member = webService.findMemberByMemberNo(memberAuth.getMemberNo());
     } catch(Exception e){
       e.printStackTrace();
+      flash().put("authError", "系統忙碌中，請稍後再次嘗試!");
+      return ok(checkMemberAuth.render());
     }
-    if( member==null || !MemberStatus.S1.getStatus().equals(member.getStatus())){
+    
+    if(!MemberStatus.S1.getStatus().equals(member.getStatus())){
       flash().put("authError", "您的帳號，已經認證成功，不需再認證，謝謝。");
       play.Logger.warn("member      = " + Json.toJson(member));
       return ok(checkMemberAuth.render());
@@ -251,5 +249,81 @@ public class WebController extends Controller {
     }
     return ok(checkMemberAuth.render());
   }
+  
+  
+  /**
+   *  重發認證信頁面
+   */
+  public Result resendAuthEmail(){
+    return ok(resendAuthEmail.render());
+  }
+  
+  
+  /**
+   *  重發認證信檢查與寄送
+   *  
+   *  Step 1 : 檢查輸入的資料是否符合需要的格式
+   *  Step 2 : 檢查輸入的信箱與使用名稱，是否有該會員資料
+   *  Step 3 : 會員資料，檢查是否已認證
+   *  Step 4 : 尚未認證，再次補寄送認證信
+   * 
+   */
+  public Result goToResendAuthEmail(){
+    
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
+    SignupRequest request = this.getSignupRequest();
+    if(request==null){
+      flash().put("error", "輸入資料錯誤，請重新嘗試!!");
+      return ok(resendAuthEmail.render());
+    }
+    
+    // Step 2
+    Member member = null;
+    String email = request.getEmail();
+    String username = request.getUsername();
+    try{
+      member = webService.findMemberByEmailAndUserName(email, username);
+    } catch(Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return ok(resendAuthEmail.render());
+    }
+    
+    // Step 2 
+    if(member == null){
+      flash().put("error", "查無註冊資料，請確認資料是否填寫正確，謝謝。");
+      return ok(resendAuthEmail.render());
+    }
+    
+    // Step 3
+    if(!MemberStatus.S1.getStatus().equals(member.getStatus())){
+      flash().put("error", "您的帳號，已經認證成功，不需再重新認證，謝謝。");
+      play.Logger.warn("member      = " + Json.toJson(member));
+      return ok(resendAuthEmail.render());
+    }
+    
+    // Step 4
+    try{
+      String authString = new Utils_Signup().genAuthString(member.getEmail());
+      Map<String , String> memberAuth = new HashMap<String , String>();
+      memberAuth.put("memberNo", member.getMemberNo());
+      memberAuth.put("authString", authString);
+      int isAuthStringOk = webService.genSignupAuthData(memberAuth);
+      
+      Utils_Email utils_Email = new Utils_Email();
+      Email authMail = utils_Email.genSinupAuthEmail(member, authString);
+      boolean isSeadMailOk = utils_Email.sendMail(authMail);
+      
+      play.Logger.info("isAuthStringOk = " + isAuthStringOk +" , isSeadMailOk = " + isSeadMailOk);
+    } catch(Exception e){
+      e.printStackTrace();
+    }
+    flash().put("ok", "已重發認證信，請至註冊信箱收取認證信，謝謝。");
+    return ok(resendAuthEmail.render());
+  }
+  
+  
   
 }

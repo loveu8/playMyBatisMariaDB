@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>重發認證信</title>
+	
+	@views.html.web.headerLibs()
+	
+	@views.html.web.loginSignup.loginSignupLibs()
+		
+  </head>
+
+  <body>
+  	
+	<div id="page-wrapper">
+		<div id="select_nav_signup">@views.html.web.headerNav()</div>
+	</div>
+    <div class="form">
+      
+      <ul class="tab-group">
+        <li class="tab active"><a href="#signup">重發認證信</a></li>
+      </ul>
+      
+      <div class="tab-content"> 
+		<div id="signup">   
+			<form action="@controllers.routes.WebController.goToResendAuthEmail.url" method="post" id="reSendAuthForm">
+			<div class="field-wrap">
+				<label class="lable-field-wrap">使用者名稱</label>
+				<input type="text" required autocomplete="off" name="username"/>
+			</div>
+			<div class="field-wrap">
+				<label class="lable-field-wrap">電子信箱</label>
+				<input type="email" required autocomplete="off" name="email"/>
+				@if(flash.containsKey("error")) {
+					<span style="color:red;">@flash.get("error")</span>
+				}
+				@if(flash.containsKey("ok")) {
+					<span style="color:green;">@flash.get("ok")</span>
+				}
+			</div>
+			<a>
+				<input type="submit" value="Resend" class="button button-block">
+			</a>
+			</form>
+          </div> 
+		</div><!-- tab-content -->   
+	</div> <!-- /form -->
+	<div id="titleBar"></div>
+	<script src='@routes.Assets.versioned("javascripts/loginSignup.js")'></script>
+	<script>
+		$('#reSendAuthForm')[0].reset();
+	</script>
+  </body>
+</html>

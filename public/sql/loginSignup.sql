@@ -15,14 +15,7 @@ ENGINE=InnoDB
 ;
 
 -- Drop tables member_main;
--- 刪除預設會員資料
--- insert member_main values(null,'playStar@gmail.com','1','Abc123','playStar','20160918083500','20160918083500');
--- DELETE FROM member_main WHERE username = 'playStar';
 SELECT * FROM member_main;
-
--- 測試更新會員資料
-UPDATE member_main SET status = '1' , modifyDate = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
-WHERE memberNo = 'mem000000000002';
 
 -- 建立member流水號表單，用於取得最新的ㄧ筆auto key
 CREATE TABLE member_main_seq
@@ -101,13 +94,6 @@ ENGINE=InnoDB
 -- DROP tables member_auth;
 SELECT * FROM member_auth;
 
-SELECT *,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_auth 
-WHERE authString='e5b0a90a8024898c6447b3a90b7d4aae2a60fca9506d3b36ec456f2e68ea214d';
--- 測試更新認證資料
-UPDATE member_auth 
-SET isUse = 0 , modifyDate = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
-    , expiryDate = '20160920010000'
-WHERE memberNo = 'mem000000000002' AND isUse = 0;
 
 -- 表單狀態對照表
 CREATE TABLE `table_status_desc` (

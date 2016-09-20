@@ -43,7 +43,7 @@ public class Utils_Email {
       Properties props = this.getMailSMTPConf();
 
       // 進行授權認證動作
-      session  = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+      session  = Session.getInstance(props, new javax.mail.Authenticator() {
         protected PasswordAuthentication getPasswordAuthentication() {
           return new PasswordAuthentication(props.getProperty("user"), props.getProperty("password"));                                                      
         }

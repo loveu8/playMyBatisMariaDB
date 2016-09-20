@@ -8,7 +8,12 @@
 				<li><a href="@controllers.routes.WebController.login.url">登入</a></li>
 			</ul>
 		</li>
-		<li id="nav_signup"><a href="@controllers.routes.WebController.signup.url">註冊</a></li>
+		<li id="nav_signup">
+			<a href="@controllers.routes.WebController.signup.url">註冊</a>
+			<ul>
+				<li><a href="@controllers.routes.WebController.resendAuthEmail.url">重發認證信</a></li>
+			</ul>
+		</li>
 	</ul>
 </nav>
 <script>
