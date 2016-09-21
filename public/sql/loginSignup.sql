@@ -1,14 +1,22 @@
 -- 會員表單
+-- memberNo 會員編號  (不可以重複，主鍵，當每個使用者註冊時，都會有唯得一個編號，可以查尋到會員相關資料)
+-- email 使用者信箱   (不可以重複，不重覆鍵)
+-- status 認證狀態    (初次註冊者，會給預設值1尚未認證)
+-- password 密碼      
+-- username 使用者名稱 (索引鍵。之後每個使用者註冊時，會檢查使用者名稱不可以重複的功能。)
+-- createDate 創立日期 (ex:20160921080102)
+-- modifyDate 修改日期 (ex:20160921080102)
 CREATE TABLE `member_main` (
-  `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
-	`email`  		 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`status` 		 VARCHAR(1)  	NOT NULL DEFAULT '1' NULL COLLATE 'utf8_unicode_ci',
+    `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
+	`email`  	 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	`status` 	 VARCHAR(1)  	NOT NULL DEFAULT '1' NULL COLLATE 'utf8_unicode_ci',
 	`password`   VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`username`   VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`createDate` VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`modifyDate` VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	CONSTRAINT pk_memberNo PRIMARY KEY (memberNo),
-	UNIQUE KEY (email)
+	UNIQUE KEY (email),
+	INDEX (username)
 )
 COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
@@ -37,8 +45,13 @@ BEGIN
 END$$
 DELIMITER ;
 
-
 -- 會員修改紀錄表單
+-- memberNo 會員編號  (索引鍵)
+-- email 使用者信箱  
+-- status 認證狀態   
+-- password 密碼      
+-- username 使用者名稱 
+-- createDate 創立日期 (ex:20160921080102)
 CREATE TABLE `member_main_log` (
   `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`email`  		 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
@@ -57,6 +70,11 @@ SELECT * FROM member_main_log;
 
 
 -- 會員登入紀錄
+-- memberNo 會員編號  (索引鍵)
+-- email 使用者信箱  
+-- status 登入狀態
+-- device 登入的裝置
+-- loginDate 登入日期
 CREATE TABLE `member_login_log` (
   `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`status` 		 VARCHAR(2)  	NOT NULL NULL COLLATE 'utf8_unicode_ci',
@@ -71,7 +89,7 @@ ENGINE=InnoDB
 -- DROP tables member_login_log;
 SELECT * FROM member_login_log;
 
--- 認證表單
+-- 會員認證表單
 CREATE TABLE `member_auth` (
 	`authString`   VARCHAR(100) NOT NULL NULL COLLATE  'utf8_unicode_ci',
   `memberNo`     VARCHAR(15)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
