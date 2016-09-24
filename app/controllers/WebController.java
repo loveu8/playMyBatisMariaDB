@@ -124,7 +124,7 @@ public class WebController extends Controller {
       if(isSingAuthStringOk > 0 && isMemberLoginLogOk > 0 && isSeadMailOk ){
         return ok(signupOk.render());
       } else {
-        flash().put("signupError", "Opss...寄送註冊信件發生錯誤，請使用重發認證信功能，完成認證動作，謝謝。");
+        flash().put("signupError", "Opss...寄送認證信件發生錯誤，請使用重發認證信功能，完成認證動作，謝謝。");
         return ok(signup.render());
       }
     } catch (Exception e) {
