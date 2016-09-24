@@ -92,7 +92,6 @@ public class WebController extends Controller {
     try {
       // Step 3
       int isSignupOk = webService.signupNewMember(request);
-      
       if(isSignupOk == 0){
         flash().put("signupError", "註冊會員失敗，請重新註冊，謝謝。");
         return ok(signup.render());
@@ -125,7 +124,7 @@ public class WebController extends Controller {
       if(isSingAuthStringOk > 0 && isMemberLoginLogOk > 0 && isSeadMailOk ){
         return ok(signupOk.render());
       } else {
-        flash().put("signupError", "註冊會員失敗，請重新註冊，謝謝。");
+        flash().put("signupError", "Opss...寄送註冊信件發生錯誤，請使用重發認證信功能，完成認證動作，謝謝。");
         return ok(signup.render());
       }
     } catch (Exception e) {
