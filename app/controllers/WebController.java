@@ -173,7 +173,9 @@ public class WebController extends Controller {
   
   
   /**
+   * <pre>
    * 檢查註冊認證信連結
+   * 
    * Step1   : 檢查認證是否存在。
    * Step2   : 檢查會員是否已經認證過。
    * Step3   : 檢查連結是否使用過。
@@ -182,6 +184,8 @@ public class WebController extends Controller {
    * Step5.1 : 更新會員認證表單
    * Step5.2 : 更新會員表單
    * Step5.3 : 新增會員紀錄表單
+   * 
+   * </pre>
    */
   public Result authMember(String auth){
     
@@ -205,6 +209,7 @@ public class WebController extends Controller {
     // Step 2
     Member member = null;
     try{
+      // 認證連結有資料，使用會員編號，查詢會員資料。
      member = webService.findMemberByMemberNo(memberAuth.getMemberNo());
     } catch(Exception e){
       e.printStackTrace();
@@ -259,6 +264,7 @@ public class WebController extends Controller {
   
   
   /**
+   * <pre>
    *  重發認證信檢查與寄送
    *  
    *  Step 1 : 檢查輸入的資料是否符合需要的格式
@@ -266,6 +272,7 @@ public class WebController extends Controller {
    *  Step 3 : 會員資料，檢查是否已認證
    *  Step 4 : 尚未認證，再次補寄送認證信
    * 
+   * </pre>
    */
   public Result goToResendAuthEmail(){
     

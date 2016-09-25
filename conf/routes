@@ -146,7 +146,7 @@ GET		/web/signupOk		  	controllers.WebController.signupOk()
 # http://127.0.0.1:9000/web/signup
 POST	/web/signup		  		controllers.WebController.goToSignup()
 
-# http://127.0.0.1:9000/web/authMember
+# http://127.0.0.1:9000/web/authMember?auth=XXXXX
 GET		/web/authMember		  	controllers.WebController.authMember(auth : String)
 
 # http://127.0.0.1:9000/web/resendAuthEmail
