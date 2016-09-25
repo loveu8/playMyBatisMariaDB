@@ -127,7 +127,7 @@ public class Utils_Signup {
 	public String genAuthString(String email){
 	  String authString = "";
       try {
-        Format formatter = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+        Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String time = formatter.format(new Date());
         
         MessageDigest md = MessageDigest.getInstance("SHA-256");

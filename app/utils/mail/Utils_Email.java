@@ -77,7 +77,7 @@ public class Utils_Email {
   }
   
   
-  // 取得設定檔
+  // 取得conf/application.conf設定檔
   public Properties getMailSMTPConf(){
     ClassLoader classLoader = utils.mail.Utils_Email.class.getClassLoader();
     Config config = ConfigFactory.load(classLoader);
