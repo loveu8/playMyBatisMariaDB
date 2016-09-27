@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import play.Logger;
+import play.cache.CacheApi;
 import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -22,6 +23,7 @@ import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.*;
 import utils.mail.Utils_Email;
+import utils.session.Utils_Session;
 import utils.signup.*;
 
 public class WebController extends Controller {
@@ -330,6 +332,25 @@ public class WebController extends Controller {
     return ok(resendAuthEmail.render());
   }
   
-  
+  @Inject 
+  private CacheApi cache;
+    
+  /**
+   * <pre>
+   * Step 1     : 檢查bowser cookie是否有資料
+   * Step 1.1   : 進行資料驗證，根據sessionId , 查詢我們 server cache 是否資料
+   * Step 1.1.1 : server cache 沒有資料，進行查詢Session表單 , 資料正確直接登入
+   *              且更新bowser cookie , server cache  , Session table
+   *              沒有資料回到Step2登入驗證
+   * Step 1.1.2 : 有資料，確認資料是否逾期，逾期重回Step2重新登入
+   *            
+   * Step 2     : 普通一般登入步驟
+   * Step 2.1   : 檢查是否有該會員資料
+   * Step 2.2   : 有會員資料，新增登入紀錄，新增bowser cookie , 新增server cache , 新增(更新)Session table
+   *</pre>
+   */
+  public Result doLogin(){
+    return ok();
+  }
   
 }
