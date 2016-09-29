@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+
 import play.Logger;
 import play.cache.CacheApi;
 import play.data.FormFactory;
@@ -28,11 +29,12 @@ import utils.signup.*;
 
 public class WebController extends Controller {
 
+
   // 首頁
   public Result index() {
     return ok(index.render());
   }
-
+  
   // 登入
   public Result login() {
     return ok(login.render());
@@ -51,7 +53,7 @@ public class WebController extends Controller {
   FormFactory formFactory;
 
   @Inject
-  private WebService webService;
+  WebService webService;
 
   /**
    * <pre>
@@ -337,16 +339,26 @@ public class WebController extends Controller {
     
   /**
    * <pre>
-   * Step 1     : 檢查bowser cookie是否有資料
-   * Step 1.1   : 進行資料驗證，根據sessionId , 查詢我們 server cache 是否資料
-   * Step 1.1.1 : server cache 沒有資料，進行查詢Session表單 , 資料正確直接登入
-   *              且更新bowser cookie , server cache  , Session table
-   *              沒有資料回到Step2登入驗證
-   * Step 1.1.2 : 有資料，確認資料是否逾期，逾期重回Step2重新登入
+   * Step 1     : 檢查使用者Cookie是否有資料
+   * Step 1.1   : 根據sessionId , 查詢我們 cache , 是否正確，是否逾期
+   *              通過  => 24小時內更新過，不需要更新，直接登入 
+   *			       => 24小時內尚未更新過，更新並延長期限
+   *				      bowser cookie ,server cache  ,Session table
+   *			    沒通過 => 執行Step2登入動作
+   * Step 1.2   : cache 沒有資料，進行查詢Session表單, 是否正確，是否逾期
+   *              通過       => 更新並延長期限bowser cookie ,server cache  ,Session table
+   *              沒通過   => 執行Step2登入動作
    *            
    * Step 2     : 普通一般登入步驟
    * Step 2.1   : 檢查是否有該會員資料
-   * Step 2.2   : 有會員資料，新增登入紀錄，新增bowser cookie , 新增server cache , 新增(更新)Session table
+   * Step 2.2   : 有會員資料，且認證通過
+   *              => 新增bowser cookie , 新增server cache  , 新增Session table
+   * Step 2.2   : 有會員資料，認證尚未通過，或停權
+   *              => 顯示認證尚未通過，或停權
+   * Step 2.4   : 無會員資料
+   *              => 畫面顯示無註冊資料
+   *
+   * Note : 停權時，要特別注意，要刪除掉cache與session表單的登入資料，以免錯誤
    *</pre>
    */
   public Result doLogin(){
