@@ -13,9 +13,9 @@ public class AOP {
 
   @Around(value="@annotation(check)")
   public Object logger(ProceedingJoinPoint pjp , Check check) throws Throwable {
-    System.out.println("Around , before is calling");
+    play.Logger.info("Around , before is calling");
     pjp.proceed();
-    System.out.println("Around , after is finish");
+    play.Logger.info("Around , after is finish");
     return pjp.getTarget();
   }
 

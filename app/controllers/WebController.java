@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
 import play.cache.CacheApi;
@@ -30,8 +31,12 @@ import utils.signup.*;
 public class WebController extends Controller {
 
 
+  @Inject
+  private Utils_Session utils_Session;
+  
   // 首頁
   public Result index() {
+    utils_Session.test();
     return ok(index.render());
   }
   
