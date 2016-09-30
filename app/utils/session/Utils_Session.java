@@ -3,7 +3,6 @@ package utils.session;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
 
 import annotation.Check;
 import config.AppConfig;
@@ -11,7 +10,7 @@ import play.cache.CacheApi;
 import play.mvc.Http;
 import play.mvc.Http.Cookie;
 
-@Component
+
 public class Utils_Session {
 
 

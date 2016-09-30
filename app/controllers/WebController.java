@@ -5,8 +5,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import annotation.Check;
 import play.Logger;
 import play.cache.CacheApi;
 import play.data.FormFactory;
@@ -28,15 +29,13 @@ import utils.mail.Utils_Email;
 import utils.session.Utils_Session;
 import utils.signup.*;
 
+@Component
 public class WebController extends Controller {
 
 
-  @Inject
-  private Utils_Session utils_Session;
-  
   // 首頁
+  @Check
   public Result index() {
-    utils_Session.test();
     return ok(index.render());
   }
   
