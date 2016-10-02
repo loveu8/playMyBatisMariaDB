@@ -1,18 +1,15 @@
 package utils.session;
 
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import org.springframework.stereotype.Component;
 import annotation.Check;
-import config.AppConfig;
 import play.cache.CacheApi;
 import play.mvc.Http;
 import play.mvc.Http.Cookie;
 
-
+@Component
 public class Utils_Session {
-
 
   /**
    * @param response
@@ -55,15 +52,6 @@ public class Utils_Session {
     return !"".equals(request.cookie("sessionId")) && !"".equals(request.cookie("sessionSign"));
   }
   
-  @Check
-  public void test(){
-    play.Logger.info("AOP test");
-  }
   
-  public static void main(String[] args) {
-    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-    Utils_Session b = context.getBean(Utils_Session.class);
-    b.test();
-  }
 }
 

@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import org.springframework.stereotype.Component;
+import javax.inject.Singleton;
 
 import annotation.Check;
 import play.Logger;
@@ -29,15 +28,16 @@ import utils.mail.Utils_Email;
 import utils.session.Utils_Session;
 import utils.signup.*;
 
-@Component
+@org.springframework.stereotype.Controller
 public class WebController extends Controller {
 
-
+  
   // 首頁
   @Check
   public Result index() {
     return ok(index.render());
   }
+  
   
   // 登入
   public Result login() {

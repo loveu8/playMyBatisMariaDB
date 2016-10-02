@@ -1,5 +1,7 @@
 name := """myFirstApp"""
 
+scriptClasspath := Seq("*")
+
 version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
@@ -18,13 +20,9 @@ libraryDependencies ++= Seq(
   // Java寄信功能
   "javax.mail" % "javax.mail-api" % "1.5.6",
   "javax.mail" % "mail" % "1.4.7",
-  //Aop
-  "org.aspectj" % "aspectjrt" % "1.8.9",
-  "org.aspectj" % "aspectjweaver" % "1.8.9",
-  //Spring  
-  "org.springframework" % "spring-core" % "4.2.4.RELEASE",
+  //Spring + Aop
   "org.springframework" % "spring-context" % "4.2.4.RELEASE",
-  "org.springframework" % "spring-aop" % "4.2.4.RELEASE"
+  "org.springframework" % "spring-aspects" % "4.2.4.RELEASE"
 )
 
 // Compile the project before generating Eclipse files, so that .class files for views and routes are present
@@ -46,3 +44,5 @@ unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "app" )
   
 // but filter out java and html files that would then also be copied to the classpath
 excludeFilter in Compile in unmanagedResources := "*.java" || "*.html"
+
+routesGenerator := InjectedRoutesGenerator
