@@ -2,13 +2,11 @@ package utils.session;
 
 
 
-import org.springframework.stereotype.Component;
-import annotation.Check;
+
 import play.cache.CacheApi;
 import play.mvc.Http;
 import play.mvc.Http.Cookie;
 
-@Component
 public class Utils_Session {
 
   /**

@@ -4,9 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import annotation.Check;
+import annotation.CheckLogin;
 import play.Logger;
 import play.cache.CacheApi;
 import play.data.FormFactory;
@@ -28,12 +27,11 @@ import utils.mail.Utils_Email;
 import utils.session.Utils_Session;
 import utils.signup.*;
 
-@org.springframework.stereotype.Controller
 public class WebController extends Controller {
 
   
   // 首頁
-  @Check
+  @CheckLogin
   public Result index() {
     return ok(index.render());
   }

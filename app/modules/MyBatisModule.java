@@ -29,6 +29,7 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule {
     // 把我們要呼叫DB的類別，增加到MapperClass
     addMapperClass(UserService.class);
     addMapperClass(WebService.class);
+    
   }
 
   // 產出一個單例模式的連線

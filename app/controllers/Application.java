@@ -15,7 +15,6 @@ import views.html.auth.*;
 
 public class Application extends Controller {
 
-
   public Result index() {
     return ok("Hi");
   }
