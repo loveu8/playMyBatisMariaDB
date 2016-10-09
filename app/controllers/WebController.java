@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import annotation.CheckLogin;
+import annotation.AuthCheck;
 import play.Logger;
 import play.cache.CacheApi;
 import play.data.FormFactory;
@@ -31,7 +31,7 @@ public class WebController extends Controller {
 
   
   // 首頁
-  @CheckLogin
+  @AuthCheck
   public Result index() {
     return ok(index.render());
   }

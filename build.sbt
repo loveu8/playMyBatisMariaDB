@@ -19,7 +19,9 @@ libraryDependencies ++= Seq(
   "org.mariadb.jdbc" % "mariadb-java-client" % "1.4.6",
   // Java寄信功能
   "javax.mail" % "javax.mail-api" % "1.5.6",
-  "javax.mail" % "mail" % "1.4.7"
+  "javax.mail" % "mail" % "1.4.7",
+  // Spring Aop
+  "org.springframework" % "spring-aop" % "4.2.4.RELEASE"
 )
 
 // Compile the project before generating Eclipse files, so that .class files for views and routes are present
