@@ -1,6 +1,6 @@
-各位大家好，我是阿星!一個潛水許久的鄉民，個人還是新手時期，受惠於Soft_Job版良多，看到各位大神很棒的經驗分享
-後，思考自己力量不大，但我能幫助大家做什麼呢?身為一個JAVA初心開發者，想了好段時間後，覺得寫一本不
-同於，Java Spring + Struts + Herinate(SSH)的教學書。來嘗試寫看看Play Framework。
+各位大家好，我是阿星!一個潛水許久的鄉民，個人還是新手時期，受惠於許多大神無私的分享技術與教學，受益良多。
+思考自己過能力還不夠完善，但我還是想貢獻一份心力在*JAVA*網頁開發上面。身為一個JAVA初心開發者，想了好段
+時間後，覺得寫一本不同於，Java Spring + Struts + Herinate(SSH)的教學書。來嘗試寫看看Play Framework。
 
 Play Framework是近幾年國外慢慢流行起來的Web Framework，主要用JAVA + Scala語言打造。它可以用來於開發
 網頁程式、RestFul Api Server、Cache Server等等用途。而我也會用MyBaits + MaraiaDB，來實作資料庫存
