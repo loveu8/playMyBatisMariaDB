@@ -35,17 +35,16 @@ public class CommonBeforeBlocker implements MethodInterceptor{
   public Object invoke(MethodInvocation invocation) throws Throwable {
     play.Logger.info("CommonBeforeBlocker get Play current Inject Class");
     this.webService = injector().instanceOf(WebService.class);
-    this.formFactory = new FormFactory(injector().instanceOf(MessagesApi.class), injector().instanceOf(Formatters.class), injector().instanceOf(javax.validation.Validator.class));
-    this.cache = new DefaultCacheApi(injector().instanceOf(play.api.cache.CacheApi.class));
+    this.formFactory = injector().instanceOf(FormFactory.class);
+    this.cache = injector().instanceOf(play.cache.DefaultCacheApi.class);
     play.Logger.info("Joinpoint   = " + invocation.getThis().getClass());
     play.Logger.info("getClass    = " + invocation.getClass());
-    play.Logger.info("proceed     = " + invocation.proceed());
     play.Logger.info("method      = " + invocation.getMethod());
     play.Logger.info("arguments   = " + invocation.getArguments());
     play.Logger.info("webService  = " + webService);
     play.Logger.info("formFactory = " + formFactory);
     play.Logger.info("formFactory = " + cache);
-    return invocation.proceed();
+    return invocation;
   }
 }
 
