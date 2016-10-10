@@ -23,14 +23,17 @@
       <div class="tab-content">
         <div id="login" >   
           
-          <form action="/" method="post" id="loginForm">
+          <form action="@controllers.routes.WebController.login.url" method="post" id="loginForm">
             <div class="field-wrap">
 				<label class="lable-field-wrap">電子信箱</label>
-				<input type="email" required autocomplete="off"/>
+				<input type="email" required autocomplete="off" name="email"/>
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">密碼</label>
-				<input type="password" required autocomplete="off"/>
+				<input type="password" required autocomplete="off" name="password"/>
+				@if(flash.containsKey("errorLogin")) {
+					<span style="color:red;">@flash.get("errorLogin")</span>
+				}
 			</div>
 			 <ul>
 				<li class="home"><a href="@controllers.routes.WebController.index.url">回首頁</a></li>

@@ -6,8 +6,10 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import play.cache.DefaultCacheApi;
 import play.data.FormFactory;
-import play.data.format.Formatters;
-import play.i18n.MessagesApi;
+import play.cache.DefaultCacheApi;
+import play.mvc.Controller;
+import play.mvc.Http.Flash;
+import play.mvc.Http.Session;
 import services.WebService;
 
 
@@ -21,7 +23,7 @@ import services.WebService;
  *  DefaultCacheApi  (Play Inject DefaultCacheApi)
  * </pre>
  */
-public class CommonBeforeBlocker implements MethodInterceptor{
+public class CommonBlocker extends Controller implements MethodInterceptor{
   
   protected WebService webService;
   protected FormFactory formFactory;
@@ -33,18 +35,19 @@ public class CommonBeforeBlocker implements MethodInterceptor{
 
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
-    play.Logger.info("CommonBeforeBlocker get Play current Inject Class");
+    play.Logger.info("CommonBlocker get Play current Inject Class");
     this.webService = injector().instanceOf(WebService.class);
     this.formFactory = injector().instanceOf(FormFactory.class);
-    this.cache = injector().instanceOf(play.cache.DefaultCacheApi.class);
+    this.cache = injector().instanceOf(DefaultCacheApi.class);
     play.Logger.info("Joinpoint   = " + invocation.getThis().getClass());
     play.Logger.info("getClass    = " + invocation.getClass());
     play.Logger.info("method      = " + invocation.getMethod());
     play.Logger.info("arguments   = " + invocation.getArguments());
     play.Logger.info("webService  = " + webService);
     play.Logger.info("formFactory = " + formFactory);
-    play.Logger.info("formFactory = " + cache);
+    play.Logger.info("cache       = " + cache);
     return invocation;
   }
+  
 }
 
