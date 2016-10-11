@@ -5,7 +5,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import play.libs.Json;
-import pojo.web.auth.ServerCacheData;
+import pojo.web.auth.ServerCache;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -104,12 +104,12 @@ public class AESEncrypter {
     System.out.println("client SessionSign    => " + Json.toJson(sessionSign));
     System.out.println("------------------------------------------------");
     
-    ServerCacheData data = new ServerCacheData();
+    ServerCache data = new ServerCache();
     data.setExpiryDate("20161020120000");
-    data.setKey(key);
-    data.setIv(iv);
+    data.setAseKey(key);
+    data.setAseIv(iv);
     data.setSessionSign(clientSessionSign);
-    Map<String , ServerCacheData> serverCacheData = new HashMap<String , ServerCacheData>();
+    Map<String , ServerCache> serverCacheData = new HashMap<String , ServerCache>();
     serverCacheData.put(clientSessionId, data);
     System.out.println("server Cache = " + Json.toJson(serverCacheData));
   }

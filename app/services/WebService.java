@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import pojo.web.Member;
 import pojo.web.MemberAuth;
+import pojo.web.auth.MemberSession;
 import pojo.web.signup.request.SignupRequest;
 
 @Component
@@ -48,5 +49,8 @@ public interface WebService {
   
   /** 新增會員紀錄檔資料 */
   public int genMemberChangeLog(@Param("member") Member member);
+  
+  /** 新增會員Session資料 */
+  public int genMemberSession(@Param("memberSession") MemberSession memberSession);
   
 }

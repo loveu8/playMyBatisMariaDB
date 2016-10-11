@@ -338,42 +338,7 @@ public class WebController extends Controller {
   @Inject 
   private CacheApi cache;
     
-  /**
-   * <pre>
-   * Step 1     : 檢查使用者Cookie是否有資料
-   * 
-   * Step 1.2   : cache 檢查是否有資料
-   * 
-   * Step 1.2.1 : cache 沒資料，進行查詢Session表單, 是否正確，是否逾期
-   *              沒資料   => 執行Step2登入動作
-   *              沒通過   => 執行Step2登入動作
-   *              通過       => 更新並延長期限Session table, login log, server cache, bowser cookie
-   *          
-   *              
-   * Step 1.2.2 : cache 有資料，根據sessionId , 查詢我們 cache , sessionSign是否正確，是否逾期
-   *              沒通過 => 執行Step2登入動作
-   *              通過    => 24小時內更新過，不需要更新，直接登入 
-   *                       寫入登入紀錄(login log)
-   *			        => 24小時內尚未更新過，更新並延長期限
-   *				       Session table, login log, server cache, bowser cookie
-   *            
-   * Step 2     : 普通一般登入步驟
-   * 
-   * Step 2.1   : 檢察登入資訊是否符合格式
-   *              不符合表單 => 顯示提示訊息
-   *              
-   * Step 2.2   : 檢查是否有該會員資料
-   *              無會員資料  => 畫面顯示無註冊資料
-   *
-   * Step 2.3   : 有會員資料，認證尚未通過，停權，或密碼錯誤
-   *              => 顯示認證尚未通過，或停權，或密碼錯誤
-   *              
-   * Step 2.4   : 通過以上檢查
-   *              => 新增 Session table, login log, server cache, bowser cookie
-   *
-   * Note : 停權時，要特別注意，要刪除掉cache與session表單的登入資料，以免錯誤
-   *</pre>
-   */
+
   @AuthCheck
   public Result doLogin(){
     return ok("登入成功");

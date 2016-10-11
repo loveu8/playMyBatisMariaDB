@@ -117,8 +117,31 @@
 			#{member.password},
 			#{member.username} ,
 			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-		);
+		)
 	</insert>
 	
+	
+	<!-- 會員Session紀錄檔 -->
+	<insert id="genMemberSession" parameterType="pojo.web.auth.MemberSession">
+		insert into
+		member_session(sessionId , sessionSign , aseKey , aseIv , memberNo , expiryDate , createDate , modifyDate)
+		values
+		( 
+			#{memberSession.sessionId} , 
+			#{memberSession.sessionSign} ,
+			#{memberSession.aseKey} ,
+			#{memberSession.aseIv} ,
+			#{memberSession.memberNo} ,
+			#{memberSession.expiryDate} ,
+			#{memberSession.createDate} ,
+			#{memberSession.modifyDate} 
+		) ON DUPLICATE KEY UPDATE 
+		sessionId 	= #{memberSession.sessionId},
+		sessionSign = #{memberSession.sessionSign},
+		aseKey 		= #{memberSession.aseKey},
+		aseIv 		= #{memberSession.aseIv},
+		expiryDate 	= #{memberSession.expiryDate},
+		modifyDate 	= #{memberSession.modifyDate}
+	</insert>
 	
 </mapper>

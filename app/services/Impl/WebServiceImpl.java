@@ -9,6 +9,7 @@ import com.google.inject.Injector;
 
 import pojo.web.Member;
 import pojo.web.MemberAuth;
+import pojo.web.auth.MemberSession;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
@@ -69,6 +70,10 @@ public class WebServiceImpl implements WebService {
   
   public int genMemberChangeLog(Member member){
     return this.webService.genMemberChangeLog(member);
+  }
+
+  public int genMemberSession(MemberSession memberSession) {
+    return this.webService.genMemberSession(memberSession);
   }
 
 }
