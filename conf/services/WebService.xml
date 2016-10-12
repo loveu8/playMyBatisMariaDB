@@ -144,4 +144,11 @@
 		modifyDate 	= #{memberSession.modifyDate}
 	</insert>
 	
+	
+ 	<!-- 撈出會員Session資料 -->
+	<select id="getMemberSession" parameterType="String" resultType="pojo.web.auth.MemberSession">
+		SELECT * FROM member_session WHERE sessionId = #{sessionId}
+	</select>
+	
+	
 </mapper>

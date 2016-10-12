@@ -76,4 +76,10 @@ public class WebServiceImpl implements WebService {
     return this.webService.genMemberSession(memberSession);
   }
 
+  @Override
+  public MemberSession getMemberSession(String sessionId) {
+    return this.webService.getMemberSession(sessionId);
+  }
+
+  
 }

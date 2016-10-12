@@ -52,5 +52,8 @@ public interface WebService {
   
   /** 新增會員Session資料 */
   public int genMemberSession(@Param("memberSession") MemberSession memberSession);
+
+  /** 取得會員Session資料*/
+  public MemberSession getMemberSession(String sessionId);
   
 }

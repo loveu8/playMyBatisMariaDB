@@ -3,12 +3,18 @@ package utils.session;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import play.cache.CacheApi;
+import play.cache.DefaultCacheApi;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Http.Cookie;
+import play.mvc.Http.Request;
 import pojo.web.Member;
 import pojo.web.auth.ClientCookie;
 import pojo.web.auth.MemberSession;
@@ -18,7 +24,9 @@ import utils.enc.AESEncrypter;
 public class Utils_Session {
   
   /** Cookie and Session 設定14天的存活時間*/
-  public final Integer expiryTime =  (60 * 60 * 24) * 14;
+  public final int maxAge =  (60 * 60 * 24) * 14;
+  
+  public final long maxAgeLong =  (60 * 60 * 24) * 14 * 1000;
   
   /** 
    * <pre>
@@ -33,7 +41,7 @@ public class Utils_Session {
     String clientSessionId = java.util.UUID.randomUUID().toString();
     String memberNo = member.getMemberNo();
     Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-    String expiryDate = formatter.format(new Date(new Date().getTime() + expiryTime));
+    String expiryDate = formatter.format(new Date(new Date().getTime() + maxAgeLong ));
     String createDate = formatter.format(new Date());
     ClientCookie clientSessionUnsign = new ClientCookie();
     clientSessionUnsign.setMemberNo(memberNo);
@@ -107,8 +115,73 @@ public class Utils_Session {
   
   /** 檢查是否有我們的session*/
   public boolean isClinetHaveCookie(Http.Request request){
-    return !"".equals(request.cookie("sessionId")) && !"".equals(request.cookie("sessionSign"));
+    return request.cookies().get("sessionId")!=null && 
+           request.cookies().get("sessionSign")!=null &&
+           !"".equals(request.cookies().get("sessionId").value()) && 
+           !"".equals(request.cookies().get("sessionSign").value());
+  }
+
+  public String getClientSession(Request request) {
+    if(request.cookies().get("sessionId")==null){
+      return "";
+    }
+    return request.cookies().get("sessionId").value();
+  }
+
+  public String getClientSessionSign(Request request) {
+    if(request.cookies().get("sessionSign")==null){
+      return "";
+    }
+    return request.cookies().get("sessionSign").value();
+  }
+
+  public boolean isCacheHaveThisSession(DefaultCacheApi cache, String sessionId) {
+    play.Logger.info("cache get sessionId = " + cache.get(sessionId));
+    return cache.get(sessionId) != null && !"".equals(cache.get(sessionId));
+  }
+
+  public MemberSession getServerCacheData(DefaultCacheApi cache, String sessionId) {
+    try{
+      MemberSession memberSession = new MemberSession();
+      JsonNode sessionNode = Json.parse(cache.get(sessionId).toString());
+      memberSession.setAseIv(sessionNode.get("aseIv").textValue());
+      memberSession.setAseKey(sessionNode.get("aseKey").textValue());
+      memberSession.setSessionId(sessionId);
+      memberSession.setSessionSign(sessionNode.get("sessionSign").textValue());
+      AESEncrypter aes = new AESEncrypter();
+      JsonNode rawData = Json.parse(aes.decrypt(memberSession.getAseKey(), memberSession.getAseIv(), memberSession.getSessionSign()).toString());
+      memberSession.setMemberNo(rawData.get("memberNo").textValue());
+      memberSession.setExpiryDate(rawData.get("expiryDate").textValue());
+      return memberSession;
+    } catch(Exception e){
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**清除瀏覽器Cookie*/
+  public void clearErrorClientCookie(Http.Response response){
+    response.discardCookie("sessionId");
+    response.discardCookie("sessionSign");
   }
   
+  
+  /** 
+   * 檢查是否超過24小時 
+   * note : 目前預設cookie 14天，只要expiryDate小於13天，代表超過一天沒更新
+   */
+  public boolean isRewriteCookie(String expiryDate){
+    Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+    System.out.println("expiryDate = " + expiryDate);
+    System.out.println("now        = " + Long.valueOf(formatter.format(new Date())));
+    return Long.valueOf(expiryDate) - Long.valueOf(formatter.format(new Date())) < 13 * 60 * 60 * 24 ;
+  }
+ 
+  public static void main(String[] args) {
+    Date today=new Date();
+    long ltime=today.getTime()+8*24*60*60*1000;
+    Date today8=new Date(ltime);
+    System.out.println("today " + today + ", today8 " + today8);
+  }
 }
 

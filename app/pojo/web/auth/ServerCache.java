@@ -7,7 +7,7 @@ public class ServerCache{
   private String expiryDate;
   // 隨機產生加密KEY
   private String aseKey;
-  //隨機產生加密IV
+  // 隨機產生加密IV
   private String aseIv;
   
   public String getSessionSign() {
