@@ -75,7 +75,7 @@ public class AuthBlocker extends CommonBlocker{
       play.Logger.info("clientSessionId   = " + clientSessionId);
       play.Logger.info("clientSessionSign = " + clientSessionSign);
       play.Logger.info("isCacheHaveThisSession = " + isCacheHaveThisSession);
-      isCacheHaveThisSession = false;
+
       // Step 1.2.1
       if(isCacheHaveThisSession){
         
@@ -94,8 +94,15 @@ public class AuthBlocker extends CommonBlocker{
         // 通過，超過24小時
         if(utilsSession.isRewriteCookie(serverCacheMemberSession.getExpiryDate())){
           play.Logger.info("cache有資料比對通過，但超過24小時未更新Cookie，進行更新");
-          Member member = this.webService.findMemberByMemberNo(serverCacheMemberSession.getMemberNo());
-          writeMemberCookieAndSession( utilsSession, member);
+          try{
+            Member member = this.webService.findMemberByMemberNo(serverCacheMemberSession.getMemberNo());
+            this.cache.remove(clientSessionId);
+            writeMemberCookieAndSession( utilsSession, member);
+          } catch (Exception e){
+            e.printStackTrace();
+            flash().put("errorLogin", "系統忙碌中，請稍後再嘗試!");
+            return redirect(controllers.routes.WebController.login().url());
+          }
         }
         
         return (Result) invocation.proceed();
@@ -125,8 +132,14 @@ public class AuthBlocker extends CommonBlocker{
         // 通過，超過24小時
         if(utilsSession.isRewriteCookie(dbMemberSession.getExpiryDate())){
           play.Logger.info("db有資料比對通過，但超過24小時未更新Cookie，進行更新");
-          Member member = this.webService.findMemberByMemberNo(dbMemberSession.getMemberNo());
-          writeMemberCookieAndSession( utilsSession, member);
+          try{
+            Member member = this.webService.findMemberByMemberNo(dbMemberSession.getMemberNo());
+            writeMemberCookieAndSession( utilsSession, member);
+          } catch (Exception e){
+            e.printStackTrace();
+            flash().put("errorLogin", "系統忙碌中，請稍後再嘗試!");
+            return redirect(controllers.routes.WebController.login().url());
+          }
         }
         
         return (Result) invocation.proceed();
@@ -164,10 +177,17 @@ public class AuthBlocker extends CommonBlocker{
     }
     
     // Step 2.3
-    Member member = webService.findMemberByEmail(email);
-    play.Logger.info("email = " + email + ", password = " + password 
-                     + ", member Status = " + member.getStatus() 
-                     + ", db password = " +  member.getPassword());
+    Member member = null;
+    try {
+      member = webService.findMemberByEmail(email);
+      play.Logger.info("email = " + email + ", password = " + password 
+                       + ", member Status = " + member.getStatus() 
+                       + ", db password = " +  member.getPassword());
+    }catch (Exception e){
+      e.printStackTrace();
+      flash().put("errorLogin", "系統忙碌中，請稍後再嘗試!");
+      return redirect(controllers.routes.WebController.login().url());
+    }
     
     if(MemberStatus.S1.getStatus().equals(member.getStatus())){
       flash().put("errorLogin", "您的帳號尚未認證成功!(0x2.3)");
@@ -243,7 +263,7 @@ public class AuthBlocker extends CommonBlocker{
   }
   
   
-  // 查詢是否有該Session資料
+  // 查詢是否有該會員Session資料
   private MemberSession getMemberSession(String sessionId){
     try{
       MemberSession memberSession = this.webService.getMemberSession(sessionId);

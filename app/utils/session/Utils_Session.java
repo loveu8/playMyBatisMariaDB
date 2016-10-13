@@ -3,8 +3,6 @@ package utils.session;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,11 +24,12 @@ public class Utils_Session {
   /** Cookie and Session 設定14天的存活時間*/
   public final int maxAge =  (60 * 60 * 24) * 14;
   
+  /**Cookie and Session for Java Date getTime use*/
   public final long maxAgeLong =  (60 * 60 * 24) * 14 * 1000;
   
   /** 
    * <pre>
-   * 傳入查詢出來的會員資料，產生會員Session資 
+   * 傳入查詢出來的會員資料，產生會員Session資料
    * @param member
    * @return MemberSession
    * </pre>
@@ -65,6 +64,7 @@ public class Utils_Session {
 
   /**
    * <pre>
+   * 登入之後，設定瀏覽器Cookie與伺服的Cache，儲存會員登入資訊
    * @param response , play response
    * @param cache  , server Cache
    * @param memberSession , 會員Session表
@@ -99,12 +99,8 @@ public class Utils_Session {
     response.setCookie(new Cookie("sessionId" , memberSession.getSessionId() , maxAge , path , domain , secure , true));
     response.setCookie(new Cookie("sessionSign" , memberSession.getSessionSign() , maxAge , path , domain , secure , true));
   }
-  
-  
-  public String getCacheSessionSign(CacheApi cache ,String name){
-    return cache.get(name);
-  }
  
+  
   /** 比對 server cache 與 cookie session 是否一致*/
   public boolean isCookieSameAsCacheData(CacheApi cache , String sessionId , String sessionSign){
     if("".equals(sessionId) || "".equals(sessionSign)){
@@ -112,6 +108,7 @@ public class Utils_Session {
     }
     return sessionSign.equals(cache.get(sessionId));
   }
+  
   
   /** 檢查是否有我們的session*/
   public boolean isClinetHaveCookie(Http.Request request){
@@ -121,6 +118,8 @@ public class Utils_Session {
            !"".equals(request.cookies().get("sessionSign").value());
   }
 
+  
+  /** 取得使用者瀏覽器的Cookie 加簽資料*/
   public String getClientSession(Request request) {
     if(request.cookies().get("sessionId")==null){
       return "";
@@ -128,6 +127,7 @@ public class Utils_Session {
     return request.cookies().get("sessionId").value();
   }
 
+  /** 取得使用者瀏覽器的Cookie 加簽資料*/
   public String getClientSessionSign(Request request) {
     if(request.cookies().get("sessionSign")==null){
       return "";
@@ -135,11 +135,14 @@ public class Utils_Session {
     return request.cookies().get("sessionSign").value();
   }
 
+  /** 伺服器是否使用者的cookie資料*/
   public boolean isCacheHaveThisSession(DefaultCacheApi cache, String sessionId) {
     play.Logger.info("cache get sessionId = " + cache.get(sessionId));
     return cache.get(sessionId) != null && !"".equals(cache.get(sessionId));
   }
 
+  
+  /**取得目前伺服器的Cache資料*/
   public MemberSession getServerCacheData(DefaultCacheApi cache, String sessionId) {
     try{
       MemberSession memberSession = new MemberSession();
@@ -149,7 +152,9 @@ public class Utils_Session {
       memberSession.setSessionId(sessionId);
       memberSession.setSessionSign(sessionNode.get("sessionSign").textValue());
       AESEncrypter aes = new AESEncrypter();
-      JsonNode rawData = Json.parse(aes.decrypt(memberSession.getAseKey(), memberSession.getAseIv(), memberSession.getSessionSign()).toString());
+      JsonNode rawData = Json.parse(aes.decrypt(memberSession.getAseKey(), 
+                                                memberSession.getAseIv(), 
+                                                memberSession.getSessionSign()).toString());
       memberSession.setMemberNo(rawData.get("memberNo").textValue());
       memberSession.setExpiryDate(rawData.get("expiryDate").textValue());
       return memberSession;
@@ -159,6 +164,7 @@ public class Utils_Session {
     }
   }
 
+  
   /**清除瀏覽器Cookie*/
   public void clearErrorClientCookie(Http.Response response){
     response.discardCookie("sessionId");
@@ -176,12 +182,6 @@ public class Utils_Session {
     System.out.println("now        = " + Long.valueOf(formatter.format(new Date())));
     return Long.valueOf(expiryDate) - Long.valueOf(formatter.format(new Date())) < 13 * 60 * 60 * 24 ;
   }
- 
-  public static void main(String[] args) {
-    Date today=new Date();
-    long ltime=today.getTime()+8*24*60*60*1000;
-    Date today8=new Date(ltime);
-    System.out.println("today " + today + ", today8 " + today8);
-  }
+  
 }
 
