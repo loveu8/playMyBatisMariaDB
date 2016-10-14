@@ -10,7 +10,8 @@ import play.mvc.Result;
 import pojo.web.Member;
 import pojo.web.MemberLoginStatus;
 import pojo.web.MemberStatus;
-import pojo.web.auth.MemberSession;
+import pojo.web.auth.UserRole;
+import pojo.web.auth.UserSession;
 import pojo.web.auth.request.AuthRequest;
 import utils.session.Utils_Session;
 import utils.signup.Utils_Signup;
@@ -79,40 +80,41 @@ public class AuthBlocker extends CommonBlocker{
       // Step 1.2.1
       if(isCacheHaveThisSession){
         
-        MemberSession serverCacheMemberSession = utilsSession.getServerCacheData(cache,clientSessionId);
+        UserSession serverCacheUserSession = utilsSession.getServerCacheData(cache,clientSessionId);
 
         // 沒通過 
-        if(!clientSessionSign.equals(serverCacheMemberSession.getSessionSign())){
+        if(!clientSessionSign.equals(serverCacheUserSession.getSessionSign())){
           utilsSession.clearErrorClientCookie(response());
           flash().put("errorLogin", "請先執行登入動作，謝謝!(0x1.2.1.1)");
           play.Logger.warn("Step 1.2.1 : cache 有資料，但與使用者Cookie比對不符，沒通過檢查。");
           return redirect(controllers.routes.WebController.login().url());
         } 
         
-        play.Logger.info("origin server cache memberSession = " + Json.toJson(serverCacheMemberSession));
+        play.Logger.info("origin server cache userSession = " + Json.toJson(serverCacheUserSession));
         
         // 通過，超過24小時
-        if(utilsSession.isRewriteCookie(serverCacheMemberSession.getExpiryDate())){
+        if(utilsSession.isRewriteCookie(serverCacheUserSession.getExpiryDate())){
           play.Logger.info("cache有資料比對通過，但超過24小時未更新Cookie，進行更新");
           try{
-            Member member = this.webService.findMemberByMemberNo(serverCacheMemberSession.getMemberNo());
             this.cache.remove(clientSessionId);
-            writeMemberCookieAndSession( utilsSession, member);
+            writeMemberCookieAndSession( utilsSession, serverCacheUserSession.getNo(),serverCacheUserSession.getRole());
           } catch (Exception e){
             e.printStackTrace();
             flash().put("errorLogin", "系統忙碌中，請稍後再嘗試!");
             return redirect(controllers.routes.WebController.login().url());
           }
+        } else {
+          play.Logger.info("cache有資料比對通過，Cookie尚在24小時內，不需要更新");
         }
         
         return (Result) invocation.proceed();
         
       } else {
         // Step 1.2.2
-        MemberSession dbMemberSession = this.getMemberSession(clientSessionId);
+        UserSession dbUserSession = this.getUserSession(clientSessionId);
 
         // 沒有資料
-        if(dbMemberSession == null){
+        if(dbUserSession == null){
           utilsSession.clearErrorClientCookie(response());
           flash().put("errorLogin", "請先執行登入動作，謝謝!(0x1.2.2.1)");
           play.Logger.warn("Step 1.2.2.1 : db沒資料，無法比對使用者資料。");
@@ -120,26 +122,28 @@ public class AuthBlocker extends CommonBlocker{
         }
 
         // 沒通過
-        if(!clientSessionSign.equals(dbMemberSession.getSessionSign())){
+        if(!clientSessionSign.equals(dbUserSession.getSessionSign())){
           utilsSession.clearErrorClientCookie(response());
           flash().put("errorLogin", "請先執行登入動作，謝謝!(0x1.2.2.2)");
           play.Logger.warn("Step 1.2.2.2 : db有資料，但與使用者Cookie比對不符，沒通過檢查。");
           return redirect(controllers.routes.WebController.login().url());
         }
         
-        play.Logger.info("origin db memberSession = " + Json.toJson(dbMemberSession));
+        play.Logger.info("origin db userSession = " + Json.toJson(dbUserSession));
         
         // 通過，超過24小時
-        if(utilsSession.isRewriteCookie(dbMemberSession.getExpiryDate())){
+        if(utilsSession.isRewriteCookie(dbUserSession.getExpiryDate())){
           play.Logger.info("db有資料比對通過，但超過24小時未更新Cookie，進行更新");
           try{
-            Member member = this.webService.findMemberByMemberNo(dbMemberSession.getMemberNo());
-            writeMemberCookieAndSession( utilsSession, member);
+            dbUserSession.getNo();
+            writeMemberCookieAndSession( utilsSession, dbUserSession.getNo() , dbUserSession.getRole());
           } catch (Exception e){
             e.printStackTrace();
             flash().put("errorLogin", "系統忙碌中，請稍後再嘗試!");
             return redirect(controllers.routes.WebController.login().url());
           }
+        } else {
+          play.Logger.info("db有資料比對通過，Cookie尚在24小時內，不需要更新");
         }
         
         return (Result) invocation.proceed();
@@ -161,6 +165,7 @@ public class AuthBlocker extends CommonBlocker{
     // Step 2.2
     String email = request.getEmail();
     String password = request.getPassword();
+    String role = request.getRole();
     boolean isMember = false;
     
     try{
@@ -180,7 +185,7 @@ public class AuthBlocker extends CommonBlocker{
     Member member = null;
     try {
       member = webService.findMemberByEmail(email);
-      play.Logger.info("email = " + email + ", password = " + password 
+      play.Logger.info("email = " + email + ", password = " + password  + ", role = " + role
                        + ", member Status = " + member.getStatus() 
                        + ", db password = " +  member.getPassword());
     }catch (Exception e){
@@ -206,7 +211,7 @@ public class AuthBlocker extends CommonBlocker{
     
     // Step 2.4
     try{
-      writeMemberCookieAndSession(utilsSession,member);
+      writeMemberCookieAndSession(utilsSession,member.getMemberNo() ,role);
     } catch (Exception e){
       e.printStackTrace();
       flash().put("errorLogin", "系統忙碌中，請稍後再嘗試!");
@@ -224,26 +229,26 @@ public class AuthBlocker extends CommonBlocker{
    * 寫入Server Cache 與 Client cookie
    *</pre>
    */
-  private void writeMemberCookieAndSession(Utils_Session utilsSession,Member member){
+  private void writeMemberCookieAndSession(Utils_Session utilsSession,String no , String role){
     // 寫入Member Session Table 
-    MemberSession memberSession = utilsSession.genMemberSession(member);
-    int isMemberSessionOk = this.webService.genMemberSession(memberSession);  
+    UserSession userSession = utilsSession.genUserSession(no , role);
+    int isUserSessionOk = this.webService.genUserSession(userSession);  
     
     // 寫入Member Login log Table
     Utils_Signup utilsSignup = new Utils_Signup();
-    Map<String , String> memberLoginLogData      = utilsSignup.genMemberLoginData(member.getMemberNo() ,
+    Map<String , String> memberLoginLogData      = utilsSignup.genMemberLoginData(no ,
                                       "PC" , 
                                       request().remoteAddress() , 
                                       MemberLoginStatus.S2.getStatus());
     int isMemberLoginLogOk = this.webService.genMemberLoginLog(memberLoginLogData);
 
     // 寫入Server Cache 與 Client cookie
-    utilsSession.setMemberCookieAndCache(response(), cache, memberSession, utilsSession.maxAge, "", "", false);
-    play.Logger.info("isMemberSessionOk   = " + isMemberSessionOk);
+    utilsSession.setMemberCookieAndCache(response(), cache, userSession, utilsSession.maxAge, "", "", false);
+    play.Logger.info("isMemberSessionOk   = " + isUserSessionOk);
     play.Logger.info("isMemberLoginLogOk  = " + isMemberLoginLogOk);
     play.Logger.info("clientSessionId     = " + utilsSession.getClientSession(request()));
     play.Logger.info("clientsessionSign   = " + utilsSession.getClientSessionSign(request()));
-    play.Logger.info("serverCache         = " + this.cache.get(memberSession.getSessionId()));
+    play.Logger.info("serverCache         = " + this.cache.get(userSession.getSessionId()));
   }
   
   
@@ -255,6 +260,10 @@ public class AuthBlocker extends CommonBlocker{
       if(authRequest.getEmail() == null && authRequest.getPassword() == null){
         return null;
       }
+      String role = authRequest.getRole();
+      if(!UserRole.MEMBER.equals(role)){
+        authRequest.setRole(UserRole.MEMBER.toString());
+      }
       return authRequest;
     } catch (Exception e) {
       Logger.error("表單內容非登入資訊，轉換類別錯誤，回傳空物件");
@@ -264,10 +273,13 @@ public class AuthBlocker extends CommonBlocker{
   
   
   // 查詢是否有該會員Session資料
-  private MemberSession getMemberSession(String sessionId){
+  private UserSession getUserSession(String sessionId){
     try{
-      MemberSession memberSession = this.webService.getMemberSession(sessionId);
-      return memberSession != null ? memberSession : null;
+      UserSession userSession = this.webService.getUserSession(sessionId);
+      if(userSession == null){
+        return null;
+      }
+      return userSession;
     } catch (Exception e){
       e.printStackTrace();
       return null;

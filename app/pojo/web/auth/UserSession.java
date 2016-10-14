@@ -1,6 +1,6 @@
 package pojo.web.auth;
 
-public class MemberSession {
+public class UserSession {
   /** Session 編號，Key值*/
   private String sessionId;  
   /** 加簽過資料*/
@@ -9,8 +9,10 @@ public class MemberSession {
   private String aseKey;
   /** 隨機產生的IV值*/
   private String aseIv;
-  /** 會員編號*/
-  private String memberNo;
+  /** 編號*/
+  private String no;
+  /**登入角色*/
+  private String role;
   /** 逾期日期*/
   private String expiryDate;
   /** 建立日期*/
@@ -41,11 +43,17 @@ public class MemberSession {
   public void setAseIv(String aseIv) {
     this.aseIv = aseIv;
   }
-  public String getMemberNo() {
-    return memberNo;
+  public String getNo() {
+    return no;
   }
-  public void setMemberNo(String memberNo) {
-    this.memberNo = memberNo;
+  public void setNo(String no) {
+    this.no = no;
+  }
+  public String getRole() {
+    return role;
+  }
+  public void setRole(String role) {
+    this.role = role;
   }
   public String getExpiryDate() {
     return expiryDate;
