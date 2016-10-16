@@ -345,4 +345,11 @@ public class WebController extends Controller {
     return ok("登入成功");
   }
   
+  // 登出
+  public Result logout(){
+    new Utils_Session().clearClientCookie(response());
+    return ok(index.render());
+  }
+  
+  
 }

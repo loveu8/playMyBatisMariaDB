@@ -170,7 +170,7 @@ public class Utils_Session {
 
   
   /**清除瀏覽器Cookie*/
-  public void clearErrorClientCookie(Http.Response response){
+  public void clearClientCookie(Http.Response response){
     response.discardCookie("sessionId");
     response.discardCookie("sessionSign");
   }

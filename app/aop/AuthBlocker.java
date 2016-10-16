@@ -84,7 +84,7 @@ public class AuthBlocker extends CommonBlocker{
 
         // 沒通過 
         if(!clientSessionSign.equals(serverCacheUserSession.getSessionSign())){
-          utilsSession.clearErrorClientCookie(response());
+          utilsSession.clearClientCookie(response());
           flash().put("errorLogin", "請先執行登入動作，謝謝!(0x1.2.1.1)");
           play.Logger.warn("Step 1.2.1 : cache 有資料，但與使用者Cookie比對不符，沒通過檢查。");
           return redirect(controllers.routes.WebController.login().url());
@@ -115,7 +115,7 @@ public class AuthBlocker extends CommonBlocker{
 
         // 沒有資料
         if(dbUserSession == null){
-          utilsSession.clearErrorClientCookie(response());
+          utilsSession.clearClientCookie(response());
           flash().put("errorLogin", "請先執行登入動作，謝謝!(0x1.2.2.1)");
           play.Logger.warn("Step 1.2.2.1 : db沒資料，無法比對使用者資料。");
           return redirect(controllers.routes.WebController.login().url());
@@ -123,7 +123,7 @@ public class AuthBlocker extends CommonBlocker{
 
         // 沒通過
         if(!clientSessionSign.equals(dbUserSession.getSessionSign())){
-          utilsSession.clearErrorClientCookie(response());
+          utilsSession.clearClientCookie(response());
           flash().put("errorLogin", "請先執行登入動作，謝謝!(0x1.2.2.2)");
           play.Logger.warn("Step 1.2.2.2 : db有資料，但與使用者Cookie比對不符，沒通過檢查。");
           return redirect(controllers.routes.WebController.login().url());

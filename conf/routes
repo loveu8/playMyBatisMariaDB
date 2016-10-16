@@ -162,6 +162,9 @@ POST	/web/resendAuthEmail	controllers.WebController.goToResendAuthEmail()
 # http://127.0.0.1:9000/web/login
 POST	/web/login		  		controllers.WebController.doLogin()
 
+# http://127.0.0.1:9000/web/logout
+POST	/web/logout		  	    controllers.WebController.logout()
+
 # chapter 11 - end
 #------------------------------------
 

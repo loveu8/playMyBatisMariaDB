@@ -3,7 +3,6 @@ package services;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 import pojo.web.Member;
