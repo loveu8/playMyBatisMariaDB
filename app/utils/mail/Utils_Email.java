@@ -114,7 +114,7 @@ public class Utils_Email {
   
   public static void main(String[] args) {
     Member newMember = new WebServiceImpl().findMemberByEmail("qkpigstar@gmail.com");
-    String authString = new Utils_Signup().genAuthString(newMember.getEmail());
+    String authString = new Utils_Signup().genSignupAuthString(newMember.getEmail());
     Utils_Email utils_Email = new Utils_Email();
     Email email = utils_Email.genSinupAuthEmail(newMember, authString);
     boolean isSeadMailOk = utils_Email.sendMail(email);

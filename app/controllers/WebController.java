@@ -13,9 +13,10 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.Member;
-import pojo.web.MemberAuth;
+import pojo.web.MemberToken;
 import pojo.web.MemberLoginStatus;
 import pojo.web.MemberStatus;
+import pojo.web.MemberTokenType;
 import pojo.web.email.Email;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.verific.VerificFormMessage;
@@ -106,12 +107,13 @@ public class WebController extends Controller {
       // Step 4
       Utils_Signup utils_Signup = new Utils_Signup();
       Member newMember = webService.findMemberByEmail(request.getEmail());
-      String authString = utils_Signup.genAuthString(newMember.getEmail());
+      String signupAuthString = utils_Signup.genSignupAuthString(newMember.getEmail());
       
-      Map<String , String> memberAuth = new HashMap<String , String>();
-      memberAuth.put("memberNo", newMember.getMemberNo());
-      memberAuth.put("authString", authString);
-      int isSingAuthStringOk = webService.genSignupAuthData(memberAuth);
+      Map<String , String> memberToken = new HashMap<String , String>();
+      memberToken.put("memberNo", newMember.getMemberNo());
+      memberToken.put("tokenString", signupAuthString);
+      memberToken.put("type", MemberTokenType.Signup.toString());
+      int isSingAuthStringOk = webService.genTokenData(memberToken);
       
       // Step 5
       Map<String , String> memberLoginData 
@@ -123,7 +125,7 @@ public class WebController extends Controller {
       
       // Step 6
       Utils_Email utils_Email = new Utils_Email();
-      Email email = utils_Email.genSinupAuthEmail(newMember, authString);
+      Email email = utils_Email.genSinupAuthEmail(newMember, signupAuthString);
       boolean isSeadMailOk = utils_Email.sendMail(email);
       
       // Step 7
@@ -199,16 +201,16 @@ public class WebController extends Controller {
     flash().clear();
 
     // Step 1
-    MemberAuth memberAuth = null ;
+    MemberToken memberToken = null ;
     try{
-     memberAuth = webService.getMemberAuthData(auth);
+     memberToken = webService.getMemberTokenData(auth , MemberTokenType.Signup.toString());
     } catch(Exception e){
       e.printStackTrace();
     }
     
-    if(memberAuth == null){
+    if(memberToken == null){
       flash().put("authError", "認證連結有誤，請重新點選信中認證連結，或使用重發認證信，謝謝。");
-      play.Logger.warn("memberAuth  = " + Json.toJson(memberAuth));
+      play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
       return ok(checkMemberAuth.render());
     }
     
@@ -216,7 +218,7 @@ public class WebController extends Controller {
     Member member = null;
     try{
       // 認證連結有資料，使用會員編號，查詢會員資料。
-     member = webService.findMemberByMemberNo(memberAuth.getMemberNo());
+     member = webService.findMemberByMemberNo(memberToken.getMemberNo());
     } catch(Exception e){
       e.printStackTrace();
       flash().put("authError", "系統忙碌中，請稍後再次嘗試!");
@@ -230,15 +232,15 @@ public class WebController extends Controller {
     }
     
     // Step 3
-    boolean isUse       = memberAuth.getIsUse(); // 認證字串是否使用過
+    boolean isUse       = memberToken.getIsUse(); // 認證字串是否使用過
     if (isUse){
       flash().put("authError", "該連結已成功認證，不需要再次認證，謝謝。");
       return ok(checkMemberAuth.render());
     } 
     
     // Step 4
-    long    dbTime      = Long.parseLong(memberAuth.getDbTime());       // 資料庫時間
-    long    expiryDate  = Long.parseLong(memberAuth.getExpiryDate());   // 逾期時間
+    long    dbTime      = Long.parseLong(memberToken.getDbTime());       // 資料庫時間
+    long    expiryDate  = Long.parseLong(memberToken.getExpiryDate());   // 逾期時間
     if(dbTime > expiryDate){
       flash().put("authError", "認證時間已經逾期，請重新使用重發認證信功能謝謝。");
       play.Logger.warn("dbTime      = " + dbTime);
@@ -248,10 +250,10 @@ public class WebController extends Controller {
 
     // Step 5
     try{
-      int isUpdateMemberAuthOk = webService.updateMemberAuth(member.getMemberNo());
+      int isUpdateMemberTokenOk = webService.updateMemberToken(member.getMemberNo(), MemberTokenType.Signup.toString());
       int isUpdateMemberMainOk = webService.updateMemberToAuthOk(member.getMemberNo());
       int isGenMemberChangeLogOk = webService.genMemberChangeLog(member);
-      play.Logger.info("isUpdateMemberAuthOk  = " + isUpdateMemberAuthOk);
+      play.Logger.info("isUpdateMemberAuthOk  = " + isUpdateMemberTokenOk);
       play.Logger.info("isUpdateMemberMainOk  = " + isUpdateMemberMainOk);
       play.Logger.info("isGenMemberChangeLogOk = " + isGenMemberChangeLogOk);
     } catch(Exception e){
@@ -318,17 +320,18 @@ public class WebController extends Controller {
     
     // Step 4
     try{
-      String authString = new Utils_Signup().genAuthString(member.getEmail());
-      Map<String , String> memberAuth = new HashMap<String , String>();
-      memberAuth.put("memberNo", member.getMemberNo());
-      memberAuth.put("authString", authString);
-      int isAuthStringOk = webService.genSignupAuthData(memberAuth);
+      String signupAuthString = new Utils_Signup().genSignupAuthString(member.getEmail());
+      Map<String , String> memberToken = new HashMap<String , String>();
+      memberToken.put("memberNo", member.getMemberNo());
+      memberToken.put("tokenString", signupAuthString);
+      memberToken.put("type", MemberTokenType.Signup.toString());
+      int isSignupAuthStringOk = webService.genTokenData(memberToken);
       
       Utils_Email utils_Email = new Utils_Email();
-      Email authMail = utils_Email.genSinupAuthEmail(member, authString);
+      Email authMail = utils_Email.genSinupAuthEmail(member, signupAuthString);
       boolean isSeadMailOk = utils_Email.sendMail(authMail);
       
-      play.Logger.info("isAuthStringOk = " + isAuthStringOk +" , isSeadMailOk = " + isSeadMailOk);
+      play.Logger.info("isSignupAuthStringOk = " + isSignupAuthStringOk +" , isSeadMailOk = " + isSeadMailOk);
     } catch(Exception e){
       e.printStackTrace();
     }

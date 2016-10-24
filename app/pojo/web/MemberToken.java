@@ -3,11 +3,13 @@ package pojo.web;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MemberAuth {
+public class MemberToken {
 
-  private String authString;
+  private String tokenString;
 
   private String memberNo;
+  
+  private String type;
 
   private String sendDate;
 
@@ -21,12 +23,12 @@ public class MemberAuth {
   
   private String dbTime;
 
-  public String getAuthString() {
-    return authString;
+  public String getTokenString() {
+    return tokenString;
   }
 
-  public void setAuthString(String authString) {
-    this.authString = authString;
+  public void setTokenString(String tokenString) {
+    this.tokenString = tokenString;
   }
 
   public String getMemberNo() {
@@ -35,6 +37,14 @@ public class MemberAuth {
 
   public void setMemberNo(String memberNo) {
     this.memberNo = memberNo;
+  }
+  
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
 
   public String getSendDate() {
