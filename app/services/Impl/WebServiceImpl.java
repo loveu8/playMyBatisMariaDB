@@ -43,8 +43,8 @@ public class WebServiceImpl implements WebService {
     return this.webService.findMemberByEmailAndUserName(email , username );
   }
   
-  public int genSignupAuthData(@Param("membetToken") Map<String , String> membetToken){
-    return this.webService.genSignupAuthData(membetToken);
+  public int genTokenData(@Param("memberToken") Map<String , String> membetToken){
+    return this.webService.genTokenData(membetToken);
   }
   
   public int genMemberLoginLog(@Param("memberLoginData") Map<String , String> memberLoginData){

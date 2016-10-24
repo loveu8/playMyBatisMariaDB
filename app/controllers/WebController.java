@@ -107,7 +107,7 @@ public class WebController extends Controller {
       memberToken.put("memberNo", newMember.getMemberNo());
       memberToken.put("tokenString", signupAuthString);
       memberToken.put("type", MemberTokenType.Signup.toString());
-      int isSingAuthStringOk = webService.genSignupAuthData(memberToken);
+      int isSingAuthStringOk = webService.genTokenData(memberToken);
       
       // Step 5
       Map<String , String> memberLoginData 
@@ -319,7 +319,7 @@ public class WebController extends Controller {
       memberToken.put("memberNo", member.getMemberNo());
       memberToken.put("tokenString", signupAuthString);
       memberToken.put("type", MemberTokenType.Signup.toString());
-      int isSignupAuthStringOk = webService.genSignupAuthData(memberToken);
+      int isSignupAuthStringOk = webService.genTokenData(memberToken);
       
       Utils_Email utils_Email = new Utils_Email();
       Email authMail = utils_Email.genSinupAuthEmail(member, signupAuthString);
