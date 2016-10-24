@@ -60,8 +60,8 @@ public class WebServiceImpl implements WebService {
     return this.webService.findMemberByMemberNo(memberNo);
   }
   
-  public int updateMemberToken(String memberNo){
-    return this.webService.updateMemberToken(memberNo);
+  public int updateMemberToken(@Param("memberNo") String memberNo , @Param("type") String type){
+    return this.webService.updateMemberToken(memberNo,type);
   }
   
   public int updateMemberToAuthOk(String memberNo){
