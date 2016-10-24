@@ -32,7 +32,7 @@ public interface WebService {
   public Member findMemberByEmailAndUserName(@Param("email")String email , @Param("username")String username);
   
   /** 產生會員認證資料  */
-  public int genSignupAuthData(@Param("memberToken") Map<String , String> memberToken);
+  public int genTokenData(@Param("memberToken") Map<String , String> memberToken);
   
   /** 會員記錄檔  */
   public int genMemberLoginLog(@Param("memberLoginData") Map<String , String> memberLoginData);

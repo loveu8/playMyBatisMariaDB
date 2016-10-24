@@ -54,8 +54,8 @@
 		SELECT * FROM member_main WHERE email = #{email} AND username =#{username}
 	</select>
 
-	<!-- 註冊認證連結 -->
-	<insert id="genSignupAuthData" parameterType="Map">
+	<!-- 產生Token資料 -->
+	<insert id="genTokenData" parameterType="Map">
 		insert into
 		member_token (tokenString, type ,memberNo , sendDate , isUse , createDate , modifyDate , expiryDate)
 		values
@@ -68,7 +68,7 @@
 			DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') ,
 			DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') ,
 			DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 1 DAY),'%Y%m%d%H%i%s')
-		);
+		)
 	</insert>
 	
 	
