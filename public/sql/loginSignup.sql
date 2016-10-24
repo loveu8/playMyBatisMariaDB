@@ -89,21 +89,23 @@ ENGINE=InnoDB
 -- DROP tables member_login_log;
 SELECT * FROM member_login_log;
 
--- 會員認證表單
-CREATE TABLE `member_auth` (
-	`authString`   VARCHAR(100) NOT NULL NULL COLLATE  'utf8_unicode_ci',
-  `memberNo`     VARCHAR(15)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
-  `sendDate`		 VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
-	`isUse`        BOOL				  NOT NULL NULL COLLATE  'utf8_unicode_ci',
+-- 會員Token表單
+CREATE TABLE `member_token` (
+	`tokenString`  VARCHAR(100) NOT NULL NULL COLLATE  'utf8_unicode_ci',
+    `memberNo`     VARCHAR(15)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
+    `type`         VARCHAR(20)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
+    `sendDate`	   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
+	`isUse`        BOOL			NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`createDate`   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`modifyDate`   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`expiryDate`   VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
-	 CONSTRAINT pk_authString PRIMARY KEY (authString),
+	 CONSTRAINT pk_authString PRIMARY KEY (tokenString),
 	 index (memberNo)
 )
 COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
 ;
+
 
 -- 撈出目前DB時間 +1 天
 -- SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 1 DAY),'%Y%m%d%H%i%s');

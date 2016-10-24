@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import pojo.web.Member;
-import pojo.web.MemberAuth;
+import pojo.web.MemberToken;
 import pojo.web.signup.request.SignupRequest;
 
 public interface WebService {
@@ -29,16 +29,16 @@ public interface WebService {
   public Member findMemberByEmailAndUserName(@Param("email")String email , @Param("username")String username);
   
   /** 產生會員認證資料  */
-  public int genSignupAuthData(@Param("memberAuth") Map<String , String> memberAuth);
+  public int genSignupAuthData(@Param("memberToken") Map<String , String> memberToken);
   
   /** 會員記錄檔  */
   public int genMemberLoginLog(@Param("memberLoginData") Map<String , String> memberLoginData);
   
   /** 驗證會員連結 */
-  public MemberAuth getMemberAuthData(String auth);
+  public MemberToken getMemberTokenData(@Param("token") String token , @Param("type") String type);
   
   /** 更新認證連結*/
-  public int updateMemberAuth(String memberNo);
+  public int updateMemberToken(String memberNo);
   
   /** 更新會員資料*/
   public int updateMemberToAuthOk(String memberNo);

@@ -120,27 +120,37 @@ public class Utils_Signup {
 	
 	
 	/**
-	 * 產生sha-256認證字串
+	 * 產生註冊sha-256認證字串
 	 * @param email 使用者信箱
-	 * @return authString
+	 * @return SHA256 String
 	 */
-	public String genAuthString(String email){
-	  String authString = "";
-      try {
-        Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        String time = formatter.format(new Date());
-        
+	public String genSignupAuthString(String email){
+
+      Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+      String time = formatter.format(new Date());
+      String text = email + time;
+
+      return this.genSHA256String(text);
+	}
+	
+	
+	/**
+	 * 傳入主要的需要認證字串，進行Sha256加密
+	 * @param text
+	 * @return token
+	 */
+	private String genSHA256String(String text){
+	  String token = "";
+	  try{
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        String text = email + time;
-        md.update(text.getBytes("UTF-8")); 
         byte[] digest = md.digest();
-        
+        md.update(text.getBytes("UTF-8")); 
         // %064x 意思是，產生64個字串長的字串
-        authString = String.format("%064x", new java.math.BigInteger(1, digest));
-      } catch (Exception e) {
+        token = String.format("%064x", new java.math.BigInteger(1, digest));
+	  } catch (Exception e) {
         e.printStackTrace();
       }
-      return authString;
+	  return token;
 	}
 	
 	

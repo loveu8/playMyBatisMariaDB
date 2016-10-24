@@ -8,7 +8,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import pojo.web.Member;
-import pojo.web.MemberAuth;
+import pojo.web.MemberToken;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
@@ -39,28 +39,28 @@ public class WebServiceImpl implements WebService {
     return this.webService.findMemberByEmail(email);
   }
 
-  public Member findMemberByEmailAndUserName(String email , String username) {
+  public Member findMemberByEmailAndUserName(@Param("email")String email , @Param("username")String username) {
     return this.webService.findMemberByEmailAndUserName(email , username );
   }
   
-  public int genSignupAuthData(@Param("memberAuth") Map<String , String> memberAuth){
-    return this.webService.genSignupAuthData(memberAuth);
+  public int genSignupAuthData(@Param("membetToken") Map<String , String> membetToken){
+    return this.webService.genSignupAuthData(membetToken);
   }
   
   public int genMemberLoginLog(@Param("memberLoginData") Map<String , String> memberLoginData){
     return this.webService.genMemberLoginLog(memberLoginData);
   }
   
-  public MemberAuth getMemberAuthData(String auth){
-    return this.webService.getMemberAuthData(auth);
+  public MemberToken getMemberTokenData(@Param("token") String token , @Param("type") String type){
+    return this.webService.getMemberTokenData(token , type);
   }
   
   public Member findMemberByMemberNo(String memberNo){
     return this.webService.findMemberByMemberNo(memberNo);
   }
   
-  public int updateMemberAuth(String memberNo){
-    return this.webService.updateMemberAuth(memberNo);
+  public int updateMemberToken(String memberNo){
+    return this.webService.updateMemberToken(memberNo);
   }
   
   public int updateMemberToAuthOk(String memberNo){
