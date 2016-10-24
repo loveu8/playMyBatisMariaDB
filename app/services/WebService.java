@@ -38,7 +38,7 @@ public interface WebService {
   public MemberToken getMemberTokenData(@Param("token") String token , @Param("type") String type);
   
   /** 更新認證連結*/
-  public int updateMemberToken(String memberNo);
+  public int updateMemberToken(@Param("memberNo") String memberNo , @Param("type") String type);
   
   /** 更新會員資料*/
   public int updateMemberToAuthOk(String memberNo);

@@ -96,7 +96,7 @@
 	<!--  更新會員認證-->
 	<update id="updateMemberToken">
 		UPDATE member_token SET isUse = 1 , modifyDate = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
-		WHERE memberNo = #{memberNo} AND isUse = 0
+		WHERE memberNo = #{memberNo} AND isUse = 0 AND type = #{type}
 	</update>
 	
 	

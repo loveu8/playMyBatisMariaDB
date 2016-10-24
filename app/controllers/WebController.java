@@ -244,7 +244,7 @@ public class WebController extends Controller {
 
     // Step 5
     try{
-      int isUpdateMemberTokenOk = webService.updateMemberToken(member.getMemberNo());
+      int isUpdateMemberTokenOk = webService.updateMemberToken(member.getMemberNo(), MemberTokenType.Signup.toString());
       int isUpdateMemberMainOk = webService.updateMemberToAuthOk(member.getMemberNo());
       int isGenMemberChangeLogOk = webService.genMemberChangeLog(member);
       play.Logger.info("isUpdateMemberAuthOk  = " + isUpdateMemberTokenOk);
