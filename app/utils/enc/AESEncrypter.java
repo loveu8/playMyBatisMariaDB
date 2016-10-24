@@ -79,7 +79,7 @@ public class AESEncrypter {
     String clientSessionId = java.util.UUID.randomUUID().toString();
     String key = randomString(16);  // 128 bit key
     String iv = randomString(16);   // 16 bytes IV
-    String clientSessionUnsign = "{\"memberNo\":\"mem000000000001\",\"expiryDate\":\"20161020120000\"}";
+    String clientSessionUnsign = "{\"no\":\"mem000000000001\",\"role\":\"MEMBER\",\"expiryDate\":\"20161020120000\"}";
     
     String clientSessionSign = encrypt(key, iv, clientSessionUnsign);
     String decodeString  = decrypt(key, iv, clientSessionSign);  
