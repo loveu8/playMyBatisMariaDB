@@ -163,7 +163,7 @@ POST	/web/resendAuthEmail	controllers.WebController.goToResendAuthEmail()
 POST	/web/login		  		controllers.WebController.doLogin()
 
 # http://127.0.0.1:9000/web/logout
-POST	/web/logout		  	    controllers.WebController.logout()
+GET		/web/logout		  	    controllers.WebController.logout()
 
 # chapter 11 - end
 #------------------------------------
