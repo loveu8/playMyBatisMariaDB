@@ -57,7 +57,7 @@
 	<!-- 產生Token資料 -->
 	<insert id="genTokenData" parameterType="Map">
 		insert into
-		member_token (tokenString, type ,memberNo , sendDate , isUse , createDate , modifyDate , expiryDate)
+		member_token (tokenString , memberNo , type , sendDate , isUse , createDate , modifyDate , expiryDate)
 		values
 		( 
 			#{memberToken.tokenString} , 

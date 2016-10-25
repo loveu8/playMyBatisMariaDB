@@ -111,8 +111,8 @@ ENGINE=InnoDB
 -- SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 1 DAY),'%Y%m%d%H%i%s');
 -- 增加撈出目前DB時間
 -- SELECT * , DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_main;
--- DROP tables member_auth;
-SELECT * FROM member_auth;
+-- DROP tables member_token;
+SELECT * FROM member_token;
 
 
 -- 表單狀態對照表
