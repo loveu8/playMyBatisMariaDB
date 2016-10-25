@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import play.libs.Json;
+import pojo.web.MemberTokenType;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.PasswordStatus;
@@ -132,6 +133,20 @@ public class Utils_Signup {
 
       return this.genSHA256String(text);
 	}
+	
+	/**
+     * 產生忘記密碼sha-256認證字串
+     * @param email 使用者信箱
+     * @return SHA256 String
+     */
+    public String genForgotPasswordTokenString(String email){
+
+      Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+      String time = formatter.format(new Date());
+      String text = email + time + MemberTokenType.ForgotPassword;
+
+      return this.genSHA256String(text);
+    }
 	
 	
 	/**

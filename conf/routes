@@ -163,19 +163,24 @@ POST	/web/resendAuthEmail	controllers.WebController.goToResendAuthEmail()
 POST	/web/login		  		controllers.WebController.doLogin()
 
 # http://127.0.0.1:9000/web/logout
-POST	/web/logout		  	    controllers.WebController.logout()
+GET		/web/logout		  	    controllers.WebController.logout()
 
 # chapter 11 - end
 #------------------------------------
+# chapter 12 - start
 
-# An example controller showing a sample home page
-#GET     /                           controllers.HomeController.index
+# http://127.0.0.1:9000/web/forgotPassword
+GET		/web/forgotPassword		controllers.WebController.forgotPassword()
 
-# An example controller showing how to use dependency injection
-#GET     /count                      controllers.CountController.count
+# http://127.0.0.1:9000/web/forgotPassword
+POST	/web/forgotPassword		controllers.WebController.doForgotPassword()
 
-# An example controller showing how to write asynchronous code
-#GET     /message                    controllers.AsyncController.message
+# http://127.0.0.1:9000/web/resetPassword?token=xxx
+GET		/web/forgotPassword		controllers.WebController.resetPassword()
+
+# chapter 12 - end
+#------------------------------------
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

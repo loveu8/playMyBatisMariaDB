@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import annotation.AuthCheck;
 import play.Logger;
-import play.cache.CacheApi;
 import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -26,7 +25,7 @@ import views.html.web.index;
 import views.html.web.loginSignup.*;
 import utils.mail.Utils_Email;
 import utils.session.Utils_Session;
-import utils.signup.*;
+
 
 public class WebController extends Controller {
 
@@ -338,11 +337,7 @@ public class WebController extends Controller {
     flash().put("ok", "已重發認證信，請至註冊信箱收取認證信，謝謝。");
     return ok(resendAuthEmail.render());
   }
-  
-  @Inject 
-  private CacheApi cache;
-    
-
+      
   @AuthCheck
   public Result doLogin(){
     return ok("登入成功");
@@ -354,5 +349,131 @@ public class WebController extends Controller {
     return ok(index.render());
   }
   
+  // 忘記密碼頁面
+  public Result forgotPassword(){
+    return ok(forgotPassword.render());
+  }
+  
+  /** 
+   * <pre>
+   * 執行忘記密碼檢查與寄送動作
+   * 
+   * Step 1 : 確認表單，填寫是信箱
+   * Step 2 : 確認是否是否存在該會員資料
+   * Step 3 : 確認是否停權
+   * Step 4 : 確認是否尚未認證
+   * OK : 確認會員正常使用中，產生忘記密碼Token連結後，寄送信箱
+   * </pre>
+   */
+  public Result doForgotPassword(){
+    
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
+    // Step 1
+    String email = "";
+    try {
+      email = formFactory.form().bindFromRequest().get().getData().get("email").toString();
+      Logger.info("before , new forgotPassword request email = " +  email);
+    } catch (Exception e) {
+      Logger.error("表單內容非填寫信箱內容");
+      flash().put("error", "請重新填寫註冊信箱，謝謝。");
+      return redirect(controllers.routes.WebController.forgotPassword().url());
+    }
+    
+    // Step 2
+    Member member = null;
+    try{
+      member = webService.findMemberByEmail(email);
+    } catch(Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return redirect(controllers.routes.WebController.forgotPassword().url());
+    } finally {
+      if(member == null){
+        flash().put("error", "查無註冊資料，請確認資料是否填寫正確，謝謝。");
+        return redirect(controllers.routes.WebController.forgotPassword().url());
+      }
+    }
+    
+    // Step 3
+    if(!MemberStatus.S3.getStatus().equals(member.getStatus())){
+      flash().put("error", "您的帳號，已被停權使用，無法使用忘記密碼功能，謝謝。");
+      play.Logger.warn("member      = " + Json.toJson(member));
+      return redirect(controllers.routes.WebController.forgotPassword().url());
+    }
+    
+    // Step 4
+    if(!MemberStatus.S1.getStatus().equals(member.getStatus())){
+      flash().put("error", "您的帳號，尚未認證成功，無法使用忘記密碼功能，謝謝。");
+      play.Logger.warn("member      = " + Json.toJson(member));
+      return redirect(controllers.routes.WebController.forgotPassword().url());
+    }
+    
+    //OK
+    try{
+      String forgotPasswordTokenString = new Utils_Signup().genForgotPasswordTokenString(member.getEmail());
+      Map<String , String> memberToken = new HashMap<String , String>();
+      memberToken.put("memberNo", member.getMemberNo());
+      memberToken.put("tokenString", forgotPasswordTokenString);
+      memberToken.put("type", MemberTokenType.ForgotPassword.toString());
+      int isforgotPasswordStringOk = webService.genTokenData(memberToken);
+      
+      Utils_Email utils_Email = new Utils_Email();
+      Email authMail = utils_Email.genForgotPasswordEmail(member, forgotPasswordTokenString);
+      boolean isSeadMailOk = utils_Email.sendMail(authMail);
+      play.Logger.info("isforgotPasswordStringOk = " + isforgotPasswordStringOk +" , isSeadMailOk = " + isSeadMailOk);
+      
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return redirect(controllers.routes.WebController.forgotPassword().url());
+    }
+    
+    flash().put("ok", "已發送重設密碼信件至您的信箱，謝謝。");
+    return ok(forgotPassword.render());
+  }
+  
+  /**
+   * 忘記密碼由信件寄送回來後
+   * Step 1 : 檢查重設密碼信件連結是否有資料
+   * Step 2 : 檢查Token，是否可以查詢到會員資料
+   * OK : 檢查通過，可以進行重設密碼動作，並把Token儲存在表單裡
+   */
+  public Result resetPassword(){
+    
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
+    // Step 1
+    String token = "";
+    try{
+      token = request().getQueryString("token");
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "重設密碼連結有誤，請確認是否有點選正確，謝謝。");
+      return redirect(controllers.routes.WebController.resetPassword().url());
+    }
+
+    // Step 2
+    MemberToken memberToken = null ;
+    try{
+      token = request().getQueryString("token");
+      memberToken = webService.getMemberTokenData(token , MemberTokenType.ForgotPassword.toString());
+    } catch(Exception e){
+      e.printStackTrace();
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return redirect(controllers.routes.WebController.resetPassword().url());
+    } finally {
+      if(memberToken == null){
+        flash().put("error", "重設密碼連結有誤，請確認是否有點選正確，謝謝。");
+        play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
+        return redirect(controllers.routes.WebController.resetPassword().url());
+      }
+    }
+    // Ok
+    return ok(resetPassword.render(memberToken.getTokenString()));
+  }
   
 }

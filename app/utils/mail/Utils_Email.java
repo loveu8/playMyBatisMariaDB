@@ -33,6 +33,18 @@ public class Utils_Email {
     return email;
   }
   
+  public Email genForgotPasswordEmail(Member member , String forgotPasswordTokenString){
+    Email email = new Email();
+    email.setFrom("littleqkstar@gmail.com");
+    email.setTo(member.getEmail());
+    email.setSubject("[STAR] - 忘記密碼重設");
+    email.setText("");
+    email.setContent("<h2>您好 "+ member.getUsername()+"，請在24小時內，點選以下重設密碼連結後，進行設定新密碼，謝謝!!</h2> "
+                      + "<a href='" +"http://127.0.0.1:9000/web/resetPassword?token="+forgotPasswordTokenString+"'>重設密碼連結</a>");
+    play.Logger.info("forgotPassword email = " + Json.toJson(email));
+    return email;
+  }
+  
   // 寄信
   public boolean sendMail(Email email) {
 
