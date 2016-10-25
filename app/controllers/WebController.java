@@ -32,7 +32,6 @@ public class WebController extends Controller {
 
   
   // 首頁
-  @AuthCheck
   public Result index() {
     return ok(index.render());
   }
