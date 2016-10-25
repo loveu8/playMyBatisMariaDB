@@ -143,8 +143,8 @@ public class Utils_Signup {
 	  String token = "";
 	  try{
         MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(text.getBytes("UTF-8")); 
         byte[] digest = md.digest();
-        md.update(text.getBytes("UTF-8")); 
         // %064x 意思是，產生64個字串長的字串
         token = String.format("%064x", new java.math.BigInteger(1, digest));
 	  } catch (Exception e) {
