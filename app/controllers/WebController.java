@@ -401,24 +401,25 @@ public class WebController extends Controller {
         return redirect(controllers.routes.WebController.forgotPassword().url());
       }
     }
-    
+
     // Step 3
-    if(!MemberStatus.S3.getStatus().equals(member.getStatus())){
+    if(MemberStatus.S3.getStatus().equals(member.getStatus())){
       flash().put("error", "您的帳號，已被停權使用，無法使用忘記密碼功能，謝謝。");
       play.Logger.warn("member      = " + Json.toJson(member));
       return redirect(controllers.routes.WebController.forgotPassword().url());
     }
-    
+
     // Step 4
-    if(!MemberStatus.S1.getStatus().equals(member.getStatus())){
+    if(MemberStatus.S1.getStatus().equals(member.getStatus())){
       flash().put("error", "您的帳號，尚未認證成功，無法使用忘記密碼功能，謝謝。");
       play.Logger.warn("member      = " + Json.toJson(member));
       return redirect(controllers.routes.WebController.forgotPassword().url());
     }
     
     //OK
+    String forgotPasswordTokenString = "";
     try{
-      String forgotPasswordTokenString = new Utils_Signup().genForgotPasswordTokenString(member.getEmail());
+      forgotPasswordTokenString = new Utils_Signup().genForgotPasswordTokenString(member);
       Map<String , String> memberToken = new HashMap<String , String>();
       memberToken.put("memberNo", member.getMemberNo());
       memberToken.put("tokenString", forgotPasswordTokenString);
@@ -426,13 +427,14 @@ public class WebController extends Controller {
       int isforgotPasswordStringOk = webService.genTokenData(memberToken);
       
       Utils_Email utils_Email = new Utils_Email();
-      Email authMail = utils_Email.genForgotPasswordEmail(member, forgotPasswordTokenString);
-      boolean isSeadMailOk = utils_Email.sendMail(authMail);
+      Email forgotPasswordMail = utils_Email.genForgotPasswordEmail(member, forgotPasswordTokenString);
+      boolean isSeadMailOk = utils_Email.sendMail(forgotPasswordMail);
       play.Logger.info("isforgotPasswordStringOk = " + isforgotPasswordStringOk +" , isSeadMailOk = " + isSeadMailOk);
       
     } catch (Exception e){
       e.printStackTrace();
       flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      play.Logger.info("token = " + forgotPasswordTokenString);
       return redirect(controllers.routes.WebController.forgotPassword().url());
     }
     
@@ -458,7 +460,7 @@ public class WebController extends Controller {
     } catch (Exception e){
       e.printStackTrace();
       flash().put("error", "重設密碼連結有誤，請確認是否有點選正確，謝謝。");
-      return redirect(controllers.routes.WebController.resetPassword().url());
+      return ok(resetPassword.render(""));
     }
 
     // Step 2
@@ -468,14 +470,13 @@ public class WebController extends Controller {
       memberToken = webService.getMemberTokenData(token , MemberTokenType.ForgotPassword.toString());
     } catch(Exception e){
       e.printStackTrace();
-      e.printStackTrace();
       flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
-      return redirect(controllers.routes.WebController.resetPassword().url());
+      return ok(resetPassword.render(""));
     } finally {
       if(memberToken == null){
         flash().put("error", "重設密碼連結有誤，請確認是否有點選正確，謝謝。");
         play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
-        return redirect(controllers.routes.WebController.resetPassword().url());
+        return ok(resetPassword.render(""));
       }
     }
     // Ok

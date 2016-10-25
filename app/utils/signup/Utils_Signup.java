@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import play.libs.Json;
+import pojo.web.Member;
 import pojo.web.MemberTokenType;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.EmailStatus;
@@ -136,14 +137,14 @@ public class Utils_Signup {
 	
 	/**
      * 產生忘記密碼sha-256認證字串
-     * @param email 使用者信箱
+     * @param Member member 使用者資料
      * @return SHA256 String
      */
-    public String genForgotPasswordTokenString(String email){
+    public String genForgotPasswordTokenString(Member member){
 
       Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
       String time = formatter.format(new Date());
-      String text = email + time + MemberTokenType.ForgotPassword;
+      String text = time + member.getMemberNo() + member.getEmail();
 
       return this.genSHA256String(text);
     }
@@ -158,8 +159,8 @@ public class Utils_Signup {
 	  String token = "";
 	  try{
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] digest = md.digest();
         md.update(text.getBytes("UTF-8")); 
+        byte[] digest = md.digest();
         // %064x 意思是，產生64個字串長的字串
         token = String.format("%064x", new java.math.BigInteger(1, digest));
 	  } catch (Exception e) {
@@ -185,4 +186,5 @@ public class Utils_Signup {
 	  memberLoginLog.put("status",status);
 	  return memberLoginLog;
 	}
+	
 }
