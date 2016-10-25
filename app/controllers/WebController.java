@@ -371,14 +371,20 @@ public class WebController extends Controller {
     flash().clear();
     
     // Step 1
-    String email = "";
+    String email = null;
     try {
       email = formFactory.form().bindFromRequest().get().getData().get("email").toString();
       Logger.info("before , new forgotPassword request email = " +  email);
     } catch (Exception e) {
-      Logger.error("表單內容非填寫信箱內容");
-      flash().put("error", "請重新填寫註冊信箱，謝謝。");
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
       return redirect(controllers.routes.WebController.forgotPassword().url());
+    } finally {
+      if(email==null){
+        Logger.error("表單內容非填寫信箱內容");
+        flash().put("error", "請重新填寫註冊信箱，謝謝。");
+        return redirect(controllers.routes.WebController.forgotPassword().url());
+      }
     }
     
     // Step 2
@@ -388,9 +394,10 @@ public class WebController extends Controller {
     } catch(Exception e){
       e.printStackTrace();
       flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
-      return redirect(controllers.routes.WebController.forgotPassword().url());
+      return ok(forgotPassword.render());
     } finally {
       if(member == null){
+        Logger.error("查無註冊資料");
         flash().put("error", "查無註冊資料，請確認資料是否填寫正確，謝謝。");
         return redirect(controllers.routes.WebController.forgotPassword().url());
       }
@@ -431,7 +438,7 @@ public class WebController extends Controller {
     }
     
     flash().put("ok", "已發送重設密碼信件至您的信箱，謝謝。");
-    return ok(forgotPassword.render());
+    return redirect(controllers.routes.WebController.forgotPassword().url());
   }
   
   /**
