@@ -57,6 +57,7 @@ public class Utils_Email {
     email.setSubject("[STAR] - 密碼重設成功");
     email.setText("");
     email.setContent("<h2>您好 "+ member.getUsername()+"您的密碼已在"+ time +" , 重設成功。</h2> ");
+    play.Logger.info("genResetPasswordOk email = " + Json.toJson(email));
     return email;
   }
   

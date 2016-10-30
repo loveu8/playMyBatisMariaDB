@@ -446,7 +446,7 @@ public class WebController extends Controller {
   
   /**
    * <pre>
-   * 忘記密碼由信件寄送回來後
+   * 重設密碼信件寄送回來後
    * Step 1 : 檢查重設密碼信件連結是否有資料
    * Step 2 : 檢查Token，是否可以查詢到會員資料
    * Step 3 : 檢查Token，是否使用過了
@@ -464,7 +464,7 @@ public class WebController extends Controller {
       token = request().getQueryString("token");
     } catch (Exception e){
       e.printStackTrace();
-      flash().put("error", "重設密碼連結有誤，請確認是否有點選正確，謝謝。");
+      flash().put("error", "重設密碼連結有誤，請確認是否有點選正確，謝謝。0x21");
       return ok(resetPassword.render(""));
     }
 
@@ -479,16 +479,19 @@ public class WebController extends Controller {
       return ok(resetPassword.render(""));
     } finally {
       if(memberToken == null){
-        flash().put("error", "重設密碼連結有誤，請確認是否有點選正確，謝謝。");
-        play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
-        return ok(resetPassword.render(""));
-      }
-      if(memberToken.getIsUse()){
-        flash().put("error", "該忘記密碼連結已失效，若要重設密碼，請使用忘記密碼功能，謝謝。");
+        flash().put("error", "重設密碼連結有誤，請確認是否有點選正確，謝謝。0x22");
         play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
         return ok(resetPassword.render(""));
       }
     }
+    
+    // Step 3
+    if(memberToken.getIsUse()){
+      flash().put("error", "該忘記密碼連結已失效，若要重設密碼，請使用忘記密碼功能，謝謝。");
+      play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
+      return ok(resetPassword.render(""));
+    }
+    
     // Ok
     return ok(resetPassword.render(memberToken.getTokenString()));
   }
@@ -496,9 +499,10 @@ public class WebController extends Controller {
   
   /**
    * <pre>
-   * Step 1 : 檢查表單Token是否存在
-   * Step 2 : 檢查表單Token是否逾期
-   * Step 3 : 檢查兩次輸入密碼，是否正確
+   * Step 1 : 檢查表單Token是否還存在
+   * Step 2 : 檢查Token，是否可以查詢到會員資料
+   * Step 3 : 檢查Token，是否使用過了
+   * Step 4 : 檢查兩次輸入密碼，是否正確
    * 
    * OK 1 : 確認完畢，進行修改密碼
    * OK 2 : 把該會員所有忘記密碼Token，且尚未使用中的Token，全部更新成使用過
@@ -517,7 +521,7 @@ public class WebController extends Controller {
       request = formFactory.form(ResetPasswordRequest.class).bindFromRequest().get();
     } catch (Exception e){
       e.printStackTrace();
-      flash().put("error", "資料錯誤，請重新點選忘記密碼信件連結，謝謝。0x1");
+      flash().put("error", "資料錯誤，請重新點選忘記密碼信件連結，謝謝。0x31");
       return ok(resetPassword.render(""));
     }
     
@@ -531,13 +535,20 @@ public class WebController extends Controller {
       return ok(resetPassword.render(request.getToken()));
     } finally {
       if(memberToken == null){
-        flash().put("error", "資料錯誤，請重新點選忘記密碼信件連結，謝謝。0x2");
+        flash().put("error", "資料錯誤，請重新點選忘記密碼信件連結，謝謝。0x32");
         play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
         return ok(resetPassword.render(""));
       }
     }
     
     // Step 3
+    if(memberToken.getIsUse()){
+      flash().put("error", "該忘記密碼連結已失效，若要重設密碼，請使用忘記密碼功能，謝謝。");
+      play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
+      return ok(resetPassword.render(""));
+    }
+    
+    // Step 4
     try{
       VerificFormMessage message = new Utils_Signup().checkPassword(request.getPassword(), request.getRetypePassword());
       if(!"200".equals(message.getStatus())){
@@ -556,12 +567,15 @@ public class WebController extends Controller {
       String password = request.getPassword();
       String memberNo = memberToken.getMemberNo();
       Member member = this.webService.findMemberByMemberNo(memberNo);
+      
       int isGenMemberChangeLogOk = webService.genMemberChangeLog(member);
       int updateMemberPassword = this.webService.updateMemberPassword(memberNo , password);
       int updateMemberToken = this.webService.updateMemberToken(memberNo, MemberTokenType.ForgotPassword.toString());
+      
       Utils_Email utils_Email = new Utils_Email();
       Email email = new Utils_Email().genResetPasswordOk(member);
       boolean isGenResetPasswordOk = utils_Email.sendMail(email);
+      
       play.Logger.info("updateMemberPassword = " + updateMemberPassword +
                        " , updateMemberToken = " + updateMemberToken  +
                        " , isGenResetPasswordOk = " + isGenResetPasswordOk + 
@@ -575,19 +589,6 @@ public class WebController extends Controller {
     return ok(resetPasswordOk.render());
     
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   
