@@ -443,12 +443,15 @@ public class WebController extends Controller {
     return redirect(controllers.routes.WebController.forgotPassword().url());
   }
   
+  
   /**
+   * <pre>
    * 忘記密碼由信件寄送回來後
    * Step 1 : 檢查重設密碼信件連結是否有資料
    * Step 2 : 檢查Token，是否可以查詢到會員資料
    * Step 3 : 檢查Token，是否使用過了
    * OK : 檢查通過，可以進行重設密碼動作，並把Token儲存在表單裡
+   * </pre>
    */
   public Result resetPassword(){
     
@@ -492,13 +495,17 @@ public class WebController extends Controller {
   
   
   /**
+   * <pre>
    * Step 1 : 檢查表單Token是否存在
    * Step 2 : 檢查表單Token是否逾期
    * Step 3 : 檢查兩次輸入密碼，是否正確
+   * 
    * OK 1 : 確認完畢，進行修改密碼
    * OK 2 : 把該會員所有忘記密碼Token，且尚未使用中的Token，全部更新成使用過
    * OK 3 : 修改密碼動作，寄信給使用者
-   * OK 4 : 以上動作完成，顯示修改成功訊息     
+   * OK 4 : 會員更新動作，都需要記錄下來，寫入member_main_log
+   * OK 5 : 以上動作完成，顯示修改成功訊息     
+   * </pre>
    */
   public Result doResetPassword(){
     // 清除暫存錯誤訊息
