@@ -178,7 +178,7 @@ POST	/web/forgotPassword		controllers.WebController.doForgotPassword()
 # http://127.0.0.1:9000/web/resetPassword?token=xxx
 GET		/web/resetPassword		controllers.WebController.resetPassword()
 
-# http://127.0.0.1:9000/web/resetPassword?token=xxx
+# http://127.0.0.1:9000/web/resetPassword
 POST	/web/resetPassword		controllers.WebController.doResetPassword()
 
 # chapter 12 - end
