@@ -54,5 +54,8 @@ public interface WebService {
 
   /** 取得會員Session資料*/
   public UserSession getUserSession(String sessionId);
+
+  /** 更新會員密碼資料 */
+  public int updateMemberPassword(@Param("memberNo")String memberNo, @Param("password")String password);
   
 }

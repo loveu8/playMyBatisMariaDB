@@ -1,5 +1,8 @@
 package utils.mail;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -42,6 +45,18 @@ public class Utils_Email {
     email.setContent("<h2>您好 "+ member.getUsername()+"，請在24小時內，點選以下重設密碼連結後，進行設定新密碼，謝謝!!</h2> "
                       + "<a href='" +"http://127.0.0.1:9000/web/resetPassword?token="+forgotPasswordTokenString+"'>重設密碼連結</a>");
     play.Logger.info("forgotPassword email = " + Json.toJson(email));
+    return email;
+  }
+  
+  public Email genResetPasswordOk(Member member){
+    Format formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    String time = formatter.format(new Date());
+    Email email = new Email();
+    email.setFrom("littleqkstar@gmail.com");
+    email.setTo(member.getEmail());
+    email.setSubject("[STAR] - 密碼重設成功");
+    email.setText("");
+    email.setContent("<h2>您好 "+ member.getUsername()+"您的密碼已在"+ time +" , 重設成功。</h2> ");
     return email;
   }
   
@@ -123,12 +138,5 @@ public class Utils_Email {
     return props;
   }
   
-  
-  public static void main(String[] args) {
-    Member newMember = new WebServiceImpl().findMemberByEmail("qkpigstar@gmail.com");
-    String authString = new Utils_Signup().genSignupAuthString(newMember.getEmail());
-    Utils_Email utils_Email = new Utils_Email();
-    Email email = utils_Email.genSinupAuthEmail(newMember, authString);
-    boolean isSeadMailOk = utils_Email.sendMail(email);
-  }
+ 
 }

@@ -91,7 +91,7 @@ public class Utils_Signup {
 	}
 	
 	
-	private VerificFormMessage checkPassword(String password, String retypepassword) {
+	public VerificFormMessage checkPassword(String password, String retypepassword) {
 		VerificFormMessage message = new VerificFormMessage();
 		
 		message.setInputName("password");

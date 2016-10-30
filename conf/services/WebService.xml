@@ -152,5 +152,11 @@
 		SELECT * FROM user_session WHERE sessionId = #{sessionId}
 	</select>
 	
+
+	<!--  更新會員密碼 -->
+	<update id="updateMemberPassword">
+		UPDATE member_main SET password = #{password} WHERE memberNo = #{memberNo}
+	</update>
+	
 	
 </mapper>

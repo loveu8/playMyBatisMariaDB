@@ -81,5 +81,8 @@ public class WebServiceImpl implements WebService {
     return this.webService.getUserSession(sessionId);
   }
 
+  public int updateMemberPassword(@Param("memberNo")String memberNo, @Param("password")String password){
+    return this.webService.updateMemberPassword(memberNo , password);
+  }
   
 }

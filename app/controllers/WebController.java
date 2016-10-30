@@ -17,6 +17,7 @@ import pojo.web.MemberLoginStatus;
 import pojo.web.MemberStatus;
 import pojo.web.MemberTokenType;
 import pojo.web.email.Email;
+import pojo.web.signup.request.ResetPasswordRequest;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.verific.VerificFormMessage;
 import services.WebService;
@@ -446,6 +447,7 @@ public class WebController extends Controller {
    * 忘記密碼由信件寄送回來後
    * Step 1 : 檢查重設密碼信件連結是否有資料
    * Step 2 : 檢查Token，是否可以查詢到會員資料
+   * Step 3 : 檢查Token，是否使用過了
    * OK : 檢查通過，可以進行重設密碼動作，並把Token儲存在表單裡
    */
   public Result resetPassword(){
@@ -478,9 +480,116 @@ public class WebController extends Controller {
         play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
         return ok(resetPassword.render(""));
       }
+      if(memberToken.getIsUse()){
+        flash().put("error", "該忘記密碼連結已失效，若要重設密碼，請使用忘記密碼功能，謝謝。");
+        play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
+        return ok(resetPassword.render(""));
+      }
     }
     // Ok
     return ok(resetPassword.render(memberToken.getTokenString()));
   }
+  
+  
+  /**
+   * Step 1 : 檢查表單Token是否存在
+   * Step 2 : 檢查表單Token是否逾期
+   * Step 3 : 檢查兩次輸入密碼，是否正確
+   * OK 1 : 確認完畢，進行修改密碼
+   * OK 2 : 把該會員所有忘記密碼Token，且尚未使用中的Token，全部更新成使用過
+   * OK 3 : 修改密碼動作，寄信給使用者
+   * OK 4 : 以上動作完成，顯示修改成功訊息     
+   */
+  public Result doResetPassword(){
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
+    // Step 1
+    ResetPasswordRequest request = null;
+    try{
+      request = formFactory.form(ResetPasswordRequest.class).bindFromRequest().get();
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "資料錯誤，請重新點選忘記密碼信件連結，謝謝。0x1");
+      return ok(resetPassword.render(""));
+    }
+    
+    // Step 2
+    MemberToken memberToken = null ;
+    try{
+      memberToken = webService.getMemberTokenData(request.getToken() , MemberTokenType.ForgotPassword.toString());
+    } catch(Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return ok(resetPassword.render(request.getToken()));
+    } finally {
+      if(memberToken == null){
+        flash().put("error", "資料錯誤，請重新點選忘記密碼信件連結，謝謝。0x2");
+        play.Logger.warn("memberToken  = " + Json.toJson(memberToken));
+        return ok(resetPassword.render(""));
+      }
+    }
+    
+    // Step 3
+    try{
+      VerificFormMessage message = new Utils_Signup().checkPassword(request.getPassword(), request.getRetypePassword());
+      if(!"200".equals(message.getStatus())){
+        flash().put("error", message.getStatusDesc());
+        return ok(resetPassword.render(request.getToken()));
+      }
+    }catch(Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請重新再次嘗試，謝謝。");
+      return ok(resetPassword.render(request.getToken()));
+    }
+    
+    
+    // Ok
+    try{
+      String password = request.getPassword();
+      String memberNo = memberToken.getMemberNo();
+      Member member = this.webService.findMemberByMemberNo(memberNo);
+      int isGenMemberChangeLogOk = webService.genMemberChangeLog(member);
+      int updateMemberPassword = this.webService.updateMemberPassword(memberNo , password);
+      int updateMemberToken = this.webService.updateMemberToken(memberNo, MemberTokenType.ForgotPassword.toString());
+      Utils_Email utils_Email = new Utils_Email();
+      Email email = new Utils_Email().genResetPasswordOk(member);
+      boolean isGenResetPasswordOk = utils_Email.sendMail(email);
+      play.Logger.info("updateMemberPassword = " + updateMemberPassword +
+                       " , updateMemberToken = " + updateMemberToken  +
+                       " , isGenResetPasswordOk = " + isGenResetPasswordOk + 
+                       " , isGenMemberChangeLogOk = " + isGenMemberChangeLogOk);
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請重新再次嘗試，謝謝。");
+      return ok(resetPassword.render(request.getToken()));
+    }
+    
+    return ok(resetPasswordOk.render());
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 }
