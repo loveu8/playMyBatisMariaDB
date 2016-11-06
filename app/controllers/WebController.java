@@ -450,6 +450,7 @@ public class WebController extends Controller {
    * Step 1 : 檢查重設密碼信件連結是否有資料
    * Step 2 : 檢查Token，是否可以查詢到會員資料
    * Step 3 : 檢查Token，是否使用過了
+   * Step 4 : 檢查Token，是否逾期了
    * OK : 檢查通過，可以進行重設密碼動作，並把Token儲存在表單裡
    * </pre>
    */
@@ -492,6 +493,16 @@ public class WebController extends Controller {
       return ok(resetPassword.render(""));
     }
     
+    // Step 4
+    long    dbTime      = Long.parseLong(memberToken.getDbTime());       // 資料庫時間
+    long    expiryDate  = Long.parseLong(memberToken.getExpiryDate());   // 逾期時間
+    if(dbTime > expiryDate){
+      flash().put("error", "重設密碼連結已經超過24小時，請重新使用忘記密碼功能謝謝。");
+      play.Logger.warn("dbTime      = " + dbTime);
+      play.Logger.warn("expiryDate  = " + expiryDate);
+      return ok(resetPassword.render(""));
+    } 
+    
     // Ok
     return ok(resetPassword.render(memberToken.getTokenString()));
   }
@@ -502,7 +513,8 @@ public class WebController extends Controller {
    * Step 1 : 檢查表單Token是否還存在
    * Step 2 : 檢查Token，是否可以查詢到會員資料
    * Step 3 : 檢查Token，是否使用過了
-   * Step 4 : 檢查兩次輸入密碼，是否正確
+   * Step 4 : 檢查Token，是否逾期了
+   * Step 5 : 檢查兩次輸入密碼，是否正確
    * 
    * OK 1 : 確認完畢，進行修改密碼
    * OK 2 : 把該會員所有忘記密碼Token，且尚未使用中的Token，全部更新成使用過
@@ -549,6 +561,16 @@ public class WebController extends Controller {
     }
     
     // Step 4
+    long    dbTime      = Long.parseLong(memberToken.getDbTime());       // 資料庫時間
+    long    expiryDate  = Long.parseLong(memberToken.getExpiryDate());   // 逾期時間
+    if(dbTime > expiryDate){
+      flash().put("error", "重設密碼連結已經超過24小時，請重新使用忘記密碼功能謝謝。");
+      play.Logger.warn("dbTime      = " + dbTime);
+      play.Logger.warn("expiryDate  = " + expiryDate);
+      return ok(resetPassword.render(""));
+    } 
+    
+    // Step 5
     try{
       VerificFormMessage message = new Utils_Signup().checkPassword(request.getPassword(), request.getRetypePassword());
       if(!"200".equals(message.getStatus())){
