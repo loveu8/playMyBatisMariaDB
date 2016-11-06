@@ -1,3 +1,4 @@
+@import utils.session.Utils_Session
 <!-- Nav -->
 <nav id="nav">
 	<ul>
@@ -6,6 +7,9 @@
 			<a>我的世界</a>
 			<ul>
 				<li><a href="@controllers.routes.WebController.login.url">登入</a></li>
+				@if(new Utils_Session().isClinetHaveCookie(request)){
+					<li><a href="@controllers.routes.WebController.editPassword.url">修改密碼</a></li>
+				}
 				<li><a href="@controllers.routes.WebController.logout.url">登出</a></li>
 			</ul>
 		</li>

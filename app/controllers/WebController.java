@@ -346,7 +346,7 @@ public class WebController extends Controller {
   // 登出
   public Result logout(){
     new Utils_Session().clearClientCookie(response());
-    return ok(index.render());
+    return redirect(controllers.routes.WebController.index().url());
   }
   
   // 忘記密碼頁面
@@ -590,8 +590,10 @@ public class WebController extends Controller {
     
   }
   
-  
-  
+  // 修改密碼頁面
+  public Result editPassword(){
+    return ok(editPassword.render());
+  }
   
   
   
