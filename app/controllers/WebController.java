@@ -350,7 +350,7 @@ public class WebController extends Controller {
   // 登出
   public Result logout(){
     new Utils_Session().clearClientCookie(response());
-    return ok(index.render());
+    return redirect(controllers.routes.WebController.index().url());
   }
   
   
