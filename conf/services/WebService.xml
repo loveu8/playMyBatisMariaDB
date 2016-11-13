@@ -159,4 +159,9 @@
 	</update>
 	
 	
+ 	<!-- 使用會員編號與密碼確認該會員存在 -->
+	<select id="checkMemberByMemberNoAndPassword" parameterType="String" resultType="boolean">
+		SELECT COUNT(1) FROM member_main WHERE memberNo = #{no} AND password = #{password}
+	</select>
+		
 </mapper>

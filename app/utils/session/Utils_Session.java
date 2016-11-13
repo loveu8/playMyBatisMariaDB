@@ -18,6 +18,7 @@ import play.mvc.Http.Request;
 import pojo.web.Member;
 import pojo.web.auth.UserCookie;
 import pojo.web.auth.UserSession;
+import services.WebService;
 import pojo.web.auth.ServerCache;
 import utils.enc.AESEncrypter;
 
@@ -194,7 +195,7 @@ public class Utils_Session {
       }
       play.Logger.info("expiryDate      = " + expiryDateTime.getTime());
       play.Logger.info("now             = " + nowTime.getTime());
-      play.Logger.info("betweentDate    = " + betweentDate + "day");
+      play.Logger.info("betweentDate    = " + betweentDate + " day");
       play.Logger.info("isRewrite  = " + isRewrite);
     } catch (ParseException e) {
       e.printStackTrace();
@@ -202,5 +203,84 @@ public class Utils_Session {
     return isRewrite ;
   }
 
+  /**
+   * <pre>
+   *
+   * 根據使用者的Cookie取出會員編號
+   * 若資料錯誤，會清除使用者Cookie
+   * 
+   * Step 1 : 檢查使用者是否有Cookie
+   * Step 2 : 檢查user_seesion 資料表，回傳會員編號
+   * 
+   *</pre>
+   * 
+   */
+  public String getUserNo(){
+    
+    try {
+      Utils_Session utilsSession = new Utils_Session(); 
+      play.mvc.Http.Request request = Http.Context.current().request();
+      play.mvc.Http.Response response = Http.Context.current().response();
+      boolean isClientHaveCookie = utilsSession.isClinetHaveCookie(request);
+
+      play.Logger.info("isClientHaveCookie = " + isClientHaveCookie);
+      
+      // Step 1
+      if (!isClientHaveCookie){
+        return "";
+      }
+  
+      String clientSessionId = utilsSession.getClientSession(request);
+      String clientSessionSign = utilsSession.getClientSessionSign(request);
+      
+      play.Logger.info("clientSessionId   = " + clientSessionId);
+      play.Logger.info("clientSessionSign = " + clientSessionSign);
+  
+      // Step 2
+      UserSession dbUserSession = this.getUserSession(clientSessionId);
+
+      // 沒有資料
+      if(dbUserSession == null){
+        utilsSession.clearClientCookie(response);
+        play.Logger.warn("db沒資料，無法比對使用者資料。0x2.1");
+        return "";
+      }
+
+      // 沒通過
+      if(!clientSessionSign.equals(dbUserSession.getSessionSign())){
+        utilsSession.clearClientCookie(response);
+        play.Logger.warn("db有資料，但與使用者Cookie比對不符，沒通過檢查。0x2.2");
+        return "";
+      }
+      
+      play.Logger.info("origin db userSession = " + Json.toJson(dbUserSession));
+      return dbUserSession.getNo();
+      
+    } catch (Exception e){
+      e.printStackTrace();
+      return "";
+    }
+  }
+  
+  
+  // 查詢是否有該會員Session資料
+  private UserSession getUserSession(String sessionId){
+    try{
+      UserSession userSession = this.injector().instanceOf(WebService.class).getUserSession(sessionId);
+      if(userSession == null){
+        return null;
+      }
+      return userSession;
+    } catch (Exception e){
+      e.printStackTrace();
+      return null;
+    }
+  }
+  
+  private play.api.inject.Injector injector() {
+    return play.api.Play.current().injector();
+  }
+  
+  
 }
 

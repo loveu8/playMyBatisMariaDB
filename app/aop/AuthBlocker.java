@@ -89,7 +89,7 @@ public class AuthBlocker extends CommonBlocker{
           play.Logger.warn("Step 1.2.1 : cache 有資料，但與使用者Cookie比對不符，沒通過檢查。");
           return redirect(controllers.routes.WebController.login().url());
         } 
-        
+
         play.Logger.info("origin server cache userSession = " + Json.toJson(serverCacheUserSession));
         
         // 通過，超過24小時
@@ -218,7 +218,7 @@ public class AuthBlocker extends CommonBlocker{
       return redirect(controllers.routes.WebController.login().url());
     }
     
-    return (Result) invocation.proceed();
+    return invocation.proceed();
   }
   
   /** 

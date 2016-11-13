@@ -184,6 +184,9 @@ POST	/web/resetPassword		controllers.WebController.doResetPassword()
 # http://127.0.0.1:9000/web/editPassword
 GET		/web/editPassword		controllers.WebController.editPassword()
 
+# http://127.0.0.1:9000/web/editPassword
+POST	/web/editPassword		controllers.WebController.doEditPassword()
+
 # chapter 12 - end
 #------------------------------------
 

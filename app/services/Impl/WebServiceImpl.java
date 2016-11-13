@@ -84,5 +84,10 @@ public class WebServiceImpl implements WebService {
   public int updateMemberPassword(@Param("memberNo")String memberNo, @Param("password")String password){
     return this.webService.updateMemberPassword(memberNo , password);
   }
+
+  @Override
+  public boolean checkMemberByMemberNoAndPassword(String no, String oldPassword) {
+    return this.webService.checkMemberByMemberNoAndPassword(no , oldPassword);
+  }
   
 }

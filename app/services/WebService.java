@@ -57,5 +57,8 @@ public interface WebService {
 
   /** 更新會員密碼 */
   public int updateMemberPassword(@Param("memberNo")String memberNo, @Param("password")String password);
+
+  /** 根據會員編號 , 與密碼 , 確認該會員存在*/
+  public boolean checkMemberByMemberNoAndPassword(@Param("no")String no, @Param("password")String oldPassword);
   
 }

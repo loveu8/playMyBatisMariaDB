@@ -16,7 +16,9 @@ import pojo.web.MemberToken;
 import pojo.web.MemberLoginStatus;
 import pojo.web.MemberStatus;
 import pojo.web.MemberTokenType;
+import pojo.web.auth.UserSession;
 import pojo.web.email.Email;
+import pojo.web.signup.request.EditPasswordRequest;
 import pojo.web.signup.request.ResetPasswordRequest;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.verific.VerificFormMessage;
@@ -613,11 +615,54 @@ public class WebController extends Controller {
   }
   
   // 修改密碼頁面
+  @AuthCheck 
   public Result editPassword(){
     return ok(editPassword.render());
   }
   
-  
+  /**
+   * <pre>
+   * Step 1 : 使用登入驗證AuthCheck，是否登入狀態中
+   * Step 2 : 驗證表單
+   * Step 3 : 驗證舊密碼是否符合
+   * Step 4 : 密碼是否符合基本要求
+   * Step 5 : 驗證新密碼是否一致
+   * OK 1 : 確認完畢，進行修改密碼
+   * OK 2 : 修改密碼成功，寄送信箱
+   * OK 3 : 會員更新動作，都需要記錄下來，寫入member_main_log
+   * OK 4 : 清除使用者Cookie與Server Session，並重新登入 
+   * </pre>
+   */
+  //Step 1
+  @AuthCheck 
+  public Result doEditPassword(){
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
+    // Step 2
+    EditPasswordRequest request = null;
+    try{
+      request = formFactory.form(EditPasswordRequest.class).bindFromRequest().get();
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "資料錯誤，請重新點選修改密碼功能連結，謝謝。0x1");
+      return ok(editPassword.render());
+    }
+    
+    // Step 3
+    Utils_Session utilSsession = new Utils_Session();
+    try {
+      String memberNo = utilSsession.getUserNo();
+      boolean isOldPassword = webService.checkMemberByMemberNoAndPassword(memberNo,request.getOldPassword());
+      play.Logger.info("isOldPassword = " + isOldPassword);
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請重新再次嘗試，謝謝。");
+      return ok(editPassword.render());
+    }
+    
+    return ok(editPassword.render());
+  }
   
   
   
