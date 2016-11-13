@@ -189,7 +189,7 @@ public class Utils_Session {
       Date nowTime = formatter.parse(nowString);
       Date diff = new Date(expiryDateTime.getTime()-nowTime.getTime());
       long betweentDate = diff.getTime() / (60 * 60 * 24 * 1000);
-      if(betweentDate > 13){
+      if(betweentDate >= 13){
         isRewrite = false; 
       }
       play.Logger.info("expiryDate      = " + expiryDateTime.getTime());

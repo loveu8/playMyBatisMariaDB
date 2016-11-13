@@ -58,7 +58,7 @@ public class AuthBlocker extends CommonBlocker{
    *</pre>
    */
   @Override
-  public Result invoke(MethodInvocation invocation) throws Throwable {
+  public Object invoke(MethodInvocation invocation) throws Throwable {
     super.invoke(invocation);
     flash().clear();
     
@@ -107,7 +107,7 @@ public class AuthBlocker extends CommonBlocker{
           play.Logger.info("cache有資料比對通過，Cookie尚在24小時內，不需要更新");
         }
         
-        return (Result) invocation.proceed();
+        return invocation.proceed();
         
       } else {
         // Step 1.2.2
@@ -146,7 +146,7 @@ public class AuthBlocker extends CommonBlocker{
           play.Logger.info("db有資料比對通過，Cookie尚在24小時內，不需要更新");
         }
         
-        return (Result) invocation.proceed();
+        return invocation.proceed();
       }
     } else {
       // Step 1.1 to Next Step2
