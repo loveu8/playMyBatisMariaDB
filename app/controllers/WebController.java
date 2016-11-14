@@ -645,7 +645,7 @@ public class WebController extends Controller {
       request = formFactory.form(EditPasswordRequest.class).bindFromRequest().get();
     } catch (Exception e){
       e.printStackTrace();
-      flash().put("error", "資料錯誤，請重新點選修改密碼功能連結，謝謝。0x1");
+      flash().put("error", "資料錯誤，請重新點選修改密碼功能連結，謝謝。0x2");
       return ok(editPassword.render());
     }
     
@@ -655,9 +655,22 @@ public class WebController extends Controller {
       String memberNo = utilSsession.getUserNo();
       boolean isOldPassword = webService.checkMemberByMemberNoAndPassword(memberNo,request.getOldPassword());
       play.Logger.info("isOldPassword = " + isOldPassword);
+      if(!isOldPassword){
+        flash().put("error", "您的原始密碼輸入錯誤，請確認後重新輸入。0x3");
+        return ok(editPassword.render());
+      }
     } catch (Exception e){
       e.printStackTrace();
       flash().put("error", "系統忙碌中，請重新再次嘗試，謝謝。");
+      return ok(editPassword.render());
+    }
+    
+ 
+    // Step 4
+    Utils_Signup utilsSignup = new Utils_Signup();
+    VerificFormMessage message = utilsSignup.checkPassword(request.getPassword(), request.getRetypePassword());
+    if(!"200".equals(message.getStatus())){
+      flash().put("error", message.getStatusDesc()+"0x4");
       return ok(editPassword.render());
     }
     
