@@ -34,6 +34,9 @@
 				@if(flash.containsKey("errorLogin")) {
 					<span style="color:red;">@flash.get("errorLogin")</span>
 				}
+				@if(flash.containsKey("ok")) {
+					<span style="color:green;">@flash.get("ok")</span>
+				}
 			</div>
 			<input type="hidden" name="role" value="MEMBER"/>
 			 <ul>

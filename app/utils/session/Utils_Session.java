@@ -4,7 +4,6 @@ package utils.session;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +14,6 @@ import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Http.Cookie;
 import play.mvc.Http.Request;
-import pojo.web.Member;
 import pojo.web.auth.UserCookie;
 import pojo.web.auth.UserSession;
 import services.WebService;
@@ -170,12 +168,16 @@ public class Utils_Session {
   }
 
   
-  /**清除瀏覽器Cookie*/
+  /** 清除瀏覽器Cookie */
   public void clearClientCookie(Http.Response response){
     response.discardCookie("sessionId");
     response.discardCookie("sessionSign");
   }
   
+  /** 清除使用者Server上的Session */
+  public void clearServerSession(String userSessionId){
+    injector().instanceOf(DefaultCacheApi.class).remove(userSessionId);
+  }
   
   /** 
    * 檢查是否超過24小時 

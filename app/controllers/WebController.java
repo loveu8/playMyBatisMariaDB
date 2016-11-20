@@ -609,9 +609,7 @@ public class WebController extends Controller {
       flash().put("error", "系統忙碌中，請重新再次嘗試，謝謝。");
       return ok(resetPassword.render(request.getToken()));
     }
-    
     return ok(resetPasswordOk.render());
-    
   }
   
   // 修改密碼頁面
@@ -674,7 +672,42 @@ public class WebController extends Controller {
       return ok(editPassword.render());
     }
     
-    return ok(editPassword.render());
+    
+    try{
+      // Ok 1
+      String password = request.getPassword();
+      String memberNo = utilSsession.getUserNo();
+      Member member = this.webService.findMemberByMemberNo(memberNo);
+      
+      int updateMemberPassword = this.webService.updateMemberPassword(memberNo , password);
+      play.Logger.info("updateMemberPassword = " + updateMemberPassword );
+      
+      if(updateMemberPassword == 0){
+        flash().put("error", "修改密碼錯誤，請重新修改密碼，謝謝。");
+      }
+      
+      // Ok 2~3
+      int isGenMemberChangeLogOk = this.webService.genMemberChangeLog(member);
+      
+      Utils_Email utils_Email = new Utils_Email();
+      Email email = new Utils_Email().genEditPasswordOk(member);
+      boolean isSendEditPasswordOk = utils_Email.sendMail(email);
+      
+      play.Logger.info("isEditPasswordOk = " + isSendEditPasswordOk + 
+                       ",isGenMemberChangeLogOk = " + isGenMemberChangeLogOk);
+
+    } catch(Exception e) {
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請重新再次嘗試，謝謝。");
+      return ok(editPassword.render());
+    }
+    
+    // Ok 4 
+    utilSsession.clearServerSession(request().cookies().get("sessionId").toString());
+    utilSsession.clearClientCookie(response());
+    flash().put("ok","您的密碼修改成功，請重新登入");
+    
+    return redirect(controllers.routes.WebController.login().url());
   }
   
   
