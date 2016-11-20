@@ -155,7 +155,7 @@
 
 	<!--  更新會員密碼 -->
 	<update id="updateMemberPassword">
-		UPDATE member_main SET password = #{password} WHERE memberNo = #{memberNo}
+		UPDATE member_main SET password = #{password} , modifyDate = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') WHERE memberNo = #{memberNo}
 	</update>
 	
 	
