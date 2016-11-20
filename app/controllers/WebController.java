@@ -623,8 +623,7 @@ public class WebController extends Controller {
    * Step 1 : 使用登入驗證AuthCheck，是否登入狀態中
    * Step 2 : 驗證表單
    * Step 3 : 驗證舊密碼是否符合
-   * Step 4 : 密碼是否符合基本要求
-   * Step 5 : 驗證新密碼是否一致
+   * Step 4 : 驗證密碼是否符合要求
    * OK 1 : 確認完畢，進行修改密碼
    * OK 2 : 修改密碼成功，寄送信箱
    * OK 3 : 會員更新動作，都需要記錄下來，寫入member_main_log
