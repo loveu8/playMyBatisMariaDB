@@ -3,14 +3,12 @@ package services;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 import pojo.web.Member;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
 import pojo.web.signup.request.SignupRequest;
 
-@Component
 public interface WebService {
 
   /** 註冊新會員 */

@@ -1,5 +1,6 @@
 package services.Impl;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
@@ -13,18 +14,19 @@ import pojo.web.auth.UserSession;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
+
 public class WebServiceImpl implements WebService {
 
   private WebService webService;
-
-  public WebServiceImpl() {
+  
+  public WebServiceImpl() throws SQLException {
     // 建立Inject modules.MyBatisModule()
     // 讓WebService藉由 injector 可以跟DB建立連線
     Injector injector = Guice.createInjector(new modules.MyBatisModule());
     this.webService = injector.getInstance(WebService.class);
   }
-
-  public int signupNewMember(@Param("signupRequest") SignupRequest signupRequest) {
+  
+  public int signupNewMember(@Param("signupRequest") SignupRequest signupRequest){
     return this.webService.signupNewMember(signupRequest);
   }
 
