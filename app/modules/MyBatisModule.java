@@ -15,6 +15,7 @@ import com.google.inject.name.Names;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+import test.db.FooDAO;
 import play.Configuration;
 import play.db.Database;
 import play.db.Databases;
@@ -25,13 +26,14 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule {
 
   @Override
   protected void initialize() {
-    // 使用Play內建Databases物件，使用createFrom連線到DB
+    // 使用Play內建Databases類別，使用createFrom方法連線到DB
     usePlayStyleConnectDatabase();
     
     // 使用MyBaits官方說明，連線到DB
 //    useMyBaitsStyleConnectDatabase();
+
   }
-  
+
   protected void usePlayStyleConnectDatabase(){
     environmentId("dev");
     bindConstant().annotatedWith(Names.named("mybatis.configuration.failFast")).to(true);
@@ -115,12 +117,13 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule {
     ClassLoader classLoader = modules.MyBatisModule.class.getClassLoader();
     Config config = ConfigFactory.load(classLoader);
     Configuration configuration = new Configuration(config);
+    String envId = configuration.getString("db.play.mybatis.environment.id");
     String schema = configuration.getString("db.play.schema");
     String user = configuration.getString("db.play.user");
     String password = configuration.getString("db.play.password");
     
     Properties myBatisProperties = new Properties();
-    myBatisProperties.setProperty("mybatis.environment.id", "dev");
+    myBatisProperties.setProperty("mybatis.environment.id", envId);
     myBatisProperties.setProperty("JDBC.schema", schema);
     myBatisProperties.setProperty("JDBC.username", user);
     myBatisProperties.setProperty("JDBC.password", password);

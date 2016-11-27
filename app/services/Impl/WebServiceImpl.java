@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import pojo.web.Member;
@@ -17,6 +18,7 @@ import services.WebService;
 
 public class WebServiceImpl implements WebService {
 
+  @Inject
   private WebService webService;
   
   public WebServiceImpl() throws SQLException {
@@ -26,7 +28,7 @@ public class WebServiceImpl implements WebService {
     this.webService = injector.getInstance(WebService.class);
   }
   
-  public int signupNewMember(@Param("signupRequest") SignupRequest signupRequest){
+  public int signupNewMember(@Param("signupRequest") SignupRequest signupRequest) {
     return this.webService.signupNewMember(signupRequest);
   }
 
