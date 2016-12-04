@@ -33,7 +33,7 @@ public class Test_FooLocalDAO extends AbstractFooDAO{
     request.setEmail("111@star.com.tw");
     request.setUsername("111");
     request.setPassword("111");
-    System.out.println("error message = " + dao.testErrorWithSessionManager(request));
+    dao.testErrorWithSessionManager(request);
     System.out.println("Test SessionManager rollback - end");
     System.out.println("----------------------------------------------");
   }
@@ -50,7 +50,9 @@ public class Test_FooLocalDAO extends AbstractFooDAO{
       request.setPassword("222");
       dao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
-      System.out.println("error message = " + e.getMessage());
+      System.out.println("casue : " + e.getCause() + 
+          " , message = " + e.getMessage()+ 
+          " , locationMessage : " + e.getLocalizedMessage());
     }
     System.out.println("Test Annation Transactional rollback one - end");
     System.out.println("----------------------------------------------");
@@ -60,7 +62,11 @@ public class Test_FooLocalDAO extends AbstractFooDAO{
   @Test
   public void case3(){
     System.out.println("----------------------------------------------");
-    System.out.println("Case 3 : Test Annation Transactional rollback with print Exception  - start");
+    System.out.println("Case 3 : Test Annation Transactional rollback with Exception log  - start");
+    String errorCasue = "";
+    String errorMessage = "";
+    String errorLocationMessage = "";
+    StringBuffer errorStackTrace = new StringBuffer("");
     try{
       SignupRequest request = new SignupRequest();
       request.setEmail("333@star.com.tw");
@@ -68,15 +74,23 @@ public class Test_FooLocalDAO extends AbstractFooDAO{
       request.setPassword("333");
       dao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
-      System.out.println("casue : " + e.getCause() + " , locationMessage : " + e.getLocalizedMessage());
+      errorCasue = e.getCause().toString();
+      errorMessage = e.getMessage();
+      errorLocationMessage = e.getLocalizedMessage();
+
       for(StackTraceElement ste :e.getStackTrace() ){
-        System.out.println("class:" + ste.getClassName() +
-                           " , method:" + ste.getMethodName() + 
-                           " , fieldName: " + ste.getFileName() +
-                           " , lineNumber:" + ste.getLineNumber());
+        errorStackTrace.append(ste.getClassName() +
+                               "." + ste.getMethodName() + 
+                               "(" + ste.getFileName() +
+                               ":" + ste.getLineNumber()+")\n");
       }
+    } finally {
+      System.out.println("casue : " + errorCasue + 
+                         " , message : " + errorMessage + 
+                         " , locationMessage : " + errorLocationMessage );
+      System.out.println("errorStackTrace : " + errorStackTrace.toString());
     }
-    System.out.println("Case 3 : Test Annation Transactional rollback with print Exception - end");
+    System.out.println("Case 3 : Test Annation Transactional rollback with Exception log - end");
     System.out.println("----------------------------------------------");
   }
   

@@ -21,7 +21,7 @@ public abstract class AbstractFooDAO {
   @Inject
   public static FooServiceImpl fooServiceImpl;
   
-  public static String testErrorWithSessionManager(SignupRequest request){
+  public static String testErrorWithSessionManager(SignupRequest request) throws ArithmeticException{
     sqlSessionManager.startManagedSession(
       ExecutorType.BATCH,
       TransactionIsolationLevel.READ_UNCOMMITTED);
@@ -32,15 +32,12 @@ public abstract class AbstractFooDAO {
       int i = 1 / 0 ;
       sqlSessionManager.commit();
     } catch (Exception e) {
+      System.out.println("casue : " + e.getCause() + 
+          " , message = " + e.getMessage()+ 
+          " , locationMessage : " + e.getLocalizedMessage());
       errorMessage = e.getMessage();
-      for(StackTraceElement ste :e.getStackTrace() ){
-        System.out.println("class:" + ste.getClassName() +
-                           " , method:" + ste.getMethodName() + 
-                           " , fieldName: " + ste.getFileName() +
-                           " , lineNumber:" + ste.getLineNumber());
-      }
       sqlSessionManager.rollback();
-    } finally {
+    }finally {
       sqlSessionManager.close();
     }
     return errorMessage;

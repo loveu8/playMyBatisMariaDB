@@ -23,7 +23,7 @@ public class FooServiceImpl{
       executorType = ExecutorType.BATCH,
       isolation = Isolation.READ_UNCOMMITTED,
       rethrowExceptionsAs = MyDaoException.class,
-      exceptionMessage = ErrorMessage.daoError1
+      exceptionMessage = ErrorMessage.DAO_ERROR1
   )
   public int signupNewMember(SignupRequest signupRequest) throws MyDaoException {
     int num = this.webService.signupNewMember(signupRequest);
