@@ -192,10 +192,13 @@ POST	/web/editPassword		controllers.WebController.doEditPassword()
 # chapter 12_5 - start
 
 # http://127.0.0.1:9000/test/sessionManagerACID
-GET		/test/testSessionManagerACID		controllers.TestController.sessionManagerACID()
+GET		/test/testSessionManagerACID			controllers.TestController.sessionManagerACID()
 
 # http://127.0.0.1:9000/test/annotationACID
-GET		/test/annotationACID			controllers.TestController.annotationACID()
+GET		/test/annotationACID					controllers.TestController.annotationACID()
+
+# http://127.0.0.1:9000/test/annotationACIDwithExceptionLog
+GET		/test/annotationACIDwithExceptionLog	controllers.TestController.annotationACIDwithExceptionLog()
 
 # chapter 12_5 - end
 #------------------------------------

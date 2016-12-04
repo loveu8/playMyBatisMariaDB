@@ -45,6 +45,10 @@ public class TestController extends Controller {
   
   public Result annotationACIDwithExceptionLog(){
     String tewat = "";
+    String errorCasue = "";
+    String errorMessage = "";
+    String errorLocationMessage = "";
+    StringBuffer errorStackTrace = new StringBuffer("");
     try{
       SignupRequest request = new SignupRequest();
       request.setEmail("222@star.com.tw");
@@ -52,14 +56,21 @@ public class TestController extends Controller {
       request.setPassword("222");
       fooDao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
+      errorCasue = e.getCause().toString();
+      errorMessage = e.getMessage();
+      errorLocationMessage = e.getLocalizedMessage();
+
       for(StackTraceElement ste :e.getStackTrace() ){
-        System.out.println("class:" + ste.getClassName() +
-                           " , method:" + ste.getMethodName() + 
-                           " , fieldName: " + ste.getFileName() +
-                           " , lineNumber:" + ste.getLineNumber());
+        errorStackTrace.append(ste.getClassName() +
+                               "." + ste.getMethodName() + 
+                               "(" + ste.getFileName() +
+                               ":" + ste.getLineNumber()+")\n");
       }
-      tewat = "casue : " + e.getCause() + " , locationMessage : " + e.getLocalizedMessage();
     } finally {
+      System.out.println("casue : " + errorCasue + 
+                         " , message : " + errorMessage + 
+                         " , locationMessage : " + errorLocationMessage );
+      System.out.println("errorStackTrace : " + errorStackTrace.toString());
     }
     return ok("ACID rollback Testing " +
               "\n test Error With Annotation Transation errorMessage = " + tewat);
