@@ -711,25 +711,6 @@ public class WebController extends Controller {
     return redirect(controllers.routes.WebController.login().url());
   }
   
-  @Inject
-  FooDAO fooDao ;
-  
-  public Result testACID(){
-    String tewsm = fooDao.testErrorWithSessionManager();
-    String tewat = "";
-    try{
-      fooDao.testErrorWithAnnotationTransation();
-    } catch (Exception e) {
-      e.printStackTrace();
-      tewat = e.getMessage();
-    } finally {
-    }
-    return ok("ACID rollback Testing " + 
-              "\n test Error With SessionManager errorMessage = " + tewsm + 
-              "\n test Error With Annotation Transation errorMessage = " + tewat);
-  }
-  
-  
   
   
 }

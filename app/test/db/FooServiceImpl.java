@@ -1,12 +1,12 @@
 package test.db;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.*;
 import org.mybatis.guice.transactional.Isolation;
 import org.mybatis.guice.transactional.Transactional;
 
 import com.google.inject.Inject;
 
+import error.ErrorMessage;
 import error.MyDaoException;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
@@ -14,7 +14,7 @@ import services.WebService;
 /**
  * Test Guice and MyBatis Transactional example 
  */
-public class FooService{
+public class FooServiceImpl{
  
   @Inject
   private WebService webService;
@@ -23,12 +23,12 @@ public class FooService{
       executorType = ExecutorType.BATCH,
       isolation = Isolation.READ_UNCOMMITTED,
       rethrowExceptionsAs = MyDaoException.class,
-      exceptionMessage = "error test" 
+      exceptionMessage = ErrorMessage.daoError1
   )
-  public int signupNewMember(@Param("signupRequest") SignupRequest signupRequest) throws MyDaoException {
+  public int signupNewMember(SignupRequest signupRequest) throws MyDaoException {
     int num = this.webService.signupNewMember(signupRequest);
     // error test
-    int i = 1 /0;
+    num = num / 0;
     return num;
   }
 

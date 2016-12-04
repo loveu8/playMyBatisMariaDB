@@ -13,46 +13,42 @@ import services.WebService;
 public abstract class AbstractFooDAO {
   
   @Inject
-  public SqlSessionManager sqlSessionManager;
+  public static SqlSessionManager sqlSessionManager;
   
   @Inject
-  public WebService webService;
+  public static WebService webService;
   
   @Inject
-  public FooService fooService;
+  public static FooServiceImpl fooServiceImpl;
   
-  public String testErrorWithSessionManager(){
-    this.sqlSessionManager.startManagedSession(
-          ExecutorType.BATCH,
-          TransactionIsolationLevel.READ_UNCOMMITTED);
+  public static String testErrorWithSessionManager(SignupRequest request){
+    sqlSessionManager.startManagedSession(
+      ExecutorType.BATCH,
+      TransactionIsolationLevel.READ_UNCOMMITTED);
     String errorMessage = "";
     try {
-        SignupRequest request = new SignupRequest();
-        request.setEmail("111@star.com.tw");
-        request.setUsername("111");
-        request.setPassword("111");
-        request.setRetypePassword("111");
-        webService.signupNewMember(request);
-        // error test 
-        int i = 1 / 0 ;
-        this.sqlSessionManager.commit();
+      webService.signupNewMember(request);
+      // error test 
+      int i = 1 / 0 ;
+      sqlSessionManager.commit();
     } catch (Exception e) {
-        e.printStackTrace();
-        errorMessage = e.getMessage();
-        this.sqlSessionManager.rollback();
+      errorMessage = e.getMessage();
+      for(StackTraceElement ste :e.getStackTrace() ){
+        System.out.println("class:" + ste.getClassName() +
+                           " , method:" + ste.getMethodName() + 
+                           " , fieldName: " + ste.getFileName() +
+                           " , lineNumber:" + ste.getLineNumber());
+      }
+      sqlSessionManager.rollback();
     } finally {
-        this.sqlSessionManager.close();
+      sqlSessionManager.close();
     }
     return errorMessage;
   }
-    
-  public void testErrorWithAnnotationTransation() throws MyDaoException {
-    SignupRequest request = new SignupRequest();
-    request.setEmail("222@star.com.tw");
-    request.setUsername("222");
-    request.setPassword("222");
-    request.setRetypePassword("222");
-    fooService.signupNewMember(request);
+   
+  
+  public void testErrorWithAnnotationTransation(SignupRequest request) throws MyDaoException {
+    fooServiceImpl.signupNewMember(request);
   }
   
 }
