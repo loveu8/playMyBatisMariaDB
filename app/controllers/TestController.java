@@ -2,6 +2,8 @@ package controllers;
 
 import javax.inject.Inject;
 
+import error.Utils_Exception;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.signup.request.SignupRequest;
@@ -35,46 +37,13 @@ public class TestController extends Controller {
       request.setPassword("222");
       fooDao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
-      e.printStackTrace();
-      tewat = e.getMessage();
+      tewat = Utils_Exception.un.genException(new Object(){}.getClass(), e);
     } finally {
     }
     return ok("ACID rollback Testing " +
               "\n test Error With Annotation Transation errorMessage = " + tewat);
   }
-  
-  public Result annotationACIDwithExceptionLog(){
-    String tewat = "";
-    String errorCasue = "";
-    String errorMessage = "";
-    String errorLocationMessage = "";
-    StringBuffer errorStackTrace = new StringBuffer("");
-    try{
-      SignupRequest request = new SignupRequest();
-      request.setEmail("222@star.com.tw");
-      request.setUsername("222");
-      request.setPassword("222");
-      fooDao.testErrorWithAnnotationTransation(request);
-    } catch (Exception e) {
-      errorCasue = e.getCause().toString();
-      errorMessage = e.getMessage();
-      errorLocationMessage = e.getLocalizedMessage();
 
-      for(StackTraceElement ste :e.getStackTrace() ){
-        errorStackTrace.append(ste.getClassName() +
-                               "." + ste.getMethodName() + 
-                               "(" + ste.getFileName() +
-                               ":" + ste.getLineNumber()+")\n");
-      }
-    } finally {
-      System.out.println("casue : " + errorCasue + 
-                         " , message : " + errorMessage + 
-                         " , locationMessage : " + errorLocationMessage );
-      System.out.println("errorStackTrace : " + errorStackTrace.toString());
-    }
-    return ok("ACID rollback Testing " +
-              "\n test Error With Annotation Transation errorMessage = " + tewat);
-  }
   
   
 }
