@@ -2,8 +2,7 @@ package controllers;
 
 import javax.inject.Inject;
 
-import error.Utils_Exception;
-import play.libs.Json;
+import error.HelperException;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.signup.request.SignupRequest;
@@ -37,7 +36,7 @@ public class TestController extends Controller {
       request.setPassword("222");
       fooDao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
-      tewat = Utils_Exception.un.genException(new Object(){}.getClass(), e);
+      tewat = HelperException.un.genException(new Object(){}.getClass(), e);
     } finally {
     }
     return ok("ACID rollback Testing " +

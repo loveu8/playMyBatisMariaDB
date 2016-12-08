@@ -8,8 +8,7 @@ import org.junit.Test;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import error.Utils_Exception;
-import play.libs.Json;
+import error.HelperException;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
@@ -52,7 +51,7 @@ public class Test_FooLocalDAO extends AbstractFooDAO{
       request.setPassword("222");
       dao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
-      Utils_Exception.un.genException(new Object(){}.getClass(), e);
+      HelperException.un.genException(new Object(){}.getClass(), e);
     }
     play.Logger.info("Test Annation Transactional rollback - end");
     play.Logger.info("----------------------------------------------");

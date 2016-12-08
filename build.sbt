@@ -21,7 +21,11 @@ libraryDependencies ++= Seq(
   "javax.mail" % "javax.mail-api" % "1.5.6",
   "javax.mail" % "mail" % "1.4.7",
   // Spring Aop
-  "org.springframework" % "spring-aop" % "4.2.4.RELEASE"
+  "org.springframework" % "spring-aop" % "4.2.4.RELEASE",
+  // fast-classpath-scanner
+  "io.github.lukehutch" % "fast-classpath-scanner" % "2.0.9",
+  // Test
+  "junit" % "junit" % "4.12"
 )
 
 // Compile the project before generating Eclipse files, so that .class files for views and routes are present

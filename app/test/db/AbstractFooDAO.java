@@ -7,8 +7,7 @@ import org.apache.ibatis.session.TransactionIsolationLevel;
 import com.google.inject.Inject;
 
 import error.MyDaoException;
-import error.Utils_Exception;
-import play.libs.Json;
+import error.HelperException;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
@@ -34,7 +33,7 @@ public abstract class AbstractFooDAO {
       int i = 1 / 0 ;
       sqlSessionManager.commit();
     } catch (Exception e) {
-      errorMessage = Utils_Exception.un.genException(new Object(){}.getClass(), e);
+      errorMessage = HelperException.un.genException(new Object(){}.getClass(), e);
       sqlSessionManager.rollback();
     }finally {
       sqlSessionManager.close();
