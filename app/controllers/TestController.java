@@ -36,7 +36,7 @@ public class TestController extends Controller {
       request.setPassword("222");
       fooDao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
-      tewat = HelperException.un.genException(new Object(){}.getClass(), e);
+      tewat = HelperException.un.genException(e);
     } finally {
     }
     return ok("ACID rollback Testing " +

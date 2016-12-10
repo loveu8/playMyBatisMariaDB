@@ -51,7 +51,7 @@ public class Test_FooLocalDAO extends AbstractFooDAO{
       request.setPassword("222");
       dao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
-      HelperException.un.genException(new Object(){}.getClass(), e);
+      HelperException.un.genException(e);
     }
     play.Logger.info("Test Annation Transactional rollback - end");
     play.Logger.info("----------------------------------------------");

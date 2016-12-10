@@ -1,46 +1,39 @@
 package error;
 
-import java.lang.reflect.Method;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import utils.tool.Utils_FastScan;
 
 public enum HelperException {
 
   un;
 
-  public String genException(Class<?> thisClass, Exception e) {
+  public String genException(Exception e) {
 
+    e.printStackTrace();
+    System.out.println("---------------------");
     StringBuffer errorMessage = new StringBuffer("");
-
-    List<String> classNames = new FastClasspathScanner("controllers").scan().getNamesOfAllClasses();
-    classNames.addAll(new FastClasspathScanner("test").scan().getNamesOfAllClasses());
-
+    errorMessage.append("Casue : " + e.getCause() + 
+        " , Message : " + e.getMessage() + 
+        " , LocationMessage : " + e.getLocalizedMessage() +
+        " , Error related class => { ");
+    
+    Map<String , HashMap<String , String>> classMaps = Utils_FastScan.un.getProjectClassMethodMapping();
     for (StackTraceElement ele : e.getStackTrace()) {
-      for (String className : classNames) {
-        if (ele.getClassName().equals(className)) {
-          try {
-            Method[] methods = Class.forName(className).getMethods();
-            for (int i = 0; i < methods.length; i++) {
-              if (methods[i].getName().equals(ele.getMethodName())) {
-                errorMessage.append("class : " + className + " , method : " + methods[i].getName()
-                    + " , lineNumber : " + ele.getLineNumber() + "\n");
-                break;
-              }
-            }
-          } catch (SecurityException e1) {
-          } catch (ClassNotFoundException e1) {
-          }
-          break;
-        }
+      if(classMaps != null && 
+         classMaps.get(ele.getClassName()) != null && 
+         classMaps.get(ele.getClassName()).get(ele.getMethodName()) != null ){
+        errorMessage.append("[class : " + ele.getClassName() + 
+                            " , method : " + ele.getMethodName() + 
+                            " , lineNumber : " + ele.getLineNumber() + "] , ");
       }
     }
-    errorMessage.append(" , casue : " + e.getCause() + " , message : " + e.getMessage()
-        + " , locationMessage : " + e.getLocalizedMessage());
+    errorMessage.replace(errorMessage.length()-2 , errorMessage.length(), "").append(" } ");
     play.Logger.error(errorMessage.toString());
-
     return errorMessage.toString();
   }
+
 
 
 }

@@ -33,7 +33,7 @@ public abstract class AbstractFooDAO {
       int i = 1 / 0 ;
       sqlSessionManager.commit();
     } catch (Exception e) {
-      errorMessage = HelperException.un.genException(new Object(){}.getClass(), e);
+      errorMessage = HelperException.un.genException(e);
       sqlSessionManager.rollback();
     }finally {
       sqlSessionManager.close();
