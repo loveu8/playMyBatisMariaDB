@@ -2,28 +2,35 @@ package controllers;
 
 import javax.inject.Inject;
 
+import org.apache.ibatis.session.SqlSessionManager;
+
 import error.HelperException;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.signup.request.SignupRequest;
+import services.WebService;
 import test.db.FooDAO;
+import test.db.FooServiceImpl;
 
 
+/**
+ * ACID testing
+ * 
+ * TEST CASE : @link {Test_FooLocalDAO}
+ */
 public class TestController extends Controller {
 
-  
   @Inject
   FooDAO fooDao ;
-  
-  
+
   public Result sessionManagerACID(){
     SignupRequest request = new SignupRequest();
     request.setEmail("111@star.com.tw");
     request.setUsername("111");
     request.setPassword("111");
     String tewsm = fooDao.testErrorWithSessionManager(request);
-    return ok("ACID rollback Testing " + 
-              "\n test Error With SessionManager errorMessage = " + tewsm );
+    return ok("sessionManagerACID rollback Testing " + 
+              "\n Error info = " + tewsm );
   }
   
 
@@ -36,13 +43,27 @@ public class TestController extends Controller {
       request.setPassword("222");
       fooDao.testErrorWithAnnotationTransation(request);
     } catch (Exception e) {
-      tewat = HelperException.un.genException(e);
+      tewat = "cause:" + e.getCause() + ",message:" + e.getMessage();
     } finally {
     }
-    return ok("ACID rollback Testing " +
-              "\n test Error With Annotation Transation errorMessage = " + tewat);
+    return ok("annotationACID rollback Testing " +
+              "\n Error info = " + tewat);
   }
 
-  
+  public Result annotationACIDWithHelperException(){
+    String tewat = "";
+    SignupRequest request = new SignupRequest();
+    try{
+      request.setEmail("333@star.com.tw");
+      request.setUsername("333");
+      request.setPassword("333");
+      fooDao.testErrorWithAnnotationTransation(request);
+    } catch (Exception e) {
+      e.printStackTrace();
+      tewat = HelperException.un.genException(e,request);
+    }
+    return ok("annotationACID With HelperException rollback Testing " +
+              "\n Error info = " + tewat);
+  }
   
 }

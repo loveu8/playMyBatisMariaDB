@@ -14,15 +14,15 @@ import services.WebService;
 public abstract class AbstractFooDAO {
   
   @Inject
-  public static SqlSessionManager sqlSessionManager;
+  public SqlSessionManager sqlSessionManager;
   
   @Inject
-  public static WebService webService;
+  public WebService webService;
   
   @Inject
-  public static FooServiceImpl fooServiceImpl;
+  public FooServiceImpl fooServiceImpl;
   
-  public static String testErrorWithSessionManager(SignupRequest request) throws ArithmeticException{
+  public String testErrorWithSessionManager(SignupRequest request) throws ArithmeticException{
     sqlSessionManager.startManagedSession(
       ExecutorType.BATCH,
       TransactionIsolationLevel.READ_UNCOMMITTED);
@@ -33,7 +33,8 @@ public abstract class AbstractFooDAO {
       int i = 1 / 0 ;
       sqlSessionManager.commit();
     } catch (Exception e) {
-      errorMessage = HelperException.un.genException(e);
+      e.printStackTrace();
+      errorMessage = "cause:" + e.getCause() + ",message:" + e.getMessage();
       sqlSessionManager.rollback();
     }finally {
       sqlSessionManager.close();
