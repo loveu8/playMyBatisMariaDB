@@ -2,15 +2,11 @@ package controllers;
 
 import javax.inject.Inject;
 
-import org.apache.ibatis.session.SqlSessionManager;
-
 import error.HelperException;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.signup.request.SignupRequest;
-import services.WebService;
 import test.db.FooDAO;
-import test.db.FooServiceImpl;
 
 
 /**
@@ -18,7 +14,7 @@ import test.db.FooServiceImpl;
  * 
  * TEST CASE : @link {Test_FooLocalDAO}
  */
-public class TestController extends Controller {
+public class AcidController extends Controller {
 
   @Inject
   FooDAO fooDao ;
