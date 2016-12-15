@@ -4,14 +4,19 @@ import java.util.List;
 
 public class ErrorLogInfo {
   
+  /** 錯誤原因 */
   private String casue;
   
+  /** 錯誤訊息 */
   private String message;
   
+  /** 錯誤訊息 */
   private String localMessage;
   
+  /** 發生例外的類別，所擁有的inputs */
   private List<Object> inputs;
   
+  /** 發生例外後，我們專案相關的類別 */
   private List<RelatedClass> relatedClasses;
 
   public String getCasue() {

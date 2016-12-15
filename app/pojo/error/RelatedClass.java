@@ -2,10 +2,13 @@ package pojo.error;
 
 public class RelatedClass {
   
+  /** 類別名稱 */
   private String className;
   
+  /** 類別方法名稱 */
   private String method;
   
+  /** 行數 */
   private String lineNumber;
 
   public String getClassName() {
