@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import pojo.web.Member;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
+import pojo.web.email.MemberChangeEmail;
 import pojo.web.signup.request.SignupRequest;
 
 public interface WebService {
@@ -59,4 +60,7 @@ public interface WebService {
   /** 根據會員編號 , 與密碼 , 確認該會員存在*/
   public boolean checkMemberByMemberNoAndPassword(@Param("no")String no, @Param("password")String oldPassword);
   
+  /** 更換信箱，撈取使用者信箱，尚未修改信箱 */
+  public MemberChangeEmail getMemberEmails(@Param("memberNo")String memberNo);
+
 }

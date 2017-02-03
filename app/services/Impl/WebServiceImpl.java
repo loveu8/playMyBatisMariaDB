@@ -12,6 +12,7 @@ import com.google.inject.Injector;
 import pojo.web.Member;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
+import pojo.web.email.MemberChangeEmail;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
@@ -92,6 +93,11 @@ public class WebServiceImpl implements WebService {
   @Override
   public boolean checkMemberByMemberNoAndPassword(String no, String oldPassword) {
     return this.webService.checkMemberByMemberNoAndPassword(no , oldPassword);
+  }
+
+  @Override
+  public MemberChangeEmail getMemberEmails(String memberNo) {
+    return this.webService.getMemberEmails(memberNo);
   }
   
 }

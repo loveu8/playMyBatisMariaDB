@@ -1,4 +1,4 @@
-<!DOCTYPE mapper
+!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
@@ -163,5 +163,16 @@
 	<select id="checkMemberByMemberNoAndPassword" parameterType="String" resultType="boolean">
 		SELECT COUNT(1) FROM member_main WHERE memberNo = #{no} AND password = #{password}
 	</select>
+	
+	
+ 	<!-- 更換信箱，撈取使用者信箱，尚未修改信箱 -->
+	<select id="getMemberEmails" parameterType="String" resultType="pojo.web.email.MemberChangeEmail">
+		SELECT
+			(SELECT email FROM member_main WHERE memberNo = #{memberNo} )	AS newEmail ,
+			(SELECT newEmail FROM member_changeEmail 
+	 		 WHERE memberNo = #{memberNo} AND expiryTime > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s'))) AS unAuthEmail
+		FROM DUAL
+	</select>
+		
 		
 </mapper>

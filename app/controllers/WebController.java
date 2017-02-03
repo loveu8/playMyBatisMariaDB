@@ -20,6 +20,7 @@ import pojo.web.MemberStatus;
 import pojo.web.MemberTokenType;
 import pojo.web.auth.UserSession;
 import pojo.web.email.Email;
+import pojo.web.email.MemberChangeEmail;
 import pojo.web.signup.request.EditPasswordRequest;
 import pojo.web.signup.request.ResetPasswordRequest;
 import pojo.web.signup.request.SignupRequest;
@@ -711,6 +712,46 @@ public class WebController extends Controller {
     return redirect(controllers.routes.WebController.login().url());
   }
   
+  
+  /**
+   * <pre>
+   *  取得修改信箱頁面 
+   *  若有尚未修改信箱且尚未逾期，會顯示在畫面上
+   *  Step 1 : 抓取使用者memberNo
+   *  Step 2 : 抓取使用者信箱
+   *  Ok     : 回傳結果到頁面
+   * </pre>
+   */
+  public Result editEmail(){
+    String memberNo = new Utils_Session().getUserNo();
+    if( memberNo == null || "".equals(memberNo) ){
+      return redirect(controllers.routes.WebController.login().url());
+    }
+    
+    try{
+      MemberChangeEmail data = this.webService.getMemberEmails(memberNo);
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改密碼，謝謝。");
+      return ok(changeEmail.render());
+    }
+    
+    return ok(changeEmail.render());
+  } 
+  
+  
+  /**
+   * <pre>
+   * Step 1 : 驗證是否是登入狀態中
+   * Step 2 : 檢查是否註冊過或重覆
+   * Step 3 : 同時只允許一筆，若有資料覆蓋掉
+   * Ok : 寄送更換信箱認證碼信件
+   *</pre> 
+   */
+  public Result changeEmail(){
+    
+    return ok("");
+  }
   
   
 }

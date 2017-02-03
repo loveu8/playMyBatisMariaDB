@@ -8,7 +8,7 @@
 -- isUse      是否使用過
 -- createDate 創立日期
 -- expiryTime 逾期時間
-CREATE TABLE `member_changeMail` (
+CREATE TABLE `member_changeEmail` (
     `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`oldEmail`   VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`newEmail` 	 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
@@ -22,8 +22,16 @@ CREATE TABLE `member_changeMail` (
 COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
 ;
--- DROP tables member_changeMail;
+-- DROP tables member_changeEmail;
 
+-- 找出修改密碼相關資訊
+SELECT DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') AS formatTime FROM DUAL;
+
+SELECT
+	(SELECT email FROM member_main WHERE memberNo = 'mem000000000003' )	AS newEmail ,
+	(SELECT newEmail FROM member_changeEmail 
+	 WHERE memberNo = '' AND expiryTime > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s'))) AS unAuthEmail
+FROM DUAL;
 
 -- 會員明細
 -- member_detail
