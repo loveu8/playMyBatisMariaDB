@@ -61,15 +61,15 @@ public class Utils_Email {
     return email;
   }
   
-  public Email genEditPasswordOk(Member member){
+  public Email genMemberChangeEmailOk(Member member){
     Format formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     String time = formatter.format(new Date());
     Email email = new Email();
     email.setFrom("littleqkstar@gmail.com");
     email.setTo(member.getEmail());
-    email.setSubject("[STAR] - 密碼重新修改成功");
+    email.setSubject("[STAR] - 電子信箱修改成功");
     email.setText("");
-    email.setContent("<h2>您好 "+ member.getUsername()+"您的密碼已在"+ time +" , 修改成功。</h2> ");
+    email.setContent("<h2>您好 "+ member.getUsername()+"您的電子信箱已在"+ time +" , 修改成功。</h2> ");
     play.Logger.info("genEditPasswordOk email = " + Json.toJson(email));
     return email;
   }
@@ -84,6 +84,19 @@ public class Utils_Email {
                       "<h3>驗證碼 : " + sendData.getCheckCode() + "</h3>" +
                       "<a href='" +"http://127.0.0.1:9000/web/authNewEmail?token="+sendData.getToken()+"'>修改註冊信箱連結</a>");
     play.Logger.info("forgotPassword email = " + Json.toJson(email));
+    return email;
+  }
+  
+  public Email genEditPasswordOk(Member member){
+    Format formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    String time = formatter.format(new Date());
+    Email email = new Email();
+    email.setFrom("littleqkstar@gmail.com");
+    email.setTo(member.getEmail());
+    email.setSubject("[STAR] - 密碼重新修改成功");
+    email.setText("");
+    email.setContent("<h2>您好 "+ member.getUsername()+"您的密碼已在"+ time +" , 修改成功。</h2> ");
+    play.Logger.info("genEditPasswordOk email = " + Json.toJson(email));
     return email;
   }
   

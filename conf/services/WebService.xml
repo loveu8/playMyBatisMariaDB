@@ -170,7 +170,7 @@
 		SELECT
 			(SELECT email FROM member_main WHERE memberNo = #{memberNo} ) AS originalEmail ,
 			(SELECT newEmail FROM member_changeEmail 
-	 		 WHERE memberNo = #{memberNo} AND expiryDate > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s')) ) AS unAuthEmail
+	 		 WHERE memberNo = #{memberNo} AND expiryDate > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s')) AND isUse = 0) AS unAuthEmail
 		FROM DUAL
 	</select>
 
@@ -206,7 +206,10 @@
 		SELECT * , DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_changeEmail WHERE token = #{token}
 	</select>
 	
-	
+	<!--  更新會員電子信箱 -->
+	<update id="updateMemberEmail">
+		UPDATE member_main SET email = #{newEmail} WHERE memberNo = #{memberNo}
+	</update>	
 	
 		
 </mapper>

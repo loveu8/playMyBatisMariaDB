@@ -70,5 +70,8 @@ public interface WebService {
   /** 撈取使用者信箱，尚未修改信箱 */
   public MemberSendChangeEmail getMemberSendChangeEmailByToken(@Param("token")String token);
 
+  /** 更新使用者的電子信箱 */
+  public int updateMemberEmail(@Param("memberNo") String memberNo, @Param("newEmail") String newEmail);
+
 
 }

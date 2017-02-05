@@ -110,4 +110,10 @@ public class WebServiceImpl implements WebService {
   public MemberSendChangeEmail getMemberSendChangeEmailByToken(@Param("token")String token){
     return this.webService.getMemberSendChangeEmailByToken(token);
   }
+  
+  @Override
+  public int updateMemberEmail(@Param("memberNo")String memberNo , @Param("newEmail")String newEmail){
+    return this.webService.updateMemberEmail(memberNo , newEmail);
+  }
+  
 }
