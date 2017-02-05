@@ -8,6 +8,7 @@ import pojo.web.Member;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
 import pojo.web.email.MemberChangeEmail;
+import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.SignupRequest;
 
 public interface WebService {
@@ -62,5 +63,12 @@ public interface WebService {
   
   /** 更換信箱，撈取使用者信箱，尚未修改信箱 */
   public MemberChangeEmail getMemberEmails(@Param("memberNo")String memberNo);
+  
+  /** 更換信箱，撈取使用者信箱，尚未修改信箱 */
+  public int genMemberSendChangeEmail(@Param("data")MemberSendChangeEmail data);
+  
+  /** 撈取使用者信箱，尚未修改信箱 */
+  public MemberSendChangeEmail getMemberSendChangeEmailByToken(@Param("token")String token);
+
 
 }

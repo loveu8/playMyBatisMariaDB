@@ -202,6 +202,22 @@ GET		/acid/annotationACIDWithHelperException	controllers.AcidController.annotati
 
 # chapter 12_5 - end
 #------------------------------------
+# chapter 13 - start
+
+# http://127.0.0.1:9000/web/editEmail
+GET		/web/editEmail						controllers.WebController.editEmail()
+
+# http://127.0.0.1:9000/web/changeEmail
+POST	/web/changeEmail					controllers.WebController.changeEmail()
+
+# http://127.0.0.1:9000/web/authNewEmail
+GET		/web/authNewEmail					controllers.WebController.authNewEmail()
+
+# http://127.0.0.1:9000/web/doAuthNewEmail
+POST	/web/authNewEmail					controllers.WebController.doAuthNewEmail()
+
+# chapter 13 - end
+#------------------------------------
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

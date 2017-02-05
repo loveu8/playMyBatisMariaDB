@@ -9,15 +9,16 @@
 -- createDate 創立日期
 -- expiryTime 逾期時間
 CREATE TABLE `member_changeEmail` (
-    `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
+   `memberNo`   VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`oldEmail`   VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`newEmail` 	 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`token` 	 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	`token` 	 	 VARCHAR(150) NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`checkCode`  VARCHAR(6)	  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`isUse`      BOOL		  NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	`isUse`      BOOL		  	  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`createDate` VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`expiryTime` VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	CONSTRAINT pk_memberNo PRIMARY KEY (memberNo)
+	`expiryDate` VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	CONSTRAINT pk_memberNo PRIMARY KEY (memberNo),
+	INDEX (token)
 )
 COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
@@ -30,8 +31,10 @@ SELECT DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') AS formatTime FROM DUAL;
 SELECT
 	(SELECT email FROM member_main WHERE memberNo = 'mem000000000003' )	AS newEmail ,
 	(SELECT newEmail FROM member_changeEmail 
-	 WHERE memberNo = '' AND expiryTime > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s'))) AS unAuthEmail
+	 WHERE memberNo = 'mem000000000003' AND expiryTime > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s'))) AS unAuthEmail
 FROM DUAL;
+
+
 
 -- 會員明細
 -- member_detail

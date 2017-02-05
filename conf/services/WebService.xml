@@ -1,4 +1,4 @@
-!DOCTYPE mapper
+<!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
@@ -168,11 +168,45 @@
  	<!-- 更換信箱，撈取使用者信箱，尚未修改信箱 -->
 	<select id="getMemberEmails" parameterType="String" resultType="pojo.web.email.MemberChangeEmail">
 		SELECT
-			(SELECT email FROM member_main WHERE memberNo = #{memberNo} )	AS newEmail ,
+			(SELECT email FROM member_main WHERE memberNo = #{memberNo} ) AS originalEmail ,
 			(SELECT newEmail FROM member_changeEmail 
-	 		 WHERE memberNo = #{memberNo} AND expiryTime > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s'))) AS unAuthEmail
+	 		 WHERE memberNo = #{memberNo} AND expiryDate > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s')) ) AS unAuthEmail
 		FROM DUAL
 	</select>
-		
+
+
+	<!-- 會員更換電子信箱表單 -->
+	<insert id="genMemberSendChangeEmail" parameterType="pojo.web.email.MemberSendChangeEmail">
+		insert into
+		member_changeEmail(memberNo , oldEmail , newEmail , token , checkCode , isUse , createDate , expiryDate)
+		values
+		( 
+			#{data.memberNo} , 
+			#{data.oldEmail} ,
+			#{data.newEmail} ,
+			#{data.token} ,
+			#{data.checkCode} ,
+			#{data.isUse} ,
+			#{data.createDate} ,
+			#{data.expiryDate} 
+		) ON DUPLICATE KEY UPDATE 
+		memberNo 	= #{data.memberNo},
+		oldEmail 	= #{data.oldEmail},
+		newEmail 	= #{data.newEmail},
+		token 		= #{data.token},
+		checkCode 	= #{data.checkCode},
+		isUse 		= #{data.isUse},
+		createDate  = #{data.createDate},
+		expiryDate  = #{data.expiryDate}
+	</insert>	
+	
+	
+ 	<!-- 使用會員編號與密碼確認該會員存在 -->
+	<select id="getMemberSendChangeEmailByToken" parameterType="String" resultType="pojo.web.email.MemberSendChangeEmail">
+		SELECT * , DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_changeEmail WHERE token = #{token}
+	</select>
+	
+	
+	
 		
 </mapper>

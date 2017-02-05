@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 
 import annotation.AuthCheck;
-import test.db.FooDAO;
 import play.Logger;
 import play.data.FormFactory;
 import play.libs.Json;
@@ -18,9 +17,9 @@ import pojo.web.MemberToken;
 import pojo.web.MemberLoginStatus;
 import pojo.web.MemberStatus;
 import pojo.web.MemberTokenType;
-import pojo.web.auth.UserSession;
 import pojo.web.email.Email;
 import pojo.web.email.MemberChangeEmail;
+import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.EditPasswordRequest;
 import pojo.web.signup.request.ResetPasswordRequest;
 import pojo.web.signup.request.SignupRequest;
@@ -717,41 +716,201 @@ public class WebController extends Controller {
    * <pre>
    *  取得修改信箱頁面 
    *  若有尚未修改信箱且尚未逾期，會顯示在畫面上
-   *  Step 1 : 抓取使用者memberNo
-   *  Step 2 : 抓取使用者信箱
+   *  Step 1 : 驗證是否是登入狀態中(AuthCheck)
+   *  Step 2 : 抓取使用者memberNo
+   *  Step 3 : 抓取使用者註冊信箱，尚未認證信箱
    *  Ok     : 回傳結果到頁面
    * </pre>
    */
+  @AuthCheck
   public Result editEmail(){
-    String memberNo = new Utils_Session().getUserNo();
-    if( memberNo == null || "".equals(memberNo) ){
-      return redirect(controllers.routes.WebController.login().url());
-    }
     
+    // Step 2
+    String memberNo = new Utils_Session().getUserNo();
+    Logger.info("memberNo = " + memberNo);
+    if( memberNo == null || "".equals(memberNo) ){
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x1");
+      return ok(changeEmail.render(null));
+    }
+ 
+    // Step 3
+    MemberChangeEmail data = null;
     try{
-      MemberChangeEmail data = this.webService.getMemberEmails(memberNo);
+      data = this.webService.getMemberEmails(memberNo);
     } catch (Exception e){
       e.printStackTrace();
-      flash().put("error", "系統忙碌中，請稍後再嘗試修改密碼，謝謝。");
-      return ok(changeEmail.render());
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x2");
+      return ok(changeEmail.render(null));
     }
     
-    return ok(changeEmail.render());
+    if(data==null || data.getOriginalEmail()==null  || "".equals(data.getOriginalEmail())){
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x3");
+      return ok(changeEmail.render(null));
+    }
+    Logger.info("data = " + Json.toJson(data));
+    
+    return ok(changeEmail.render(data));
   } 
   
   
   /**
    * <pre>
-   * Step 1 : 驗證是否是登入狀態中
-   * Step 2 : 檢查是否註冊過或重覆
-   * Step 3 : 同時只允許一筆，若有資料覆蓋掉
-   * Ok : 寄送更換信箱認證碼信件
+   * Step 1 : 驗證是否是登入狀態中(AuthCheck)
+   * Step 2 : 是否有填新信箱
+   * Step 3 : 信箱檢查是否註冊過或重覆
+   * OK 1 : 產生更換信箱相關資料
+   * Ok 2 : 寫入更換信箱表單
+   * Ok 3 : 寄送更換信箱認證碼信件
    *</pre> 
    */
-  public Result changeEmail(){
+  @AuthCheck
+  public Result changeEmail(){ 
     
-    return ok("");
+    // Step 1
+    MemberChangeEmail data = null;
+    try{
+      data = formFactory.form(MemberChangeEmail.class).bindFromRequest().get();
+    } catch(Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x4");
+      return ok(changeEmail.render(null));
+    }
+    if(data==null){
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x5");
+      return ok(changeEmail.render(null));
+    }
+    
+    // Step 2
+    if(data.getNewEmail()==null || "".equals(data.getNewEmail())){
+      flash().put("error", "請填入要修改的信箱，謝謝。0x5");
+      return ok(changeEmail.render(data));
+    }
+    
+    // Step 3
+    boolean isExists = false;
+    try{
+      isExists = this.webService.checkMemberByEmail(data.getNewEmail());
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x6");
+      return ok(changeEmail.render(data));
+    } 
+    if(isExists){
+      flash().put("error", "該電子信箱使用中，請更換其他電子信箱，謝謝。0x7");
+      return ok(changeEmail.render(data));
+    }
+    
+
+    MemberSendChangeEmail sendData = null;
+    int isWriteOk = 0;
+    boolean isSendOk = false;
+    try {
+      // OK 1
+      String memberNo = new Utils_Session().getUserNo();
+      String oldEmail = data.getOriginalEmail();
+      String newEmail = data.getNewEmail();
+      sendData = new Utils_Signup().genMemberSendChangeEmail(memberNo, oldEmail, newEmail);
+      if(sendData==null){
+        flash().put("error", "產生修改信箱資料發生錯誤，請聯絡管理者，謝謝。0x8");
+        return ok(changeEmail.render(data));
+      }
+      
+      // OK 2
+      isWriteOk = this.webService.genMemberSendChangeEmail(sendData);
+      if(isWriteOk==0){
+        flash().put("error", "產生寄信資料發生錯誤，請聯絡管理者，謝謝。0x9");
+        return ok(changeEmail.render(data));
+      }
+      
+      // OK 3
+      Utils_Email utilsEmail = new Utils_Email(); 
+      String userName = this.webService.findMemberByMemberNo(memberNo).getUsername();
+      Email mail = utilsEmail.genMemberSendChangeEmailData(userName,sendData);
+      isSendOk = utilsEmail.sendMail(mail);
+      if(!isSendOk){
+        flash().put("error", "寄送更換信箱發生錯誤，請聯絡管理者，謝謝。0x10");
+        return ok(changeEmail.render(data));
+      }
+            
+    } catch(Exception e) {
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x11");
+      return ok(changeEmail.render(data));
+    } finally {
+      Logger.info("isWriteOk = " + isWriteOk + " , isSendOk = " + isSendOk + "sendData = " + (sendData!=null ? Json.toJson(sendData) : "轉換傳送信件格式錯誤"));
+    }
+    
+    return ok(sendChangeEmailOk.render());
   }
   
+  
+  /**
+   * <pre>
+   * 
+   * 重設電子信箱信件寄送回來後
+   * Step 1 : 檢查電子信箱信件連結是否有資料
+   * Step 2 : 檢查Token，是否可以查詢到會員資料
+   * Step 3 : 檢查Token，是否使用過了
+   * Step 4 : 檢查Token，是否逾期了
+   * 
+   * OK : 檢查通過，可以進行重設電子信箱動作，並把Token儲存在表單裡
+   * </pre>
+   */
+  public Result authNewEmail(){
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
+    // Step 1
+    String token = "";
+    try{
+      token = request().getQueryString("token");
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "重設電子信箱連結有誤，請確認是否有點選正確，謝謝。0x1");
+      return ok(authNewEmail.render(""));
+    }
+    
+    // Step 2
+    MemberSendChangeEmail data = null;
+    try{
+      data = webService.getMemberSendChangeEmailByToken(token);
+    } catch(Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return ok(authNewEmail.render(""));
+    } finally {
+      if(data == null){
+        flash().put("error", "重設電子信箱連結有誤，請確認是否有點選正確，謝謝。0x2");
+        return ok(authNewEmail.render(""));
+      }
+    }
+    
+    // Step 3
+    if(data.isUse()){
+      flash().put("error", "重設電子信箱連結有誤已失效，若要重設電子信箱，請使用修改信箱功能，謝謝。0x3");
+      play.Logger.warn("memberToken  = " + Json.toJson(data));
+      return ok(authNewEmail.render(""));
+    }
+    
+    // Step 4
+    long    dbTime      = Long.parseLong(data.getDbTime());     // 資料庫時間
+    long    expiryDate  = Long.parseLong(data.getExpiryDate()); // 逾期時間
+    play.Logger.info("dbTime = " + dbTime + ", expiryDate  = " + expiryDate);
+    if(dbTime > expiryDate){
+      flash().put("error", "重設電子信箱連結已經超過24小時，請重新使用修改信箱功能，謝謝。0x4");
+      return ok(authNewEmail.render(""));
+    } 
+    
+    return ok(authNewEmail.render(token));
+  }
+  
+  
+  /**
+   * 
+   */
+  public Result doAuthNewEmail(){
+
+    return ok("");
+  }
   
 }

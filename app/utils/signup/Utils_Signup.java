@@ -9,12 +9,13 @@ import java.util.Map;
 
 import play.libs.Json;
 import pojo.web.Member;
-import pojo.web.MemberTokenType;
+import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
 import pojo.web.signup.verific.VerificFormMessage;
+import utils.enc.AESEncrypter;
 
 
 public class Utils_Signup {
@@ -187,5 +188,39 @@ public class Utils_Signup {
 	  return memberLoginLog;
 	}
 	
+	
+	/**
+	 * 產生重新設定Email資料
+	 * @param memberNo
+	 * @param oldEmail
+	 * @param newEmail
+	 */
+	public MemberSendChangeEmail genMemberSendChangeEmail(String memberNo , String oldEmail , String newEmail){
+	  
+	  MemberSendChangeEmail data = new MemberSendChangeEmail();
+	  long limitTime =  (60 * 60 * 24) * 1 * 1000;
+	  
+	  try{
+
+        String token = java.util.UUID.randomUUID().toString();
+        Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String expiryDate = formatter.format(new Date(new Date().getTime() + limitTime ));
+        String createDate = formatter.format(new Date());
+        
+        data.setMemberNo(memberNo);
+        data.setOldEmail(oldEmail);
+        data.setNewEmail(newEmail);
+        data.setToken(token);
+        data.setUse(false);
+        data.setCheckCode(new AESEncrypter().randomString(6));
+        data.setCreateDate(createDate);
+        data.setExpiryDate(expiryDate);
+        
+	  } catch (Exception e){
+	    e.printStackTrace();
+	    data = null;
+	  }
+	  return data;
+	}
 	
 }

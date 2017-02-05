@@ -24,19 +24,24 @@
       </ul>
       <div class="tab-content">
         <div id="Form" > 
-          <form action="@controllers.routes.WebController.editPassword.url" method="post" id="editPasswordForm">
+          <form action="@controllers.routes.WebController.changeEmail.url" method="post" id="changeEmailForm">
 			<div class="field-wrap">
 				<label class="lable-field-wrap">原本信箱</label>
-				<input type="text" required autocomplete="off" name="originalEmail" value="@if(data!=null && data.getOriginalEmail()!=null){data.getOriginalEmail()}"/>
+				<input type="text" required autocomplete="off" name="originalEmail" value="@if(data!=null && data.getOriginalEmail()!=null){@data.getOriginalEmail()}" readonly/>
 			</div>
-			<div class="field-wrap">
-				<label class="lable-field-wrap">尚未認證新信箱</label>
-				<input type="text" required autocomplete="off" name="unAuthEmail"/>
-			</div>
+			@if(data!=null && data.getUnAuthEmail()!=null){
+				<div class="field-wrap">
+					<label class="lable-field-wrap">尚未認證新信箱</label>
+					<input type="text" required autocomplete="off" name="unAuthEmail" value="@data.getUnAuthEmail()" readonly/>
+				</div>
+			}
 			<div class="field-wrap">
 				<label class="lable-field-wrap">新信箱</label>
 				<input type="email" required autocomplete="off" name="newEmail"/>
 			</div>
+			@if(flash.containsKey("error")) {
+				<span style="color:red;">@flash.get("error")</span>
+			}
 			<a>
 				<input type="submit" value="SUBMIT" class="button button-block">
 			</a>

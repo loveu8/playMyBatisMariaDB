@@ -13,6 +13,7 @@ import pojo.web.Member;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
 import pojo.web.email.MemberChangeEmail;
+import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
@@ -96,8 +97,17 @@ public class WebServiceImpl implements WebService {
   }
 
   @Override
-  public MemberChangeEmail getMemberEmails(String memberNo) {
+  public MemberChangeEmail getMemberEmails(@Param("memberNo") String memberNo) {
     return this.webService.getMemberEmails(memberNo);
   }
+
+  @Override
+  public int genMemberSendChangeEmail(MemberSendChangeEmail data) {
+    return this.webService.genMemberSendChangeEmail(data);
+  }
   
+  @Override
+  public MemberSendChangeEmail getMemberSendChangeEmailByToken(@Param("token")String token){
+    return this.webService.getMemberSendChangeEmailByToken(token);
+  }
 }
