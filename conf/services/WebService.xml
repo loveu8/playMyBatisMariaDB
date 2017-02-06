@@ -165,7 +165,7 @@
 	</select>
 	
 	
- 	<!-- 更換信箱，撈取使用者信箱，尚未修改信箱 -->
+ 	<!-- 更換信箱，撈取使用者信箱，尚未修改信箱，若有尚未修改信箱，且未逾期未使用，一樣顯示給使用者知道 -->
 	<select id="getMemberEmails" parameterType="String" resultType="pojo.web.email.MemberChangeEmail">
 		SELECT
 			(SELECT email FROM member_main WHERE memberNo = #{memberNo} ) AS originalEmail ,
@@ -205,6 +205,7 @@
 	<select id="getMemberSendChangeEmailByToken" parameterType="String" resultType="pojo.web.email.MemberSendChangeEmail">
 		SELECT * , DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_changeEmail WHERE token = #{token}
 	</select>
+	
 	
 	<!--  更新會員電子信箱 -->
 	<update id="updateMemberEmail">

@@ -714,12 +714,16 @@ public class WebController extends Controller {
   
   /**
    * <pre>
-   *  取得修改信箱頁面 
-   *  若有尚未修改信箱且尚未逾期，會顯示在畫面上
+   *  Stage 1-1 
+   *  點選修改信箱功能，顯示相關資訊
+   *  若有尚未修改信箱且尚未逾期，也會顯示在畫面上
+   *  
    *  Step 1 : 驗證是否是登入狀態中(AuthCheck)
    *  Step 2 : 抓取使用者memberNo
    *  Step 3 : 抓取使用者註冊信箱，尚未認證信箱
-   *  Ok     : 回傳結果到頁面
+   *  
+   *  Ok     : 顯示修改信箱頁面
+   *  
    * </pre>
    */
   @AuthCheck
@@ -755,13 +759,19 @@ public class WebController extends Controller {
   
   /**
    * <pre>
+   * Stage 1-2
+   * 
+   * 開始進行修改電子信箱資料驗整
+   * 
    * Step 1 : 驗證是否是登入狀態中(AuthCheck)
-   * Step 2 : 是否有填新信箱
-   * Step 3 : 信箱檢查是否註冊過或重覆
-   * Step 4 : 
+   * Step 2 : 驗證表單資料
+   * Step 3 : 信箱是否有填寫
+   * Step 4 : 信箱檢查是否使用中
+   * 
    * OK 1 : 產生更換信箱相關資料
    * Ok 2 : 寫入更換信箱表單
    * Ok 3 : 寄送更換信箱認證碼信件
+   * 
    *</pre> 
    */
   @AuthCheck
@@ -847,13 +857,17 @@ public class WebController extends Controller {
   
   /**
    * <pre>
+   * Stage 2-1
    * 
-   * 重設電子信箱信件寄送回來後
+   * 重設電子信箱信件寄送回來後，顯示相關資訊
+   * 
    * Step 1 : 檢查電子信箱信件連結是否有資料
    * Step 2 : 檢查Token，是否可以查詢到會員資料
    * Step 3 : 檢查Token，是否使用過了
    * Step 4 : 檢查Token，是否逾期了
+   * 
    * OK : 檢查通過，可以進行重設電子信箱動作，並把Token儲存在表單裡
+   * 
    * </pre>
    */
   public Result authNewEmail(){
@@ -908,8 +922,9 @@ public class WebController extends Controller {
   
   /**
    * <pre>
+   * Stage 2-2
    * 
-   * 開始進行重設信子信箱
+   * 開始進行修改電子信箱資料驗證
    * 
    * Step 1 : 檢查電子信箱信件連結是否有資料
    * Step 2 : 檢查Token，是否可以查詢到會員資料
@@ -1031,18 +1046,6 @@ public class WebController extends Controller {
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+ 
   
 }

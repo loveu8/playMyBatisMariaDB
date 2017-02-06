@@ -64,10 +64,10 @@ public interface WebService {
   /** 更換信箱，撈取使用者信箱，尚未修改信箱 */
   public MemberChangeEmail getMemberEmails(@Param("memberNo")String memberNo);
   
-  /** 更換信箱，撈取使用者信箱，尚未修改信箱 */
+  /** 寫入更換信箱相關資訊 */
   public int genMemberSendChangeEmail(@Param("data")MemberSendChangeEmail data);
   
-  /** 撈取使用者信箱，尚未修改信箱 */
+  /** 撈取更換信箱表單相關資訊 */
   public MemberSendChangeEmail getMemberSendChangeEmailByToken(@Param("token")String token);
 
   /** 更新使用者的電子信箱 */

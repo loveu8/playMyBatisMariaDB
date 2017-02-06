@@ -1,22 +1,32 @@
 package pojo.web.email;
 
 public class MemberSendChangeEmail {
+  
+  /** 會員編號*/
   private String memberNo;
   
+  /** 原本信箱*/
   private String oldEmail;
   
+  /** 新信箱*/
   private String newEmail;
   
+  /** 信件token*/
   private String token;
   
+  /** 驗證碼*/
   private String checkCode;
   
+  /** 是否使用過*/
   private boolean isUse;
   
+  /** 創立日期*/
   private String createDate;
   
+  /** 逾期日期*/
   private String expiryDate;
   
+  /** 資料庫時間*/
   private String dbTime;
 
   public String getMemberNo() {
