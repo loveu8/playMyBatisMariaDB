@@ -1045,6 +1045,12 @@ public class WebController extends Controller {
   }
   
   
+  /**
+   * 修改會員個人資料 
+   */
+  public Result editProfile(){
+    return ok(editProfile.render());
+  }
   
  
   

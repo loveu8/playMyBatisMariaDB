@@ -216,6 +216,9 @@ GET		/web/authNewEmail					controllers.WebController.authNewEmail()
 # http://127.0.0.1:9000/web/doAuthNewEmail
 POST	/web/authNewEmail					controllers.WebController.doAuthNewEmail()
 
+# http://127.0.0.1:9000/web/editProfile
+GET		/web/editProfile					controllers.WebController.editProfile()
+
 # chapter 13 - end
 #------------------------------------
 
