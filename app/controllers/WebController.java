@@ -5,7 +5,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+
 import annotation.AuthCheck;
+import test.db.FooDAO;
 import play.Logger;
 import play.data.FormFactory;
 import play.libs.Json;
@@ -708,9 +710,6 @@ public class WebController extends Controller {
     
     return redirect(controllers.routes.WebController.login().url());
   }
-  
-  
-  
   
   
   
