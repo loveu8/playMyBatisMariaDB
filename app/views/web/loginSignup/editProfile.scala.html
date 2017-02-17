@@ -65,18 +65,31 @@
 		});
 
 		$("#headerPicLink").bind("change paste keyup", function() {
-			var request = new XMLHttpRequest();    
-			request.open("GET", document.getElementById("headerPicLink").value, true); 
-		    request.onload = function() {
-			    if (this.status == 200) {
-			    	$("#headerPicPreview").attr("src" , $("#headerPicLink").val());
-			    	$("#headerPicPreview").show();
-		 		} else {
-			    	$("#headerPicPreview").hide();
-				}
-			} 
-		    request.send(); 
+			if(isURL($("#headerPicLink").val())){
+   				$.ajax({
+		   		    url:$("#headerPicLink").val(),
+		   		    error:
+		   		        function(){
+				    		$("#headerPicPreview").hide();
+		   		        },
+		   		    success:
+		   		        function(){
+					    	$("#headerPicPreview").attr("src" , $("#headerPicLink").val());
+					    	$("#headerPicPreview").show();
+	   		        }
+  		      });
+			} else {
+				$("#headerPicPreview").hide();
+			}
+    		   
 		});
+		
+		// 確認是否是網址
+		function isURL(str) {
+		  var pattern = new RegExp(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i); 
+		  return pattern.test(str);
+		}
+
 	</script>
   </body>
 </html>
