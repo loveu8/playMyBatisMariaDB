@@ -64,7 +64,8 @@
 			document.getElementById("headerPicPreview").style.display = "none";
 		});
 
-		$("#headerPicLink").bind("change paste keyup", function() {
+		// 使用者離開欄位時才發動
+		$("#headerPicLink").blur("change paste keyup", function() {
 			if(isURL($("#headerPicLink").val())){
    				$.ajax({
 		   		    url:$("#headerPicLink").val(),
@@ -76,8 +77,8 @@
 		   		        function(){
 					    	$("#headerPicPreview").attr("src" , $("#headerPicLink").val());
 					    	$("#headerPicPreview").show();
-	   		        }
-  		      });
+	   		        	}
+  		      	});
 			} else {
 				$("#headerPicPreview").hide();
 			}
