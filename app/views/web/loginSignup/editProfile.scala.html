@@ -57,40 +57,18 @@
 	<div id="titleBar"></div>
 
 	<script src='@routes.Assets.versioned("javascripts/loginSignup.js")'></script>
+	<script src='@routes.Assets.versioned("javascripts/webUtils.js")'></script>
 	<script type ="application/javascript">
 		$( document ).ready(function() {
 			document.getElementById("editProfile").reset();
 			// 一開始不顯示頭像
-			document.getElementById("headerPicPreview").style.display = "none";
+			//document.getElementById("headerPicPreview").style.display = "none";
+			 $('#headerPicPreview').css('display','none');
 		});
-
-		// 使用者離開欄位時才發動
-		$("#headerPicLink").blur("change paste keyup", function() {
-			if(isURL($("#headerPicLink").val())){
-   				$.ajax({
-		   		    url:$("#headerPicLink").val(),
-		   		    error:
-		   		        function(){
-				    		$("#headerPicPreview").hide();
-		   		        },
-		   		    success:
-		   		        function(){
-					    	$("#headerPicPreview").attr("src" , $("#headerPicLink").val());
-					    	$("#headerPicPreview").show();
-	   		        	}
-  		      	});
-			} else {
-				$("#headerPicPreview").hide();
-			}
-    		   
-		});
-		
-		// 確認是否是網址
-		function isURL(str) {
-		  var pattern = new RegExp(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i); 
-		  return pattern.test(str);
-		}
-
+				
+		// 呼叫webUtils.js內得方法
+		imgBlurHandler("#headerPicLink" , "#headerPicPreview");
+			
 	</script>
   </body>
 </html>
