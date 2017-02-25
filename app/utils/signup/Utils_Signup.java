@@ -65,7 +65,7 @@ public class Utils_Signup {
 	}
 	
 
-	private VerificFormMessage checkUsername(String username , boolean isUsedUsername) {
+	public VerificFormMessage checkUsername(String username , boolean isUsedUsername) {
 		VerificFormMessage message = new VerificFormMessage();
 		
 		message.setInputName("username");

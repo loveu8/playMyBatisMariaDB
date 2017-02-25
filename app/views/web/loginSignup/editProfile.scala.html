@@ -31,8 +31,15 @@
 			$.getScript('@routes.Assets.versioned("javascripts/webUtils.js")', function(){
 				// 圖片觸發事件
 				imgBlurHandler("#headerPicLink" , "#headerPicPreview");
+
+				// 使用者姓名觸發事件
+				userNameBlurHandler("#username" , "#userNameCheckMessage" , 
+									"http://@request.host" + "@controllers.routes.WebController.ajaxCheckUserName.url?userName=");
+							
 			});
-		});			
+
+		});		
+			
 	</script>
   </head>
 
@@ -55,15 +62,16 @@
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">使用者名稱</label>
-				<input type="text" required autocomplete="off" name="username"/>
+				<input type="text" required autocomplete="off" name="username" id="username"/>
+				<span id="userNameCheckMessage"></span>
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">暱稱</label>
-				<input type="text" required autocomplete="off" name="nickName"/>
+				<input type="text" required autocomplete="off" name="nickName" id="nickName"/>
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">手機號碼</label>
-				<input type="text" required autocomplete="off" name="telphone"/>
+				<input type="text" required autocomplete="off" name="telphone" id="telphone"/>
 			</div>
 			<a>
 				<input type="submit" value="SUBMIT" class="button button-block">

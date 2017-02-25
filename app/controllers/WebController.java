@@ -1052,6 +1052,39 @@ public class WebController extends Controller {
     return ok(editProfile.render());
   }
   
- 
+  
+  /**
+   * 即時檢核使用者名稱 
+   */
+  public Result ajaxCheckUserName(){
+    String userName = "";
+    boolean isUsedUsername = true;
+    try {
+      userName = request().getQueryString("userName");
+      isUsedUsername = webService.checkMemberByUsername(userName);
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    VerificFormMessage verificInfo = new Utils_Signup().checkUsername(userName, isUsedUsername);
+    return ok(Json.toJson(verificInfo));
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 }

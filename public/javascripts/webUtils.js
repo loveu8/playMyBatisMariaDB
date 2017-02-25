@@ -29,3 +29,21 @@ function isURL(str) {
   var pattern = new RegExp(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i); 
   return pattern.test(str);
 }
+
+
+// 傳入要驗證的使用者姓名
+function userNameBlurHandler(inputName , checkMessage, ajaxUrl){
+	$(inputName).blur("change paste keyup", function() {
+		var checkUrl = ajaxUrl + $("#username").val();
+		console.log("checkUrl = " + checkUrl);
+		$.getJSON( checkUrl, function( data ) {
+			$(checkMessage).html('');
+		$(checkMessage).append(data.statusDesc);
+			if(data.status!=200){
+				$(checkMessage).css("color", "red"); 
+  	  		} else {
+				$(checkMessage).css("color", "green"); 
+  	  	  	}
+		});
+	});
+}
