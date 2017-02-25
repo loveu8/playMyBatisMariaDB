@@ -16,6 +16,24 @@
 	   height: 50%;
 	}
 	</style>
+	<script type ="application/javascript">
+		$( document ).ready(function() {
+			// 清除表單
+			document.getElementById("editProfile").reset();
+			
+			// 一開始不顯示頭像
+			$('#headerPicPreview').css('display','none');
+
+			// 讀取登入與註冊JS
+			$.getScript('@routes.Assets.versioned("javascripts/loginSignup.js")');
+
+			// 讀取公用工具
+			$.getScript('@routes.Assets.versioned("javascripts/webUtils.js")', function(){
+				// 圖片觸發事件
+				imgBlurHandler("#headerPicLink" , "#headerPicPreview");
+			});
+		});			
+	</script>
   </head>
 
   <body>
@@ -55,20 +73,5 @@
 		</div><!-- tab-content -->   
 	</div> <!-- /form -->
 	<div id="titleBar"></div>
-
-	<script src='@routes.Assets.versioned("javascripts/loginSignup.js")'></script>
-	<script src='@routes.Assets.versioned("javascripts/webUtils.js")'></script>
-	<script type ="application/javascript">
-		$( document ).ready(function() {
-			document.getElementById("editProfile").reset();
-			// 一開始不顯示頭像
-			//document.getElementById("headerPicPreview").style.display = "none";
-			 $('#headerPicPreview').css('display','none');
-		});
-				
-		// 呼叫webUtils.js內得方法
-		imgBlurHandler("#headerPicLink" , "#headerPicPreview");
-			
-	</script>
   </body>
 </html>
