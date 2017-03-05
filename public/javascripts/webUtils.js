@@ -34,4 +34,30 @@ function isURL(str) {
     return pattern.test(str);
 }
 
+//ajax檢查使用者名稱結果
+function getCheckNameData(checkUrl){
+    console.log("checkUrl = " + checkUrl);
+    var result = $.Deferred();
+    $.getJSON(checkUrl).done(function(data){
+  	  result.resolve(data);
+    });
+    return result;
+ }
 
+// 傳入要驗證的使用者姓名
+function userNameBlurHandler(inputName , checkMessage, ajaxUrl){
+	$(inputName).blur("change paste keyup", function() {
+		var checkUrl = ajaxUrl + $(inputName).val();
+		var result = getCheckNameData(checkUrl);
+		result.promise().then(function(data) { 
+	  		$(checkMessage).html('');
+	  		$(checkMessage).append(data.statusDesc);
+	  		if(data.status!=200){
+	  			$(checkMessage).css("color", "red"); 
+	   		} else {
+	  			$(checkMessage).css("color", "green"); 
+	   	  	}
+    	});
+
+	});
+}

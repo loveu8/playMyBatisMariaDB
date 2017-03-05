@@ -33,9 +33,9 @@
 				// 圖片觸發事件
 				imgBlurHandler("#headerPicLink" , "#headerPicPreview");
 
-/* 				// 使用者姓名觸發事件
+ 				// 使用者名稱觸發事件
 				userNameBlurHandler("#username" , "#userNameCheckMessage" , 
-									"http://@request.host" + "@controllers.routes.WebController.ajaxCheckUserName.url?userName="); */
+									"http://@request.host" + "@controllers.routes.WebController.ajaxCheckUserName.url?userName="); 
 							
 			});
 
@@ -83,40 +83,5 @@
 	</div> <!-- /form -->
 	<div id="titleBar"></div>
   </body>
-  <script>
-  
-  //ajax檢查使用者名稱結果
-  function getCheckNameData(checkUrl){
-      console.log("checkUrl = " + checkUrl);
-      var result = $.Deferred();
-      $.getJSON(checkUrl).done(function(data){
-    	  result.resolve({
-    		  inputName:data.inputName,
-    		  status:data.status,
-    		  statusDesc:data.statusDesc
-          });
-      });
-      return result.promise();
-   }
 
-  // 傳入要驗證的使用者姓名
-  function userNameBlurHandler(inputName , checkMessage, ajaxUrl){
-  	$(inputName).blur("change paste keyup", function() {
-  		var checkUrl = ajaxUrl + $("#username").val();
-  		var result = getCheckNameData(checkUrl);
-  		result.then(function(data) { 
-  	  		$(checkMessage).html('');
-  	  		$(checkMessage).append(data.statusDesc);
-  	  		if(data.status!=200){
-  	  			$(checkMessage).css("color", "red"); 
-  	   		} else {
-  	  			$(checkMessage).css("color", "green"); 
-  	   	  	}
-      	});
-
-  	});
-  }
-  userNameBlurHandler("#username" , "#userNameCheckMessage" , 
-			"http://@request.host" + "@controllers.routes.WebController.ajaxCheckUserName.url?userName=");
-  </script>
 </html>
