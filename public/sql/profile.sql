@@ -50,7 +50,8 @@ CREATE TABLE `member_detail` (
 	`birthday` 	 	VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`telphone` 	 	VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`headerPicLink` VARCHAR(500) NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	 CONSTRAINT pk_memberNo PRIMARY KEY (memberNo)
+	 CONSTRAINT pk_memberNo PRIMARY KEY (memberNo),
+	 INDEX (telphone) 
 )COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
 ;

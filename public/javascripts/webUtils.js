@@ -44,20 +44,25 @@ function getCheckNameData(checkUrl){
     return result;
  }
 
+
 // 傳入要驗證的使用者姓名
 function userNameBlurHandler(inputName , checkMessage, ajaxUrl){
 	$(inputName).blur("change paste keyup", function() {
 		var checkUrl = ajaxUrl + $(inputName).val();
 		var result = getCheckNameData(checkUrl);
-		result.promise().then(function(data) { 
-	  		$(checkMessage).html('');
-	  		$(checkMessage).append(data.statusDesc);
-	  		if(data.status!=200){
-	  			$(checkMessage).css("color", "red"); 
-	   		} else {
-	  			$(checkMessage).css("color", "green"); 
-	   	  	}
-    	});
-
+		result.promise().then(userNameEven);
 	});
+	
+	var selectorname = $(checkMessage);
+	
+	function userNameEven(data) {
+		selectorname.html('');
+		selectorname.append(data.statusDesc);
+		if (data.status != 200) {
+			selectorname.css("color", "red");
+		} else {
+			selectorname.css("color", "green");
+		}
+	}
 }
+
