@@ -116,4 +116,9 @@ public class WebServiceImpl implements WebService {
     return this.webService.updateMemberEmail(memberNo , newEmail);
   }
   
+  @Override
+  public boolean checkMemberDetailByCellphone(@Param("cellphone") String cellphone , @Param("memberNo") String memberNo){
+    return this.webService.checkMemberDetailByCellphone(cellphone , memberNo);
+  }
+  
 }

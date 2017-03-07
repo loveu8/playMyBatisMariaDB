@@ -34,9 +34,12 @@
 				imgBlurHandler("#headerPicLink" , "#headerPicPreview");
 
  				// 使用者名稱觸發事件
-				userNameBlurHandler("#username" , "#userNameCheckMessage" , 
-									"http://@request.host" + "@controllers.routes.WebController.ajaxCheckUserName.url?userName="); 
+				usernameBlurHandler("#username" , "#usernameVerifyMessage" , 
+									"http://@request.host" + "@controllers.routes.WebController.ajaxCheckUsername.url?username="); 
 							
+				// 匿稱觸發事件
+				nicknameBlurHandler("#nickname" , "#nicknameVerifyMessage" , 
+									"http://@request.host" + "@controllers.routes.WebController.ajaxCheckNickname.url?nickname="); 
 			});
 
 		});		
@@ -64,15 +67,17 @@
 			<div class="field-wrap">
 				<label class="lable-field-wrap">使用者名稱</label>
 				<input type="text" required autocomplete="off" name="username" id="username"/>
-				<span id="userNameCheckMessage"></span>
+				<span id="usernameVerifyMessage"></span>
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">暱稱</label>
-				<input type="text" required autocomplete="off" name="nickName" id="nickName"/>
+				<input type="text" required autocomplete="off" name="nickname" id="nickname"/>
+				<span id="nicknameVerifyMessage"></span>
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">手機號碼</label>
-				<input type="text" required autocomplete="off" name="telphone" id="telphone"/>
+				<input type="text" required autocomplete="off" name="cellphone" id="cellphone"/>
+				<span id="cellphoneVerifyMessage"></span>
 			</div>
 			<a>
 				<input type="submit" value="SUBMIT" class="button button-block">
@@ -83,5 +88,10 @@
 	</div> <!-- /form -->
 	<div id="titleBar"></div>
   </body>
+  
+  <script>
 
+  
+  </script>
+  
 </html>

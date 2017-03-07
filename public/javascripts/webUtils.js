@@ -35,7 +35,7 @@ function isURL(str) {
 }
 
 //ajax檢查使用者名稱結果
-function getCheckNameData(checkUrl){
+function getCheckUsernameData(checkUrl){
     console.log("checkUrl = " + checkUrl);
     var result = $.Deferred();
     $.getJSON(checkUrl).done(function(data){
@@ -46,16 +46,16 @@ function getCheckNameData(checkUrl){
 
 
 // 傳入要驗證的使用者姓名
-function userNameBlurHandler(inputName , checkMessage, ajaxUrl){
+function usernameBlurHandler(inputName , verifyMessage, ajaxUrl){
 	$(inputName).blur("change paste keyup", function() {
 		var checkUrl = ajaxUrl + $(inputName).val();
-		var result = getCheckNameData(checkUrl);
-		result.promise().then(userNameEven);
+		var result = getCheckUsernameData(checkUrl);
+		result.promise().then(usernameEven);
 	});
 	
-	var selectorname = $(checkMessage);
+	var selectorname = $(verifyMessage);
 	
-	function userNameEven(data) {
+	function usernameEven(data) {
 		selectorname.html('');
 		selectorname.append(data.statusDesc);
 		if (data.status != 200) {
@@ -66,3 +66,35 @@ function userNameBlurHandler(inputName , checkMessage, ajaxUrl){
 	}
 }
 
+
+//ajax檢查匿稱結果
+function getCheckNicknameData(checkUrl){
+    console.log("checkUrl = " + checkUrl);
+    var result = $.Deferred();
+    $.getJSON(checkUrl).done(function(data){
+  	  result.resolve(data);
+    });
+    return result;
+ }
+
+
+// 傳入要驗證的暱稱
+function nicknameBlurHandler(inputName , verifyMessage, ajaxUrl){
+	$(inputName).blur("change paste keyup", function() {
+		var checkUrl = ajaxUrl + $(inputName).val();
+		var result = getCheckNicknameData(checkUrl);
+		result.promise().then(nicknameEven);
+	});
+	
+	var selectorname = $(verifyMessage);
+	
+	function nicknameEven(data) {
+		selectorname.html('');
+		selectorname.append(data.statusDesc);
+		if (data.status == 200 || data.status == 201) {
+			selectorname.css("color", "green");
+		} else {
+			selectorname.css("color", "red");
+		}
+	}
+}

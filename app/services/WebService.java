@@ -73,5 +73,7 @@ public interface WebService {
   /** 更新使用者的電子信箱 */
   public int updateMemberEmail(@Param("memberNo") String memberNo, @Param("newEmail") String newEmail);
 
-
+  /** 檢查使用者手機是否重覆 */
+  public boolean checkMemberDetailByCellphone(@Param("cellphone") String cellphone , @Param("memberNo") String memberNo);
+  
 }

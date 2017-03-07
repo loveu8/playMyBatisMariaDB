@@ -46,12 +46,12 @@ FROM DUAL;
 
 CREATE TABLE `member_detail` (
     `memberNo`   	VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`nickName` 	 	VARCHAR(50) NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	`nickname` 	 	VARCHAR(50) NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	`birthday` 	 	VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`telphone` 	 	VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	`cellphone` 	VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	`headerPicLink` VARCHAR(500) NOT NULL NULL COLLATE 'utf8_unicode_ci',
 	 CONSTRAINT pk_memberNo PRIMARY KEY (memberNo),
-	 INDEX (telphone) 
+	 INDEX (cellphone) 
 )COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
 ;

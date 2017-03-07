@@ -219,8 +219,12 @@ POST	/web/authNewEmail					controllers.WebController.doAuthNewEmail()
 # http://127.0.0.1:9000/web/editProfile
 GET		/web/editProfile					controllers.WebController.editProfile()
 
-# http://127.0.0.1:9000/web/ajaxCheckUserName
-GET		/web/ajaxCheckUserName				controllers.WebController.ajaxCheckUserName()
+# http://127.0.0.1:9000/web/ajaxCheckUsername
+GET		/web/ajaxCheckUsername				controllers.WebController.ajaxCheckUsername()
+
+# http://127.0.0.1:9000/web/ajaxCheckNickname
+GET		/web/ajaxCheckNickame				controllers.WebController.ajaxCheckNickname()
+
 
 # chapter 13 - end
 #------------------------------------

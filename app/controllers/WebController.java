@@ -2,9 +2,10 @@ package controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-
 
 import annotation.AuthCheck;
 import play.Logger;
@@ -1056,34 +1057,55 @@ public class WebController extends Controller {
   /**
    * 即時檢核使用者名稱 
    */
-  public Result ajaxCheckUserName(){
-    String userName = "";
+  public Result ajaxCheckUsername(){
+    String username = "";
     boolean isUsedUsername = true;
     try {
-      userName = request().getQueryString("userName");
-      isUsedUsername = webService.checkMemberByUsername(userName);
+      username = request().getQueryString("username");
+      isUsedUsername = webService.checkMemberByUsername(username);
     } catch (Exception e){
       e.printStackTrace();
     }
-    VerificFormMessage verificInfo = new Utils_Signup().checkUsername(userName, isUsedUsername);
+    VerificFormMessage verificInfo = new Utils_Signup().checkUsername(username, isUsedUsername);
+    return ok(Json.toJson(verificInfo));
+  }
+
+  
+  /**
+   * 即時檢核暱稱 
+   */
+  public Result ajaxCheckNickname(){
+    String nickname = "";
+
+    try {
+      nickname = request().getQueryString("nickname");
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    VerificFormMessage verificInfo = new Utils_Signup().checkNickname(nickname);
+    
     return ok(Json.toJson(verificInfo));
   }
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  /**
+   * 即時檢核手機號碼
+   */
+  public Result ajaxCheckCellphone(){
+    String cellphone = "";
+    boolean isUsedCellphone = true;
+    Utils_Session utilSsession = new Utils_Session();
+    try {
+      cellphone = request().getQueryString("cellphone");
+      String memberNo = utilSsession.getUserNo();
+      isUsedCellphone = webService.checkMemberDetailByCellphone(cellphone , memberNo);
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    VerificFormMessage verificInfo = new Utils_Signup().checkCellphone(cellphone , isUsedCellphone);
+    
+    return ok(Json.toJson(verificInfo));
+  }
   
   
   

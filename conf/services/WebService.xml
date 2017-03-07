@@ -212,5 +212,14 @@
 		UPDATE member_main SET email = #{newEmail} WHERE memberNo = #{memberNo}
 	</update>	
 	
+	
+    <!-- 檢查是否有重覆的手機號碼-->
+	<select id="checkMemberDetailByCellphone" parameterType="Map" resultType="boolean">
+		SELECT CASE WHEN EXISTS (SELECT 1 FROM member_detail de WHERE de.cellphone=#{cellphone})
+					AND NOT EXISTS  (SELECT de.cellphone FROM member_detail de WHERE de.cellphone= #{cellphone}) =
+					                (SELECT de.cellphone FROM member_detail de WHERE de.memberNo = #{memberNo})
+		       THEN 1 ELSE 0 END isUsedCellphone
+		FROM DUAL
+	</select>
 		
 </mapper>

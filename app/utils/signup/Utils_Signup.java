@@ -11,7 +11,9 @@ import play.libs.Json;
 import pojo.web.Member;
 import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.SignupRequest;
+import pojo.web.signup.status.CellphoneStatus;
 import pojo.web.signup.status.EmailStatus;
+import pojo.web.signup.status.NicknameStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
 import pojo.web.signup.verific.VerificFormMessage;
@@ -122,6 +124,61 @@ public class Utils_Signup {
 	}
 	
 	
+    public VerificFormMessage checkNickname(String nickname) {
+      VerificFormMessage message = new VerificFormMessage();
+      
+      message.setInputName("nickname");
+      
+      String nicknameRegex = ".*[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】『；：」「』。，、？\\\\]+.*";
+      
+      if(nickname == null || "".equals(nickname)) {
+          message.setStatus(NicknameStatus.S201.status);
+          message.setStatusDesc(NicknameStatus.S201.statusDesc);
+      } else if(nickname.length() < 1 || nickname.length() > 15){
+          message.setStatus(NicknameStatus.S1.status);
+          message.setStatusDesc(NicknameStatus.S1.statusDesc);
+      } else if(nickname.matches(nicknameRegex)){
+          message.setStatus(NicknameStatus.S2.status);
+          message.setStatusDesc(NicknameStatus.S2.statusDesc);
+      } else {
+          message.setStatus(NicknameStatus.S200.status);
+          message.setStatusDesc(NicknameStatus.S200.statusDesc);
+      }
+      
+      play.Logger.info("checkNickname = " + Json.toJson(message));
+      
+      return message;
+    }
+	
+    
+    public VerificFormMessage checkCellphone(String cellphone, boolean isUsedCellphone) {
+      
+      VerificFormMessage message = new VerificFormMessage();
+      
+      message.setInputName("cellphone");
+      
+      String cellphoneRegex = "[0-9]{4}-[0-9]{6}";
+      
+      if(cellphone == null || "".equals(cellphone)) {
+          message.setStatus(CellphoneStatus.S201.status);
+          message.setStatusDesc(CellphoneStatus.S201.statusDesc);
+      } else if(!cellphone.matches(cellphoneRegex)){
+          message.setStatus(NicknameStatus.S1.status);
+          message.setStatusDesc(NicknameStatus.S1.statusDesc);
+      } else if (isUsedCellphone){
+          message.setStatus(NicknameStatus.S2.status);
+          message.setStatusDesc(NicknameStatus.S2.statusDesc);
+      } else {
+          message.setStatus(NicknameStatus.S200.status);
+          message.setStatusDesc(NicknameStatus.S200.statusDesc);
+      }
+      
+      play.Logger.info("checkNickname = " + Json.toJson(message));
+      
+      return message;
+
+    }
+	
 	/**
 	 * 產生註冊sha-256認證字串
 	 * @param email 使用者信箱
@@ -222,5 +279,7 @@ public class Utils_Signup {
 	  }
 	  return data;
 	}
+
+
 	
 }
