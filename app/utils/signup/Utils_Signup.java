@@ -13,6 +13,7 @@ import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.status.CellphoneStatus;
 import pojo.web.signup.status.EmailStatus;
+import pojo.web.signup.status.HeaderPicLinkStatus;
 import pojo.web.signup.status.NicknameStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
@@ -121,6 +122,34 @@ public class Utils_Signup {
 		play.Logger.info("checkPassword = " + Json.toJson(message));
 		
 		return message;
+	}
+	
+	
+	public VerificFormMessage checkHeaderPicLink(String headerPicLink , boolean isImg){
+	  
+      VerificFormMessage message = new VerificFormMessage();
+      
+      message.setInputName("headerPicLink");
+      
+      String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+      
+      if(headerPicLink == null || "".equals(headerPicLink)){
+        message.setStatus(HeaderPicLinkStatus.S201.status);
+        message.setStatusDesc(HeaderPicLinkStatus.S201.statusDesc);
+      } else if (!headerPicLink.matches(urlRegex)){
+        message.setStatus(HeaderPicLinkStatus.S1.status);
+        message.setStatusDesc(HeaderPicLinkStatus.S1.statusDesc);
+      } else if(!isImg){
+        message.setStatus(HeaderPicLinkStatus.S2.status);
+        message.setStatusDesc(HeaderPicLinkStatus.S2.statusDesc);
+      } else {
+        message.setStatus(HeaderPicLinkStatus.S200.status);
+        message.setStatusDesc(HeaderPicLinkStatus.S200.statusDesc);
+      }
+      
+      play.Logger.info("checkHeaderPicLink = " + Json.toJson(message));
+      
+      return message;
 	}
 	
 	

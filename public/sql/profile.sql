@@ -39,7 +39,7 @@ FROM DUAL;
 -- 會員明細
 -- member_detail
 -- memberNo	會員編號
--- headerPicLink 大頭像網址
+-- headerPicLink 大頭照網址
 -- birthday 生日
 -- nickName 綽號
 -- telphone 手機號碼

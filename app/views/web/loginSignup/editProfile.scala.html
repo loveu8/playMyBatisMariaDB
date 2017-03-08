@@ -31,19 +31,20 @@
 			$.getScript('@routes.Assets.versioned("javascripts/webUtils.js")', function(){
 
 				// 圖片觸發事件
-				imgBlurHandler("#headerPicLink" , "#headerPicPreview");
-
+				inputBlurHandler("#headerPicLink" , "#headerPicPreview" , "#headerPicLinkVerifyMessage" , 
+								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckHeaderPicLink.url?headerPicLink="); 
+				
  				// 使用者名稱觸發事件
-				usernameBlurHandler("#username" , "#usernameVerifyMessage" , 
-									"http://@request.host" + "@controllers.routes.WebController.ajaxCheckUsername.url?username="); 
+				inputBlurHandler("#username" , "#usernameVerifyMessage" , 
+								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckUsername.url?username="); 
 							
 				// 匿稱觸發事件
-				nicknameBlurHandler("#nickname" , "#nicknameVerifyMessage" , 
-									"http://@request.host" + "@controllers.routes.WebController.ajaxCheckNickname.url?nickname="); 
+				inputBlurHandler("#nickname" , "#nicknameVerifyMessage" , 
+								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckNickname.url?nickname="); 
 				
 				// 手機號碼觸發事件
-				cellphoneBlurHandler("#cellphone" , "#cellphoneVerifyMessage" , 
-									 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckCellphone.url?cellphone="); 
+				inputBlurHandler("#cellphone" , "#cellphoneVerifyMessage" , 
+								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckCellphone.url?cellphone="); 
 			});
 
 		});		

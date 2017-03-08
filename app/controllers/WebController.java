@@ -1,9 +1,11 @@
 package controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -11,6 +13,7 @@ import annotation.AuthCheck;
 import play.Logger;
 import play.data.FormFactory;
 import play.libs.Json;
+import play.libs.ws.WSClient;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.Member;
@@ -29,6 +32,7 @@ import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.*;
+import utils.http.HttpHelper;
 import utils.mail.Utils_Email;
 import utils.session.Utils_Session;
 
@@ -1053,9 +1057,27 @@ public class WebController extends Controller {
     return ok(editProfile.render());
   }
   
+  // 相依性注入 play.libs.ws.WSClient，可以用來呼叫別人寫好的Http服務
+  @Inject
+  WSClient ws;
+  
+  
   /**
    * 即時檢核圖片 
    */
+  public Result ajaxCheckHeaderPicLink(){
+    String headerPicLink = "";
+    boolean isImg = false;
+    try{
+      HttpHelper httpHelper = new HttpHelper(ws);
+      headerPicLink = request().getQueryString("headerPicLink");
+      isImg = httpHelper.checkImgUrl(headerPicLink);
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    VerificFormMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink, isImg);
+    return ok(Json.toJson(verificInfo));
+  }
   
   
   /**
@@ -1109,7 +1131,6 @@ public class WebController extends Controller {
     
     return ok(Json.toJson(verificInfo));
   }
-  
   
   
 }
