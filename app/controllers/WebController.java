@@ -32,6 +32,7 @@ import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.*;
+import utils.enc.EncAndDeCodeTool;
 import utils.http.HttpHelper;
 import utils.mail.Utils_Email;
 import utils.session.Utils_Session;
@@ -1066,16 +1067,19 @@ public class WebController extends Controller {
    * 即時檢核圖片 
    */
   public Result ajaxCheckHeaderPicLink(){
+    String encodeUrl = "";
     String headerPicLink = "";
     boolean isImg = false;
     try{
       HttpHelper httpHelper = new HttpHelper(ws);
-      headerPicLink = request().getQueryString("headerPicLink");
+      encodeUrl = request().getQueryString("headerPicLink");
+      headerPicLink = new EncAndDeCodeTool().urlAndBase64Decode(encodeUrl);
       isImg = httpHelper.checkImgUrl(headerPicLink);
     } catch (Exception e){
       e.printStackTrace();
     }
     VerificFormMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink, isImg);
+    Logger.info("isImg = " + isImg + " , encodeUrl = " + encodeUrl + " , headerPicLink = " +headerPicLink);
     return ok(Json.toJson(verificInfo));
   }
   
