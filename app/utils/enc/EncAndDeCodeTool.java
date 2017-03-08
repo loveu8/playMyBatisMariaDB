@@ -12,6 +12,7 @@ import java.util.Base64;
  */
 public class EncAndDeCodeTool {
   
+  
   /**
    * 傳入字串，會進行URL與Base64加密 
    */
@@ -19,12 +20,14 @@ public class EncAndDeCodeTool {
     return this.base64Encode(this.urlEncode(unencodeStr));
   }
   
+  
   /**
    * 傳入加密過Base64與URL的字串，進行解密
    */
   public String urlAndBase64Decode(String encodeStr){
     return this.urlDecode(this.base64Decode(encodeStr));
   }
+  
   
   public String urlEncode(String encodeStr){
     try {
@@ -35,9 +38,11 @@ public class EncAndDeCodeTool {
     return "";
   }
   
+  
   public String base64Encode(String encodeStr){
     return new String (Base64.getEncoder().encode(encodeStr.getBytes()));
   }
+  
   
   public String urlDecode(String decodeStr){
     try {
@@ -48,13 +53,9 @@ public class EncAndDeCodeTool {
     return "";
   }
   
+  
   public String base64Decode(String decodeStr){
     return new String (Base64.getDecoder().decode(decodeStr.getBytes()));
-  }
-  
-  
-  public static void main(String[] args) {
-    String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
   }
   
   
