@@ -12,10 +12,16 @@ import java.util.Base64;
  */
 public class EncAndDeCodeTool {
   
+  /**
+   * 傳入字串，會進行URL與Base64加密 
+   */
   public String urlAndBase64Encode(String unencodeStr){
     return this.base64Encode(this.urlEncode(unencodeStr));
   }
   
+  /**
+   * 傳入加密過Base64與URL的字串，進行解密
+   */
   public String urlAndBase64Decode(String encodeStr){
     return this.urlDecode(this.base64Decode(encodeStr));
   }

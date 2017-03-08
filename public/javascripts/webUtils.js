@@ -8,7 +8,7 @@ function getCheckResultData(checkUrl){
     return result;
 }
 
-// 傳入URL進行URL與Base64 encode
+// 傳入字串，會進行URL與Base64 encode
 function urlBase64Encode(rawStr){
 	return btoa(encodeURIComponent(rawStr));
 }
