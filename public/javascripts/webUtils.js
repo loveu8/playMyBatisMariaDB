@@ -98,3 +98,35 @@ function nicknameBlurHandler(inputName , verifyMessage, ajaxUrl){
 		}
 	}
 }
+
+//ajax檢查手機號碼結果
+function getCheckCellphoneData(checkUrl){
+    console.log("checkUrl = " + checkUrl);
+    var result = $.Deferred();
+    $.getJSON(checkUrl).done(function(data){
+  	  result.resolve(data);
+    });
+    return result;
+ }
+
+
+// 傳入要驗證的手機號碼
+function cellphoneBlurHandler(inputName , verifyMessage, ajaxUrl){
+	$(inputName).blur("change paste keyup", function() {
+		var checkUrl = ajaxUrl + $(inputName).val();
+		var result = getCheckCellphoneData(checkUrl);
+		result.promise().then(cellphoneEven);
+	});
+	
+	var selectorname = $(verifyMessage);
+	
+	function cellphoneEven(data) {
+		selectorname.html('');
+		selectorname.append(data.statusDesc);
+		if (data.status == 200 || data.status == 201) {
+			selectorname.css("color", "green");
+		} else {
+			selectorname.css("color", "red");
+		}
+	}
+}

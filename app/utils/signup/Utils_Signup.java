@@ -157,20 +157,20 @@ public class Utils_Signup {
       
       message.setInputName("cellphone");
       
-      String cellphoneRegex = "[0-9]{4}-[0-9]{6}";
+      String cellphoneRegex = "[0-9]{4}[0-9]{6}";
       
       if(cellphone == null || "".equals(cellphone)) {
           message.setStatus(CellphoneStatus.S201.status);
           message.setStatusDesc(CellphoneStatus.S201.statusDesc);
       } else if(!cellphone.matches(cellphoneRegex)){
-          message.setStatus(NicknameStatus.S1.status);
-          message.setStatusDesc(NicknameStatus.S1.statusDesc);
+          message.setStatus(CellphoneStatus.S1.status);
+          message.setStatusDesc(CellphoneStatus.S1.statusDesc);
       } else if (isUsedCellphone){
-          message.setStatus(NicknameStatus.S2.status);
-          message.setStatusDesc(NicknameStatus.S2.statusDesc);
+          message.setStatus(CellphoneStatus.S2.status);
+          message.setStatusDesc(CellphoneStatus.S2.statusDesc);
       } else {
-          message.setStatus(NicknameStatus.S200.status);
-          message.setStatusDesc(NicknameStatus.S200.statusDesc);
+          message.setStatus(CellphoneStatus.S200.status);
+          message.setStatusDesc(CellphoneStatus.S200.statusDesc);
       }
       
       play.Logger.info("checkNickname = " + Json.toJson(message));
@@ -279,7 +279,6 @@ public class Utils_Signup {
 	  }
 	  return data;
 	}
-
 
 	
 }

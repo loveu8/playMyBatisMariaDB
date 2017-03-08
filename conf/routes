@@ -225,6 +225,8 @@ GET		/web/ajaxCheckUsername				controllers.WebController.ajaxCheckUsername()
 # http://127.0.0.1:9000/web/ajaxCheckNickname
 GET		/web/ajaxCheckNickame				controllers.WebController.ajaxCheckNickname()
 
+# http://127.0.0.1:9000/web/ajaxCheckCellphone
+GET		/web/ajaxCheckCellphone				controllers.WebController.ajaxCheckCellphone()
 
 # chapter 13 - end
 #------------------------------------

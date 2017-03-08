@@ -1053,6 +1053,10 @@ public class WebController extends Controller {
     return ok(editProfile.render());
   }
   
+  /**
+   * 即時檢核圖片 
+   */
+  
   
   /**
    * 即時檢核使用者名稱 
@@ -1076,7 +1080,6 @@ public class WebController extends Controller {
    */
   public Result ajaxCheckNickname(){
     String nickname = "";
-
     try {
       nickname = request().getQueryString("nickname");
     } catch (Exception e){
