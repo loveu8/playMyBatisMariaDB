@@ -1,9 +1,5 @@
 package controllers;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +13,8 @@ import play.libs.ws.WSClient;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.Member;
+import pojo.web.MemberDetail;
+import pojo.web.MemberProfile;
 import pojo.web.MemberToken;
 import pojo.web.MemberLoginStatus;
 import pojo.web.MemberStatus;
@@ -28,6 +26,7 @@ import pojo.web.signup.request.EditPasswordRequest;
 import pojo.web.signup.request.ResetPasswordRequest;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.verific.VerificFormMessage;
+import pojo.web.signup.verific.VerificMemberDetailMessage;
 import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
@@ -1058,6 +1057,25 @@ public class WebController extends Controller {
     return ok(editProfile.render());
   }
   
+  
+  /**
+   * 即時載入會員明細個人資料 
+   */
+  public Result ajaxLoadMemberProfile(){
+    Utils_Session utilSsession = new Utils_Session();
+    MemberProfile memberProfile = new MemberProfile();
+    try{
+      String memberNo = utilSsession.getUserNo();
+      Member member = webService.findMemberByMemberNo(memberNo);
+      MemberDetail memberDetail = webService.findMemberDetailByMemberNo(memberNo);
+      memberProfile = new Utils_Signup().genMemberProfile(member , memberDetail);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Logger.info("ajaxLoadMemberProfile = " + Json.toJson(memberProfile));
+    return ok(Json.toJson(memberProfile));
+  }
+  
   // 相依性注入 play.libs.ws.WSClient，可以用來呼叫別人寫好的Http服務
   @Inject
   WSClient ws;
@@ -1078,8 +1096,7 @@ public class WebController extends Controller {
     } catch (Exception e){
       e.printStackTrace();
     }
-    VerificFormMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink, isImg);
-    Logger.info("isImg = " + isImg + " , encodeUrl = " + encodeUrl + " , headerPicLink = " +headerPicLink);
+    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink, isImg);
     return ok(Json.toJson(verificInfo));
   }
   
@@ -1089,14 +1106,18 @@ public class WebController extends Controller {
    */
   public Result ajaxCheckUsername(){
     String username = "";
+    String dbUsername = "";
     boolean isUsedUsername = true;
+    Utils_Session utilSsession = new Utils_Session();
     try {
       username = request().getQueryString("username");
       isUsedUsername = webService.checkMemberByUsername(username);
+      dbUsername = webService.findMemberByMemberNo(utilSsession.getUserNo()).getUsername();
     } catch (Exception e){
       e.printStackTrace();
     }
-    VerificFormMessage verificInfo = new Utils_Signup().checkUsername(username, isUsedUsername);
+    
+    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkEditUsername(username , dbUsername, isUsedUsername);
     return ok(Json.toJson(verificInfo));
   }
 
@@ -1111,8 +1132,8 @@ public class WebController extends Controller {
     } catch (Exception e){
       e.printStackTrace();
     }
-    VerificFormMessage verificInfo = new Utils_Signup().checkNickname(nickname);
     
+    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkNickname(nickname);
     return ok(Json.toJson(verificInfo));
   }
   
@@ -1122,17 +1143,19 @@ public class WebController extends Controller {
    */
   public Result ajaxCheckCellphone(){
     String cellphone = "";
+    String dbCellphone = "";
     boolean isUsedCellphone = true;
     Utils_Session utilSsession = new Utils_Session();
     try {
       cellphone = request().getQueryString("cellphone");
       String memberNo = utilSsession.getUserNo();
-      isUsedCellphone = webService.checkMemberDetailByCellphone(cellphone , memberNo);
+      isUsedCellphone = webService.checkMemberDetailByCellphone(cellphone);
+      dbCellphone = webService.findMemberDetailByMemberNo(memberNo).getCellphone();
     } catch (Exception e){
       e.printStackTrace();
     }
-    VerificFormMessage verificInfo = new Utils_Signup().checkCellphone(cellphone , isUsedCellphone);
     
+    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkCellphone(cellphone, dbCellphone , isUsedCellphone);
     return ok(Json.toJson(verificInfo));
   }
   

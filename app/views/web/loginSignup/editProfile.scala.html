@@ -30,9 +30,12 @@
 			// 讀取公用工具
 			$.getScript('@routes.Assets.versioned("javascripts/webUtils.js")', function(){
 
+				initLoadMemberProfile("#headerPicLink" , "#headerPicPreview" , '#username' , '#nickname' , '#cellphone' , '#systemMessage',
+						              "http://@request.host" + "@controllers.routes.WebController.ajaxLoadMemberProfile.url");
+				
 				// 圖片觸發事件
-				inputBlurHandler("#headerPicLink" , "#headerPicPreview" , "#headerPicLinkVerifyMessage" , 
-								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckHeaderPicLink.url?headerPicLink="); 
+				imgInputBlurHandler("#headerPicLink" , "#headerPicPreview" , "#headerPicLinkVerifyMessage" , 
+								    "http://@request.host" + "@controllers.routes.WebController.ajaxCheckHeaderPicLink.url?headerPicLink="); 
 				
  				// 使用者名稱觸發事件
 				inputBlurHandler("#username" , "#usernameVerifyMessage" , 
@@ -85,6 +88,7 @@
 				<input type="text" required autocomplete="off" name="cellphone" id="cellphone"/>
 				<span id="cellphoneVerifyMessage"></span>
 			</div>
+			<span id="systemMessage"></span>
 			<a>
 				<input type="submit" value="SUBMIT" class="button button-block">
 			</a>

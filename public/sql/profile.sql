@@ -41,15 +41,19 @@ FROM DUAL;
 -- memberNo	會員編號
 -- headerPicLink 大頭照網址
 -- birthday 生日
--- nickName 綽號
--- telphone 手機號碼
+-- nickName 暱稱
+-- cellphone 手機號碼
+-- createDate 建立日期
+-- modifyDate 修改日期
 
 CREATE TABLE `member_detail` (
     `memberNo`   	VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`nickname` 	 	VARCHAR(50) NOT NULL NULL COLLATE  'utf8_unicode_ci',
-	`birthday` 	 	VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`cellphone` 	VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-	`headerPicLink` VARCHAR(500) NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	`nickname` 	 	VARCHAR(50)  NULL NULL COLLATE  'utf8_unicode_ci',
+	`birthday` 	 	VARCHAR(50)  NULL NULL COLLATE 'utf8_unicode_ci',
+	`cellphone` 	VARCHAR(50)  NULL NULL COLLATE 'utf8_unicode_ci',
+	`headerPicLink` VARCHAR(500) NULL NULL COLLATE 'utf8_unicode_ci',
+	`createDate` VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	`modifyDate` VARCHAR(50)  NOT NULL NULL COLLATE  'utf8_unicode_ci',
 	 CONSTRAINT pk_memberNo PRIMARY KEY (memberNo),
 	 INDEX (cellphone) 
 )COLLATE='utf8_unicode_ci'
@@ -57,3 +61,28 @@ ENGINE=InnoDB
 ;
 
 -- DROP tables member_detail;
+
+-- 會員明細修改紀錄表單
+-- member_detail
+-- memberNo	會員編號
+-- headerPicLink 大頭照網址
+-- birthday 生日
+-- nickName 暱稱
+-- cellphone 手機號碼
+-- createDate 建立日期
+
+CREATE TABLE `member_detail_log` (
+    `memberNo`   	VARCHAR(15)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	`nickname` 	 	VARCHAR(50)   NULL NULL COLLATE  'utf8_unicode_ci',
+	`birthday` 	 	VARCHAR(50)   NULL NULL COLLATE 'utf8_unicode_ci',
+	`cellphone` 	VARCHAR(50)   NULL NULL COLLATE 'utf8_unicode_ci',
+	`headerPicLink` VARCHAR(500)  NULL NULL COLLATE 'utf8_unicode_ci',
+	`createDate` VARCHAR(50)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
+	index (memberNo)
+)
+COLLATE='utf8_unicode_ci'
+ENGINE=InnoDB
+;
+
+
+-- DROP tables member_detail_log;

@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import pojo.web.Member;
+import pojo.web.MemberDetail;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
 import pojo.web.email.MemberChangeEmail;
@@ -117,8 +118,13 @@ public class WebServiceImpl implements WebService {
   }
   
   @Override
-  public boolean checkMemberDetailByCellphone(@Param("cellphone") String cellphone , @Param("memberNo") String memberNo){
-    return this.webService.checkMemberDetailByCellphone(cellphone , memberNo);
+  public boolean checkMemberDetailByCellphone(@Param("cellphone") String cellphone ){
+    return this.webService.checkMemberDetailByCellphone(cellphone);
+  }
+  
+  @Override
+  public MemberDetail findMemberDetailByMemberNo(@Param("memberNo") String memberNo ){
+    return this.webService.findMemberDetailByMemberNo(memberNo);
   }
   
 }

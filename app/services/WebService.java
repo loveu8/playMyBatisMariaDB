@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import pojo.web.Member;
+import pojo.web.MemberDetail;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
 import pojo.web.email.MemberChangeEmail;
@@ -74,6 +75,9 @@ public interface WebService {
   public int updateMemberEmail(@Param("memberNo") String memberNo, @Param("newEmail") String newEmail);
 
   /** 檢查使用者手機是否重覆 */
-  public boolean checkMemberDetailByCellphone(@Param("cellphone") String cellphone , @Param("memberNo") String memberNo);
+  public boolean checkMemberDetailByCellphone(@Param("cellphone") String cellphone);
+  
+  /** 用手機號碼 尋找會員明細*/
+  public MemberDetail findMemberDetailByMemberNo(@Param("memberNo") String memberNo);
   
 }
