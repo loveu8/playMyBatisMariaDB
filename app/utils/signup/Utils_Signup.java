@@ -3,6 +3,7 @@ package utils.signup;
 import java.security.MessageDigest;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,7 @@ import pojo.web.MemberDetail;
 import pojo.web.MemberProfile;
 import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.SignupRequest;
+import pojo.web.signup.status.BirthDayStatus;
 import pojo.web.signup.status.CellphoneStatus;
 import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.HeaderPicLinkStatus;
@@ -175,6 +177,54 @@ public class Utils_Signup {
     return message;
   }
 
+  
+  public VerificMemberDetailMessage checkBirthday(String birthday, String dbBirthday) {
+    VerificMemberDetailMessage message = new VerificMemberDetailMessage();
+
+    message.setInputName("birthday");
+    
+    String birthDayRegex = "(((19|20)([2468][048]|[13579][26]|0[48])|2000)[/-]02[/-]29|((19|20)[0-9]{2}[/-](0[4678]|1[02])"+
+                           "[/-](0[1-9]|[12][0-9]|30)|(19|20)[0-9]{2}[/-](0[1359]|11)[/-](0[1-9]|[12][0-9]|3[01])|(19|20)"+
+                           "[0-9]{2}[/-]02[/-](0[1-9]|1[0-9]|2[0-8])))";
+    
+    if (birthday == null || "".equals(birthday)) {
+      message.setStatus(BirthDayStatus.S201.status);
+      message.setStatusDesc(BirthDayStatus.S201.statusDesc);
+      message.setPass(BirthDayStatus.S201.pass);
+    } else if (!birthday.matches(birthDayRegex)) {
+      message.setStatus(BirthDayStatus.S1.status);
+      message.setStatusDesc(BirthDayStatus.S1.statusDesc);
+      message.setPass(BirthDayStatus.S1.pass);
+    } else if (birthday.equals(dbBirthday)) {
+      message.setStatus(BirthDayStatus.S202.status);
+      message.setStatusDesc(BirthDayStatus.S202.statusDesc);
+      message.setPass(BirthDayStatus.S202.pass);
+    } else {
+      // ex : 2017/03/01 => {2017,03,01}
+      String[] birthdayArray = birthday.split("/");
+      Calendar now = Calendar.getInstance();
+      Calendar memberbirthDay = (Calendar) now.clone();
+
+      memberbirthDay.set(Integer.parseInt(birthdayArray[0]), 
+                         Integer.parseInt(birthdayArray[1])-1, // 0~11月
+                         Integer.parseInt(birthdayArray[2]));
+
+      if(memberbirthDay.getTime().getTime() > now.getTime().getTime()){
+        message.setStatus(BirthDayStatus.S2.status);
+        message.setStatusDesc(BirthDayStatus.S2.statusDesc);
+        message.setPass(BirthDayStatus.S2.pass);
+      } else {
+        message.setStatus(BirthDayStatus.S200.status);
+        message.setStatusDesc(BirthDayStatus.S200.statusDesc);
+        message.setPass(BirthDayStatus.S200.pass);
+      }
+    }
+    
+    play.Logger.info("checkBirthday = " + Json.toJson(message));
+    
+    return message;
+  }
+  
 
   public VerificMemberDetailMessage checkEditUsername(String username, String dbUsername,
       boolean isUsedUsername) {

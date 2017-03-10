@@ -21,7 +21,7 @@ public class HttpHelper {
   
   /**
    * <pre> 
-   *  檢查是否是圖片的工具
+   *  檢查是否是圖片
    * </pre>
    */
   public boolean checkImgUrl(String url) {
@@ -46,8 +46,9 @@ public class HttpHelper {
           response = future.get();
           responseStatus = response.getStatus(); // Http回覆碼
           contentType = response.getHeader("Content-Type");
-  
-          if( "image".indexOf(contentType) != -1 || responseStatus != 200){
+
+          if( contentType == null || "".equals(contentType) || 
+              contentType.indexOf("image") == -1 || responseStatus != 200){
             isImg = false;
           } else {
             isImg = true;

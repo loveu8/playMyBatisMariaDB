@@ -1051,10 +1051,24 @@ public class WebController extends Controller {
   
   
   /**
-   * 修改會員個人資料 
+   * 進入修改會員個人資料頁面
    */
   public Result editProfile(){
     return ok(editProfile.render());
+  }
+  
+  
+  /**
+   * 修改會員個人資料動作 
+   */
+  public Result doEditProfile(){
+    try{
+      MemberProfile memberProfile = formFactory.form(MemberProfile.class).bindFromRequest().get();
+      Logger.info("ajax Data = " + Json.toJson(memberProfile));
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    return ok();
   }
   
   
@@ -1075,6 +1089,7 @@ public class WebController extends Controller {
     Logger.info("ajaxLoadMemberProfile = " + Json.toJson(memberProfile));
     return ok(Json.toJson(memberProfile));
   }
+  
   
   // 相依性注入 play.libs.ws.WSClient，可以用來呼叫別人寫好的Http服務
   @Inject
@@ -1100,6 +1115,23 @@ public class WebController extends Controller {
     return ok(Json.toJson(verificInfo));
   }
   
+  
+  public Result ajaxCheckBirthday(){
+    String birthday = "";
+    String dbBirthday = "";
+    Utils_Session utilSsession = new Utils_Session();
+    try{
+      String encBirthday = request().getQueryString("birthday");
+      birthday = new EncAndDeCodeTool().urlAndBase64Decode(encBirthday);
+      String memberNo = utilSsession.getUserNo();
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      dbBirthday = detail != null ? detail.getCellphone() : "";
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkBirthday(birthday, dbBirthday);
+    return ok(Json.toJson(verificInfo));
+  }
   
   /**
    * 即時檢核使用者名稱 
@@ -1150,7 +1182,8 @@ public class WebController extends Controller {
       cellphone = request().getQueryString("cellphone");
       String memberNo = utilSsession.getUserNo();
       isUsedCellphone = webService.checkMemberDetailByCellphone(cellphone);
-      dbCellphone = webService.findMemberDetailByMemberNo(memberNo).getCellphone();
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      dbCellphone = detail != null ? detail.getCellphone() : "";
     } catch (Exception e){
       e.printStackTrace();
     }

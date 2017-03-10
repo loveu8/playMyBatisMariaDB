@@ -6,6 +6,8 @@
 	
 	@views.html.web.headerLibs()
 	
+	@views.html.web.headerJqueryuiLibs()
+	
 	@views.html.web.loginSignup.loginSignupLibs()
 	
 	<style>	
@@ -16,6 +18,8 @@
 	   height: 50%;
 	}
 	</style>
+	
+	
 	<script type ="application/javascript">
 		$( document ).ready(function() {
 			// 清除表單
@@ -30,14 +34,18 @@
 			// 讀取公用工具
 			$.getScript('@routes.Assets.versioned("javascripts/webUtils.js")', function(){
 
-				initLoadMemberProfile("#headerPicLink" , "#headerPicPreview" , '#username' , '#nickname' , '#cellphone' , '#systemMessage',
+				initLoadMemberProfile("#headerPicLink" , "#headerPicPreview" , "#datepicker" , '#username' , '#nickname' , '#cellphone' , '#systemMessage',
 						              "http://@request.host" + "@controllers.routes.WebController.ajaxLoadMemberProfile.url");
 				
 				// 圖片觸發事件
 				imgInputBlurHandler("#headerPicLink" , "#headerPicPreview" , "#headerPicLinkVerifyMessage" , 
 								    "http://@request.host" + "@controllers.routes.WebController.ajaxCheckHeaderPicLink.url?headerPicLink="); 
 				
- 				// 使用者名稱觸發事件
+				// 生日觸發事件
+				inputBlurEncodeHandler("#datepicker" , "#birthdayVerifyMessage" , 
+						 			   "http://@request.host" + "@controllers.routes.WebController.ajaxCheckBirthday.url?birthday="); 
+ 				
+				// 使用者名稱觸發事件
 				inputBlurHandler("#username" , "#usernameVerifyMessage" , 
 								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckUsername.url?username="); 
 							
@@ -48,11 +56,23 @@
 				// 手機號碼觸發事件
 				inputBlurHandler("#cellphone" , "#cellphoneVerifyMessage" , 
 								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckCellphone.url?cellphone="); 
+				
+				// 日期表初始化
+				$( "#datepicker" ).datepicker({
+				      showOn: "button",
+				      buttonImage: '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")',
+				      buttonImageOnly: true,
+				      buttonText: "Select date",
+				      changeMonth: true,
+				      changeYear: true
+				});
+				$.datepicker.setDefaults( $.datepicker.regional[ "zh-TW" ] );
 			});
 
 		});		
 			
 	</script>
+
   </head>
 
   <body>
@@ -66,12 +86,17 @@
       </ul>
       <div class="tab-content">
         <div id="Form" > 
-          <form action="@controllers.routes.WebController.editProfile.url" method="post" id="editProfile">
+          <form action="@controllers.routes.WebController.doEditProfile.url" method="post" id="editProfile">
 			<div class="field-wrap">
 				<img src="" id="headerPicPreview"/>
 				<label class="lable-field-wrap">頭像照片網址</label>
-				<input type="text" required autocomplete="off" id="headerPicLink" name="headerPicLink"/>
+				<input type="text" autocomplete="off" id="headerPicLink" name="headerPicLink"/>
 				<span id="headerPicLinkVerifyMessage"></span>
+			</div>
+			<div class="field-wrap">
+				<label class="lable-field-wrap">生日</label>
+				<input type="text"  autocomplete="off" name="birthday" id="datepicker"/>
+				<span id="birthdayVerifyMessage"></span>
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">使用者名稱</label>
@@ -80,23 +105,37 @@
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">暱稱</label>
-				<input type="text" required autocomplete="off" name="nickname" id="nickname"/>
+				<input type="text" autocomplete="off" name="nickname" id="nickname"/>
 				<span id="nicknameVerifyMessage"></span>
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">手機號碼</label>
-				<input type="text" required autocomplete="off" name="cellphone" id="cellphone"/>
+				<input type="text" autocomplete="off" name="cellphone" id="cellphone"/>
 				<span id="cellphoneVerifyMessage"></span>
 			</div>
 			<span id="systemMessage"></span>
 			<a>
 				<input type="submit" value="SUBMIT" class="button button-block">
 			</a>
-			</form>
+		  </form>
         </div>
 		</div><!-- tab-content -->   
 	</div> <!-- /form -->
 	<div id="titleBar"></div>
   </body>
-
+  <script>
+	  var frm = $('#editProfile');
+	  frm.submit(function (ev) {
+	      $.ajax({
+	          type: frm.attr('method'),
+	          url: frm.attr('action'),
+	          data: frm.serialize(),
+	          success: function (data) {
+	              alert('ok');
+	          }
+	      });
+	
+	      ev.preventDefault();
+	  });
+  </script>
 </html>
