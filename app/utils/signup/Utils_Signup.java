@@ -3,9 +3,11 @@ package utils.signup;
 import java.security.MessageDigest;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import play.libs.Json;
@@ -22,7 +24,7 @@ import pojo.web.signup.status.NicknameStatus;
 import pojo.web.signup.status.PasswordStatus;
 import pojo.web.signup.status.UsernameStatus;
 import pojo.web.signup.verific.VerificFormMessage;
-import pojo.web.signup.verific.VerificMemberDetailMessage;
+import pojo.web.signup.verific.VerificCheckMessage;
 import utils.enc.AESEncrypter;
 
 
@@ -141,14 +143,14 @@ public class Utils_Signup {
       profile.setBirthday(memberDetail.getBirthday()!=null && !"".equals(memberDetail.getBirthday()) ? memberDetail.getBirthday() : "");
     }
     profile.setEditable(member.getMemberNo() == null || "".equals(member.getMemberNo()) ? false : true);
-    profile.setDesc(member.getMemberNo() == null || "".equals(member.getMemberNo()) ? "系統異常，請稍候再嘗試。" : "");
+    profile.setSystemMessage(member.getMemberNo() == null || "".equals(member.getMemberNo()) ? "系統異常，請稍候再嘗試。" : "");
     return profile;
   }
   
 
-  public VerificMemberDetailMessage checkHeaderPicLink(String headerPicLink, boolean isImg) {
+  public VerificCheckMessage checkHeaderPicLink(String headerPicLink, boolean isImg) {
 
-    VerificMemberDetailMessage message = new VerificMemberDetailMessage();
+    VerificCheckMessage message = new VerificCheckMessage();
 
     message.setInputName("headerPicLink");
 
@@ -178,8 +180,8 @@ public class Utils_Signup {
   }
 
   
-  public VerificMemberDetailMessage checkBirthday(String birthday, String dbBirthday) {
-    VerificMemberDetailMessage message = new VerificMemberDetailMessage();
+  public VerificCheckMessage checkBirthday(String birthday, String dbBirthday) {
+    VerificCheckMessage message = new VerificCheckMessage();
 
     message.setInputName("birthday");
     
@@ -226,10 +228,10 @@ public class Utils_Signup {
   }
   
 
-  public VerificMemberDetailMessage checkEditUsername(String username, String dbUsername,
+  public VerificCheckMessage checkEditUsername(String username, String dbUsername,
       boolean isUsedUsername) {
 
-    VerificMemberDetailMessage message = new VerificMemberDetailMessage();
+    VerificCheckMessage message = new VerificCheckMessage();
 
     message.setInputName("username");
 
@@ -263,8 +265,8 @@ public class Utils_Signup {
   }
 
 
-  public VerificMemberDetailMessage checkNickname(String nickname) {
-    VerificMemberDetailMessage message = new VerificMemberDetailMessage();
+  public VerificCheckMessage checkNickname(String nickname) {
+    VerificCheckMessage message = new VerificCheckMessage();
 
     message.setInputName("nickname");
 
@@ -295,10 +297,10 @@ public class Utils_Signup {
   }
 
 
-  public VerificMemberDetailMessage checkCellphone(String cellphone, String dbCellphone,
+  public VerificCheckMessage checkCellphone(String cellphone, String dbCellphone,
       boolean isUsedCellphone) {
 
-    VerificMemberDetailMessage message = new VerificMemberDetailMessage();
+    VerificCheckMessage message = new VerificCheckMessage();
 
     message.setInputName("cellphone");
 
@@ -331,6 +333,21 @@ public class Utils_Signup {
     return message;
 
   }
+  
+  
+  public Map<String , VerificCheckMessage> checkMemberProfile(MemberProfile memberProfile , boolean isImg , 
+                                                              String dbUsername , boolean isUsedUsername ,
+                                                              String dbBirthday ,
+                                                              String dbCellphone, boolean isUsedCellphone) {
+    Map<String , VerificCheckMessage> results = new HashMap<String , VerificCheckMessage>();
+    results.put("headerPicLink", checkHeaderPicLink(memberProfile.getHeaderPicLink(), isImg));
+    results.put("nickname", checkNickname(memberProfile.getNickname()));
+    results.put("username", checkEditUsername(memberProfile.getUsername() ,  dbUsername , isUsedUsername));
+    results.put("birthday", checkBirthday(memberProfile.getBirthday() , dbBirthday));
+    results.put("cellphone", checkCellphone(memberProfile.getCellphone() , dbCellphone , isUsedCellphone));
+    return results;
+  }
+  
 
   /**
    * 產生註冊sha-256認證字串

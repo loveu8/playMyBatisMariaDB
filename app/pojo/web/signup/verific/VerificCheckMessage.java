@@ -1,10 +1,10 @@
 package pojo.web.signup.verific;
 
 /**
- * 預設會員明細錯誤訊息
+ * 檢查欄位資訊是否正確
  * 並新增boolean值檢視欄位是否通過
  */
-public class VerificMemberDetailMessage extends VerificFormMessage {
+public class VerificCheckMessage extends VerificFormMessage {
   
   private boolean pass;
 

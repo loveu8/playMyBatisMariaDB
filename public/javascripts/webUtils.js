@@ -27,7 +27,7 @@ function initLoadMemberProfile(headerPicLink , headerPicPreview , datepicker , u
 		$(systemMessage).html('');
 		if (data.editable === false) {
 			$(systemMessage).css("color", "red");
-			$(systemMessage).append(data.desc);
+			$(systemMessage).append(data.systemMessage);
 			return ;
 		} 
 		$(headerPicLink).val(data.headerPicLink);

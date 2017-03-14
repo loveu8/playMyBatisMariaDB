@@ -16,18 +16,17 @@ public class MemberProfile {
   private String headerPicLink;
   
   private boolean editable;
-  
-  private String desc;
+    
+  private String systemMessage;
   
   public MemberProfile(){
-
     this.username = "";
     this.nickname = "";
     this.birthday = "";
     this.cellphone = "";
     this.headerPicLink = "";
     this.editable = false;
-    this.desc = "系統異常，請稍候再嘗試。";
+    this.systemMessage = "系統異常，請稍候再嘗試。";
   }
 
   public String getUsername() {
@@ -77,13 +76,13 @@ public class MemberProfile {
   public void setEditable(boolean editable) {
     this.editable = editable;
   }
-
-  public String getDesc() {
-    return desc;
+  
+  public String getSystemMessage() {
+    return systemMessage;
   }
 
-  public void setDesc(String desc) {
-    this.desc = desc;
+  public void setSystemMessage(String systemMessage) {
+    this.systemMessage = systemMessage;
   }
   
 }

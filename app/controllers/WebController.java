@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ import pojo.web.signup.request.EditPasswordRequest;
 import pojo.web.signup.request.ResetPasswordRequest;
 import pojo.web.signup.request.SignupRequest;
 import pojo.web.signup.verific.VerificFormMessage;
-import pojo.web.signup.verific.VerificMemberDetailMessage;
+import pojo.web.signup.verific.VerificCheckMessage;
 import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
@@ -1062,9 +1063,21 @@ public class WebController extends Controller {
    * 修改會員個人資料動作 
    */
   public Result doEditProfile(){
+    Utils_Session utilSsession = new Utils_Session();
     try{
       MemberProfile memberProfile = formFactory.form(MemberProfile.class).bindFromRequest().get();
-      Logger.info("ajax Data = " + Json.toJson(memberProfile));
+      HttpHelper httpHelper = new HttpHelper(ws);
+      boolean isImg = httpHelper.checkImgUrl(memberProfile.getHeaderPicLink());
+      boolean isUsedUsername = webService.checkMemberByUsername(memberProfile.getUsername());
+      
+      String dbUsername = webService.findMemberByMemberNo(utilSsession.getUserNo()).getUsername();
+      MemberDetail detail = webService.findMemberDetailByMemberNo(utilSsession.getUserNo());
+      String dbBirthday = detail != null ? detail.getBirthday() : "";
+      String dbCellphone = detail != null ? detail.getCellphone() : "" ;
+      boolean isUsedCellphone = webService.checkMemberDetailByCellphone(memberProfile.getCellphone());
+      Map<String , VerificCheckMessage> mapVerificCheckMessages = 
+            new Utils_Signup().checkMemberProfile(memberProfile , isImg , dbUsername, isUsedUsername , dbBirthday , dbCellphone , isUsedCellphone);
+      Logger.info("result = " + Json.toJson(mapVerificCheckMessages));
     } catch (Exception e){
       e.printStackTrace();
     }
@@ -1112,7 +1125,7 @@ public class WebController extends Controller {
     } catch (Exception e){
       e.printStackTrace();
     }
-    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink, isImg);
+    VerificCheckMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink, isImg);
     return ok(Json.toJson(verificInfo));
   }
   
@@ -1130,11 +1143,11 @@ public class WebController extends Controller {
       birthday = tool.urlAndBase64Decode(encBirthday);
       String memberNo = utilSsession.getUserNo();
       MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
-      dbBirthday = detail != null ? detail.getCellphone() : "";
+      dbBirthday = detail != null ? detail.getBirthday() : "";
     } catch (Exception e){
       e.printStackTrace();
     }
-    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkBirthday(birthday, dbBirthday);
+    VerificCheckMessage verificInfo = new Utils_Signup().checkBirthday(birthday, dbBirthday);
     return ok(Json.toJson(verificInfo));
   }
   
@@ -1157,7 +1170,7 @@ public class WebController extends Controller {
       e.printStackTrace();
     }
     
-    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkEditUsername(username , dbUsername, isUsedUsername);
+    VerificCheckMessage verificInfo = new Utils_Signup().checkEditUsername(username , dbUsername, isUsedUsername);
     return ok(Json.toJson(verificInfo));
   }
 
@@ -1176,7 +1189,7 @@ public class WebController extends Controller {
       e.printStackTrace();
     }
     
-    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkNickname(nickname);
+    VerificCheckMessage verificInfo = new Utils_Signup().checkNickname(nickname);
     return ok(Json.toJson(verificInfo));
   }
   
@@ -1202,7 +1215,7 @@ public class WebController extends Controller {
       e.printStackTrace();
     }
     
-    VerificMemberDetailMessage verificInfo = new Utils_Signup().checkCellphone(cellphone, dbCellphone , isUsedCellphone);
+    VerificCheckMessage verificInfo = new Utils_Signup().checkCellphone(cellphone, dbCellphone , isUsedCellphone);
     return ok(Json.toJson(verificInfo));
   }
   
