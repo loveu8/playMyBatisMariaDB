@@ -6,9 +6,9 @@
 	
 	@views.html.web.headerLibs()
 	
-	@views.html.web.headerJqueryuiLibs()
-	
 	@views.html.web.loginSignup.loginSignupLibs()
+	
+	@views.html.web.headerJqueryuiLibs()
 	
 	<style>	
 	#headerPicPreview {
@@ -42,8 +42,8 @@
 								    "http://@request.host" + "@controllers.routes.WebController.ajaxCheckHeaderPicLink.url?headerPicLink="); 
 				
 				// 生日觸發事件
-				inputBlurEncodeHandler("#datepicker" , "#birthdayVerifyMessage" , 
-						 			   "http://@request.host" + "@controllers.routes.WebController.ajaxCheckBirthday.url?birthday="); 
+				inputBlurHandler("#datepicker" , "#birthdayVerifyMessage" , 
+						 		 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckBirthday.url?birthday="); 
  				
 				// 使用者名稱觸發事件
 				inputBlurHandler("#username" , "#usernameVerifyMessage" , 
@@ -57,16 +57,9 @@
 				inputBlurHandler("#cellphone" , "#cellphoneVerifyMessage" , 
 								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckCellphone.url?cellphone="); 
 				
-				// 日期表初始化
-				$( "#datepicker" ).datepicker({
-				      showOn: "button",
-				      buttonImage: '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")',
-				      buttonImageOnly: true,
-				      buttonText: "Select date",
-				      changeMonth: true,
-				      changeYear: true
-				});
-				$.datepicker.setDefaults( $.datepicker.regional[ "zh-TW" ] );
+				// 日曆表初始化
+				initDatePicker('#datepicker' , '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")');
+	
 			});
 
 		});		

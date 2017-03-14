@@ -1103,10 +1103,11 @@ public class WebController extends Controller {
     String encodeUrl = "";
     String headerPicLink = "";
     boolean isImg = false;
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
     try{
       HttpHelper httpHelper = new HttpHelper(ws);
       encodeUrl = request().getQueryString("headerPicLink");
-      headerPicLink = new EncAndDeCodeTool().urlAndBase64Decode(encodeUrl);
+      headerPicLink = tool.urlAndBase64Decode(encodeUrl);
       isImg = httpHelper.checkImgUrl(headerPicLink);
     } catch (Exception e){
       e.printStackTrace();
@@ -1115,14 +1116,18 @@ public class WebController extends Controller {
     return ok(Json.toJson(verificInfo));
   }
   
-  
+  /**
+   * 即時檢核使用者生日 
+   */
   public Result ajaxCheckBirthday(){
+    String encBirthday = "";
     String birthday = "";
     String dbBirthday = "";
     Utils_Session utilSsession = new Utils_Session();
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
     try{
-      String encBirthday = request().getQueryString("birthday");
-      birthday = new EncAndDeCodeTool().urlAndBase64Decode(encBirthday);
+      encBirthday = request().getQueryString("birthday");
+      birthday = tool.urlAndBase64Decode(encBirthday);
       String memberNo = utilSsession.getUserNo();
       MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
       dbBirthday = detail != null ? detail.getCellphone() : "";
@@ -1137,12 +1142,15 @@ public class WebController extends Controller {
    * 即時檢核使用者名稱 
    */
   public Result ajaxCheckUsername(){
+    String encUsername = "";
     String username = "";
     String dbUsername = "";
     boolean isUsedUsername = true;
     Utils_Session utilSsession = new Utils_Session();
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
     try {
-      username = request().getQueryString("username");
+      encUsername = request().getQueryString("username");
+      username = tool.urlAndBase64Decode(encUsername);
       isUsedUsername = webService.checkMemberByUsername(username);
       dbUsername = webService.findMemberByMemberNo(utilSsession.getUserNo()).getUsername();
     } catch (Exception e){
@@ -1158,9 +1166,12 @@ public class WebController extends Controller {
    * 即時檢核暱稱 
    */
   public Result ajaxCheckNickname(){
+    String encNickname = "";
     String nickname = "";
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
     try {
-      nickname = request().getQueryString("nickname");
+      encNickname = request().getQueryString("nickname");
+      nickname = tool.urlAndBase64Decode(encNickname);
     } catch (Exception e){
       e.printStackTrace();
     }
@@ -1174,12 +1185,15 @@ public class WebController extends Controller {
    * 即時檢核手機號碼
    */
   public Result ajaxCheckCellphone(){
+    String encCellphone = "";
     String cellphone = "";
     String dbCellphone = "";
     boolean isUsedCellphone = true;
     Utils_Session utilSsession = new Utils_Session();
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
     try {
-      cellphone = request().getQueryString("cellphone");
+      encCellphone = request().getQueryString("cellphone");
+      cellphone = tool.urlAndBase64Decode(encCellphone);
       String memberNo = utilSsession.getUserNo();
       isUsedCellphone = webService.checkMemberDetailByCellphone(cellphone);
       MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
