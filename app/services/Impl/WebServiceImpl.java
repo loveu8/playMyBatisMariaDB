@@ -127,4 +127,19 @@ public class WebServiceImpl implements WebService {
     return this.webService.findMemberDetailByMemberNo(memberNo);
   }
   
+  @Override
+  public int updateMemberUsername(@Param("memberNo") String memberNo, @Param("newUsername") String newUsername){
+    return this.webService.updateMemberUsername(memberNo , newUsername);
+  }
+  
+  @Override
+  public int genMemberDetail(@Param("data") MemberDetail memberDetail){
+    return this.webService.genMemberDetail(memberDetail);
+  }
+  
+  @Override
+  public int genMemberDetailChangeLog(@Param("data") MemberDetail memberDetail){
+    return this.webService.genMemberDetailChangeLog(memberDetail);
+  }
+  
 }

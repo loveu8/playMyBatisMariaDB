@@ -1,5 +1,9 @@
 package pojo.web.signup.update;
 
+import java.util.Map;
+
+import pojo.web.signup.verific.VerificCheckMessage;
+
 /**
  * 更新結果訊息 
  */
@@ -17,7 +21,12 @@ public class UpdateMessage {
   // 是否更新成功
   private boolean update;
   
-
+  // 檢驗結果
+  private Map<String , VerificCheckMessage> verificResults;
+  
+  // 耗費時間
+  private String costTime;
+  
   public String getUpdateType() {
     return updateType;
   }
@@ -48,6 +57,22 @@ public class UpdateMessage {
 
   public void setUpdate(boolean update) {
     this.update = update;
+  }
+
+  public Map<String, VerificCheckMessage> getVerificResults() {
+    return verificResults;
+  }
+
+  public void setVerificResults(Map<String, VerificCheckMessage> verificResults) {
+    this.verificResults = verificResults;
+  }
+
+  public String getCostTime() {
+    return costTime;
+  }
+
+  public void setCostTime(String costTime) {
+    this.costTime = costTime;
   }
   
 }

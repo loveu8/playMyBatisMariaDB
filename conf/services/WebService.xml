@@ -16,7 +16,7 @@
 			#{signupRequest.username} ,
 			DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') ,
 			DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
-		);
+		)
 	</insert>
 
 
@@ -226,5 +226,51 @@
 		SELECT * FROM member_detail WHERE memberNo = #{memberNo}
 	</select>	
 	
+	
+	<!--  更新會員使用者名稱 -->
+	<update id="updateMemberUsername">
+		UPDATE member_main SET username = #{newUsername} , modifyDate = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') WHERE memberNo = #{memberNo}
+	</update>
+
+
+	<!-- 會員更換電子信箱表單 -->
+	<insert id="genMemberDetail" parameterType="pojo.web.MemberDetail">
+		insert into
+		member_detail
+		(memberNo , nickname , birthday , cellphone , headerPicLink , createDate , modifyDate)
+		values
+		( 
+			#{data.memberNo} , 
+			#{data.nickname} ,
+			#{data.birthday} ,
+			#{data.cellphone} ,
+			#{data.headerPicLink} ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
+		) ON DUPLICATE KEY UPDATE 
+		memberNo 		= memberNo ,
+		nickname 		= #{data.nickname} ,
+		birthday 		= #{data.birthday} ,
+		cellphone 		= #{data.cellphone} ,
+		headerPicLink 	= #{data.headerPicLink} ,
+		createDate  	= createDate ,
+		modifyDate  	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	</insert>	
+	
+	
+	<!-- 會員明細記錄檔 -->
+	<insert id="genMemberDetailChangeLog" parameterType="pojo.web.MemberDetail">
+		insert into
+		member_detail_log(memberNo , nickname , birthday , cellphone , headerPicLink , createDate)
+		values
+		( 
+			#{data.memberNo} , 
+			#{data.nickname} ,
+			#{data.birthday} ,
+			#{data.cellphone} ,
+			#{data.headerPicLink} ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
 	
 </mapper>

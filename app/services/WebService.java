@@ -80,4 +80,13 @@ public interface WebService {
   /** 用手機號碼 尋找會員明細*/
   public MemberDetail findMemberDetailByMemberNo(@Param("memberNo") String memberNo);
   
+  /** 更新使用者的使用者名稱 */
+  public int updateMemberUsername(@Param("memberNo") String memberNo, @Param("newUsername") String newUsername);
+  
+  /** 寫入或更新memberDetail資料 */
+  public int genMemberDetail(@Param("data") MemberDetail memberDetail);
+  
+  /** 寫入memberDetailLog資料 */
+  public int genMemberDetailChangeLog(@Param("data") MemberDetail memberDetail);
+  
 }

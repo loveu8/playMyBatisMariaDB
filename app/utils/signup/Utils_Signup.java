@@ -3,11 +3,9 @@ package utils.signup;
 import java.security.MessageDigest;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import play.libs.Json;
@@ -346,6 +344,23 @@ public class Utils_Signup {
     results.put("birthday", checkBirthday(memberProfile.getBirthday() , dbBirthday));
     results.put("cellphone", checkCellphone(memberProfile.getCellphone() , dbCellphone , isUsedCellphone));
     return results;
+  }
+  
+  
+  /**
+   * <pre>
+   * 整理資料
+   * 
+   * </pre>
+   */
+  public MemberDetail genMemberDetail(String memberNo, MemberProfile memberProfile) {
+    MemberDetail detail = new MemberDetail();
+    detail.setMemberNo(memberNo);
+    detail.setBirthday(memberProfile.getBirthday());
+    detail.setCellphone(memberProfile.getCellphone());
+    detail.setHeaderPicLink(memberProfile.getHeaderPicLink());
+    detail.setNickname(memberProfile.getNickname());
+    return detail;
   }
   
 

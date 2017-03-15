@@ -1,7 +1,7 @@
 package controllers;
 
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -26,6 +26,9 @@ import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.EditPasswordRequest;
 import pojo.web.signup.request.ResetPasswordRequest;
 import pojo.web.signup.request.SignupRequest;
+import pojo.web.signup.status.UpdateMemberProfileStatus;
+import pojo.web.signup.update.UpdateMessage;
+import pojo.web.signup.update.UpdateType;
 import pojo.web.signup.verific.VerificFormMessage;
 import pojo.web.signup.verific.VerificCheckMessage;
 import services.WebService;
@@ -1060,28 +1063,106 @@ public class WebController extends Controller {
   
   
   /**
+   * <pre>
    * 修改會員個人資料動作 
+   * 
+   * Step 1 : 確認使用者填入的資料
+   * Step 2 : 確認無誤，寫入使用者資料
+   * Step 3 : 確認更新狀態，回傳更新寫入訊息
+   * 
+   * </pre>
    */
   public Result doEditProfile(){
+    Logger.info("doEditProfile");
+    Date startTime = new Date();
+    boolean isAllPass = false;
+    String updateType = "";
+    String status = "";
+    String statusDesc = "";
+    String costTime = "";
+    String memberNo = "";
+    boolean update = false;
+    Map<String , VerificCheckMessage> verificResults = null;
     Utils_Session utilSsession = new Utils_Session();
+    UpdateMessage updateMessage = new UpdateMessage();
+    Utils_Signup utilsSignup = new Utils_Signup() ;
     try{
+
+      // Step 1
       MemberProfile memberProfile = formFactory.form(MemberProfile.class).bindFromRequest().get();
       HttpHelper httpHelper = new HttpHelper(ws);
+      memberNo = utilSsession.getUserNo();
       boolean isImg = httpHelper.checkImgUrl(memberProfile.getHeaderPicLink());
       boolean isUsedUsername = webService.checkMemberByUsername(memberProfile.getUsername());
-      
-      String dbUsername = webService.findMemberByMemberNo(utilSsession.getUserNo()).getUsername();
-      MemberDetail detail = webService.findMemberDetailByMemberNo(utilSsession.getUserNo());
+      String dbUsername = webService.findMemberByMemberNo(memberNo).getUsername();
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
       String dbBirthday = detail != null ? detail.getBirthday() : "";
       String dbCellphone = detail != null ? detail.getCellphone() : "" ;
       boolean isUsedCellphone = webService.checkMemberDetailByCellphone(memberProfile.getCellphone());
-      Map<String , VerificCheckMessage> mapVerificCheckMessages = 
-            new Utils_Signup().checkMemberProfile(memberProfile , isImg , dbUsername, isUsedUsername , dbBirthday , dbCellphone , isUsedCellphone);
-      Logger.info("result = " + Json.toJson(mapVerificCheckMessages));
+      verificResults = utilsSignup.checkMemberProfile(memberProfile , isImg , dbUsername, 
+                                                               isUsedUsername , dbBirthday , dbCellphone , 
+                                                               isUsedCellphone);
+      Logger.info("Step 1 : " + Json.toJson(verificResults));
+      
+      // Step 2
+      isAllPass = false;
+      for(String key : verificResults.keySet()){
+        isAllPass = verificResults.get(key).isPass();
+        if(!isAllPass){
+          break;
+        }
+      }
+      Logger.info("Step 2 : " + isAllPass);
+      
+      
+      // Step 3
+      if(isAllPass){
+        // 寫入Member記錄檔
+        Member member = webService.findMemberByMemberNo(memberNo);
+        webService.genMemberChangeLog(member);
+        // 更新使用者名稱
+        boolean updateUseenameOk = webService.updateMemberUsername(memberNo , memberProfile.getUsername()) > 0 ? true : false ;
+        
+        // 寫入MemberDetail與記錄檔
+        MemberDetail newMemberDetail = utilsSignup.genMemberDetail(memberNo , memberProfile);
+        boolean updateMemberDeatilOk = webService.genMemberDetail(newMemberDetail) > 0 ? true : false;
+        boolean updateMemberDetailLogOk = webService.genMemberDetailChangeLog(newMemberDetail) > 0 ? true : false;
+        
+        Logger.info("Step 3 : updateUseenameOk = " + updateUseenameOk + 
+                    " , updateMemberDeatilOk = " + updateMemberDeatilOk +
+                    " , updateMemberDetailLogOk = " + updateMemberDetailLogOk);
+        
+        if(updateUseenameOk && updateMemberDeatilOk && updateMemberDeatilOk){
+          status = UpdateMemberProfileStatus.S200.status;
+          statusDesc = UpdateMemberProfileStatus.S200.statusDesc;
+          update = UpdateMemberProfileStatus.S200.update;
+        } else {
+          status = UpdateMemberProfileStatus.SE1.status;
+          statusDesc = UpdateMemberProfileStatus.SE1.statusDesc;
+          update = UpdateMemberProfileStatus.SE1.update;
+        }
+      } else {
+        status = UpdateMemberProfileStatus.E1.status;
+        statusDesc = UpdateMemberProfileStatus.E1.statusDesc;
+        update = UpdateMemberProfileStatus.E1.update;
+      }
+      
     } catch (Exception e){
       e.printStackTrace();
+      status = UpdateMemberProfileStatus.SE1.status;
+      statusDesc = UpdateMemberProfileStatus.SE1.statusDesc;
+      update = UpdateMemberProfileStatus.SE1.update;
+    } finally {
+      costTime = (new Date().getTime() - startTime.getTime()) + " ms";
+      updateType = UpdateType.updateMemberProfile;
+      updateMessage.setUpdateType(updateType);
+      updateMessage.setStatus(status);
+      updateMessage.setStatusDesc(statusDesc);
+      updateMessage.setUpdate(update);
+      updateMessage.setCostTime(costTime);
+      updateMessage.setVerificResults(verificResults);
     }
-    return ok();
+    return ok(Json.toJson(updateMessage));
   }
   
   

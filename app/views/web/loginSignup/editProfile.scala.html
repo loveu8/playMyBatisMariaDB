@@ -81,7 +81,7 @@
         <div id="Form" > 
           <form action="@controllers.routes.WebController.doEditProfile.url" method="post" id="editProfile">
 			<div class="field-wrap">
-				<img src="" id="headerPicPreview"/>
+				<img id="headerPicPreview"/>
 				<label class="lable-field-wrap">頭像照片網址</label>
 				<input type="text" autocomplete="off" id="headerPicLink" name="headerPicLink"/>
 				<span id="headerPicLinkVerifyMessage"></span>
@@ -114,6 +114,7 @@
         </div>
 		</div><!-- tab-content -->   
 	</div> <!-- /form -->
+	<div id="load"></div>
 	<div id="titleBar"></div>
   </body>
   <script>
@@ -124,11 +125,12 @@
 	          url: frm.attr('action'),
 	          data: frm.serialize(),
 	          success: function (data) {
-	              alert('ok');
+	              console.log('result = ' + data);
 	          }
 	      });
 	
 	      ev.preventDefault();
 	  });
+	  
   </script>
 </html>

@@ -30,10 +30,11 @@ function initLoadMemberProfile(headerPicLink , headerPicPreview , datepicker , u
 			$(systemMessage).append(data.systemMessage);
 			return ;
 		} 
-		$(headerPicLink).val(data.headerPicLink);
 		if(data.headerPicLink != ''){
-			$(headerPicPreview).val(data.headerPicLink);
+      		$(headerPicPreview).attr("src" , data.headerPicLink);
+			$(headerPicPreview).fadeIn();
 		}
+		$(headerPicLink).val(data.headerPicLink);
 		$(datepicker).val(data.birthday)
 		$(username).val(data.username);
 		$(nickname).val(data.nickname);
