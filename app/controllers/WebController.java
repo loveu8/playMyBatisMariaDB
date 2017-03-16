@@ -1073,7 +1073,7 @@ public class WebController extends Controller {
    * </pre>
    */
   public Result doEditProfile(){
-    Logger.info("doEditProfile");
+    Logger.info("start doEditProfile");
     Date startTime = new Date();
     boolean isAllPass = false;
     String updateType = "";
@@ -1096,13 +1096,15 @@ public class WebController extends Controller {
       boolean isUsedUsername = webService.checkMemberByUsername(memberProfile.getUsername());
       String dbUsername = webService.findMemberByMemberNo(memberNo).getUsername();
       MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      String dbHeaderPicLink = detail != null ? detail.getHeaderPicLink() : "";
       String dbBirthday = detail != null ? detail.getBirthday() : "";
       String dbCellphone = detail != null ? detail.getCellphone() : "" ;
+      String dbNickname = detail != null ? detail.getNickname() : "";
       boolean isUsedCellphone = webService.checkMemberDetailByCellphone(memberProfile.getCellphone());
       verificResults = utilsSignup.checkMemberProfile(memberProfile , isImg , dbUsername, 
-                                                               isUsedUsername , dbBirthday , dbCellphone , 
-                                                               isUsedCellphone);
-      Logger.info("Step 1 : " + Json.toJson(verificResults));
+                                                      isUsedUsername , dbBirthday , dbCellphone , 
+                                                      isUsedCellphone , dbNickname , dbHeaderPicLink);
+      Logger.info("Step 1 檢驗結果 : " + Json.toJson(verificResults));
       
       // Step 2
       isAllPass = false;
@@ -1112,7 +1114,7 @@ public class WebController extends Controller {
           break;
         }
       }
-      Logger.info("Step 2 : " + isAllPass);
+      Logger.info("Step 2 檢查後，是否允許可以更新與寫入會員資料: " + isAllPass);
       
       
       // Step 3
@@ -1128,7 +1130,7 @@ public class WebController extends Controller {
         boolean updateMemberDeatilOk = webService.genMemberDetail(newMemberDetail) > 0 ? true : false;
         boolean updateMemberDetailLogOk = webService.genMemberDetailChangeLog(newMemberDetail) > 0 ? true : false;
         
-        Logger.info("Step 3 : updateUseenameOk = " + updateUseenameOk + 
+        Logger.info("Step 3 更新或寫入資料是否成功 : updateUseenameOk = " + updateUseenameOk + 
                     " , updateMemberDeatilOk = " + updateMemberDeatilOk +
                     " , updateMemberDetailLogOk = " + updateMemberDetailLogOk);
         
@@ -1161,7 +1163,9 @@ public class WebController extends Controller {
       updateMessage.setUpdate(update);
       updateMessage.setCostTime(costTime);
       updateMessage.setVerificResults(verificResults);
+      
     }
+    Logger.info("finish doEditProfile = " + Json.toJson(updateMessage));
     return ok(Json.toJson(updateMessage));
   }
   
@@ -1196,17 +1200,22 @@ public class WebController extends Controller {
   public Result ajaxCheckHeaderPicLink(){
     String encodeUrl = "";
     String headerPicLink = "";
+    String dbHeaderPicLink = "";
     boolean isImg = false;
+    Utils_Session utilSsession = new Utils_Session();
     EncAndDeCodeTool tool = new EncAndDeCodeTool();
     try{
       HttpHelper httpHelper = new HttpHelper(ws);
       encodeUrl = request().getQueryString("headerPicLink");
       headerPicLink = tool.urlAndBase64Decode(encodeUrl);
       isImg = httpHelper.checkImgUrl(headerPicLink);
+      String memberNo = utilSsession.getUserNo();
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      dbHeaderPicLink = detail != null ? detail.getHeaderPicLink() : "";
     } catch (Exception e){
       e.printStackTrace();
     }
-    VerificCheckMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink, isImg);
+    VerificCheckMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink , dbHeaderPicLink, isImg);
     return ok(Json.toJson(verificInfo));
   }
   
@@ -1261,16 +1270,21 @@ public class WebController extends Controller {
    */
   public Result ajaxCheckNickname(){
     String encNickname = "";
+    String dbNickname = "";
     String nickname = "";
+    Utils_Session utilSsession = new Utils_Session();
     EncAndDeCodeTool tool = new EncAndDeCodeTool();
     try {
       encNickname = request().getQueryString("nickname");
+      String memberNo = utilSsession.getUserNo();
       nickname = tool.urlAndBase64Decode(encNickname);
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      dbNickname = detail != null ? detail.getNickname() : "";
     } catch (Exception e){
       e.printStackTrace();
     }
     
-    VerificCheckMessage verificInfo = new Utils_Signup().checkNickname(nickname);
+    VerificCheckMessage verificInfo = new Utils_Signup().checkNickname(nickname , dbNickname);
     return ok(Json.toJson(verificInfo));
   }
   

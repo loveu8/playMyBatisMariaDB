@@ -12,7 +12,10 @@ public enum NicknameStatus {
   S200("200", "暱稱可以使用。" , true) ,
   
   /** 暱稱無輸入，不需要顯示說明 */
-  S201("201", "" , true)
+  S201("201", "" , true) ,
+  
+  /** 暱稱相同，不需要顯示說明 */
+  S202("202", "" , true) ,
   ;
   
   NicknameStatus(String status, String statusDesc , boolean pass) {

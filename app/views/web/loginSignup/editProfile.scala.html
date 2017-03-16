@@ -60,6 +60,9 @@
 				// 日曆表初始化
 				initDatePicker('#datepicker' , '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")');
 	
+				// 表單驗證
+				profileHandler('#editProfile','#systemMessage','#headerPicPreview','VerifyMessage');
+			
 			});
 
 		});		
@@ -117,20 +120,4 @@
 	<div id="load"></div>
 	<div id="titleBar"></div>
   </body>
-  <script>
-	  var frm = $('#editProfile');
-	  frm.submit(function (ev) {
-	      $.ajax({
-	          type: frm.attr('method'),
-	          url: frm.attr('action'),
-	          data: frm.serialize(),
-	          success: function (data) {
-	              console.log('result = ' + data);
-	          }
-	      });
-	
-	      ev.preventDefault();
-	  });
-	  
-  </script>
 </html>

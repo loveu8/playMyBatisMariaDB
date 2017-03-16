@@ -12,7 +12,10 @@ public enum HeaderPicLinkStatus {
   S200("200", "圖片網址可以使用。" , true) ,
   
   /** 圖片網址無輸入，不需要顯示說明*/
-  S201("201", "" , true)
+  S201("201", "" , true) ,
+  
+  /** 圖片網址相同，不需要顯示說明*/
+  S202("202", "" , true)
   ;
   
   HeaderPicLinkStatus(String status, String statusDesc , boolean pass) {

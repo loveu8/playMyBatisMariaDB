@@ -146,7 +146,7 @@ public class Utils_Signup {
   }
   
 
-  public VerificCheckMessage checkHeaderPicLink(String headerPicLink, boolean isImg) {
+  public VerificCheckMessage checkHeaderPicLink(String headerPicLink , String dbHeaderPicLink , boolean isImg) {
 
     VerificCheckMessage message = new VerificCheckMessage();
 
@@ -166,6 +166,10 @@ public class Utils_Signup {
       message.setStatus(HeaderPicLinkStatus.S2.status);
       message.setStatusDesc(HeaderPicLinkStatus.S2.statusDesc);
       message.setPass(HeaderPicLinkStatus.S2.pass);
+    } else if (headerPicLink.equals(dbHeaderPicLink)) {
+      message.setStatus(HeaderPicLinkStatus.S202.status);
+      message.setStatusDesc(HeaderPicLinkStatus.S202.statusDesc);
+      message.setPass(HeaderPicLinkStatus.S202.pass);
     } else {
       message.setStatus(HeaderPicLinkStatus.S200.status);
       message.setStatusDesc(HeaderPicLinkStatus.S200.statusDesc);
@@ -263,7 +267,7 @@ public class Utils_Signup {
   }
 
 
-  public VerificCheckMessage checkNickname(String nickname) {
+  public VerificCheckMessage checkNickname(String nickname , String dbNickname) {
     VerificCheckMessage message = new VerificCheckMessage();
 
     message.setInputName("nickname");
@@ -283,6 +287,10 @@ public class Utils_Signup {
       message.setStatus(NicknameStatus.S2.status);
       message.setStatusDesc(NicknameStatus.S2.statusDesc);
       message.setPass(NicknameStatus.S2.pass);
+    } else if (nickname.equals(dbNickname)){
+      message.setStatus(NicknameStatus.S202.status);
+      message.setStatusDesc(NicknameStatus.S202.statusDesc);
+      message.setPass(NicknameStatus.S202.pass);
     } else {
       message.setStatus(NicknameStatus.S200.status);
       message.setStatusDesc(NicknameStatus.S200.statusDesc);
@@ -332,14 +340,19 @@ public class Utils_Signup {
 
   }
   
-  
+  /**
+   * <pre>
+   *  檢查表單各個欄位的資訊
+   * </pre>
+   */
   public Map<String , VerificCheckMessage> checkMemberProfile(MemberProfile memberProfile , boolean isImg , 
                                                               String dbUsername , boolean isUsedUsername ,
                                                               String dbBirthday ,
-                                                              String dbCellphone, boolean isUsedCellphone) {
+                                                              String dbCellphone, boolean isUsedCellphone ,
+                                                              String dbNickname , String dbHeaderPicLink) {
     Map<String , VerificCheckMessage> results = new HashMap<String , VerificCheckMessage>();
-    results.put("headerPicLink", checkHeaderPicLink(memberProfile.getHeaderPicLink(), isImg));
-    results.put("nickname", checkNickname(memberProfile.getNickname()));
+    results.put("headerPicLink", checkHeaderPicLink(memberProfile.getHeaderPicLink() , dbHeaderPicLink , isImg));
+    results.put("nickname", checkNickname(memberProfile.getNickname() , dbNickname));
     results.put("username", checkEditUsername(memberProfile.getUsername() ,  dbUsername , isUsedUsername));
     results.put("birthday", checkBirthday(memberProfile.getBirthday() , dbBirthday));
     results.put("cellphone", checkCellphone(memberProfile.getCellphone() , dbCellphone , isUsedCellphone));
@@ -350,7 +363,6 @@ public class Utils_Signup {
   /**
    * <pre>
    * 整理資料
-   * 
    * </pre>
    */
   public MemberDetail genMemberDetail(String memberNo, MemberProfile memberProfile) {
