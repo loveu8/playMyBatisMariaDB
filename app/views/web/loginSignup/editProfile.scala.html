@@ -31,8 +31,15 @@
 			// 讀取登入與註冊JS
 			$.getScript('@routes.Assets.versioned("javascripts/loginSignup.js")');
 
-			// 讀取公用工具
+			// 讀取profile js
 			$.getScript('@routes.Assets.versioned("javascripts/webUtils.js")', function(){
+				// 日曆表初始化
+				initDatePicker('#datepicker' , '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")');
+	
+			});
+			
+			// 讀取profile js
+			$.getScript('@routes.Assets.versioned("javascripts/profileUtils.js")', function(){
 
 				initLoadMemberProfile("#headerPicLink" , "#headerPicPreview" , "#datepicker" , '#username' , '#nickname' , '#cellphone' , '#systemMessage',
 						              "http://@request.host" + "@controllers.routes.WebController.ajaxLoadMemberProfile.url");
@@ -57,9 +64,6 @@
 				inputBlurHandler("#cellphone" , "#cellphoneVerifyMessage" , 
 								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckCellphone.url?cellphone="); 
 				
-				// 日曆表初始化
-				initDatePicker('#datepicker' , '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")');
-	
 				// 表單驗證
 				profileHandler('#editProfile','#systemMessage','#headerPicPreview','VerifyMessage');
 			
