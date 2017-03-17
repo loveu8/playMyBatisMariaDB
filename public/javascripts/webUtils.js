@@ -8,7 +8,7 @@ function urlBase64Decode(encodeStr){
 	return decodeURIComponent(atob(encodeStr));
 }
 
-// ajax檢查結果
+// 傳入url 並使用 Deferred延遲物件，等候伺服器回傳JSON資料
 function getCheckResultData(checkUrl){
     var result = $.Deferred();
     $.getJSON(checkUrl).done(function(data){
@@ -17,7 +17,7 @@ function getCheckResultData(checkUrl){
     return result;
 }
 
-// 初始化日期選擇元件
+// 初始化頁面日期選擇元件
 function initDatePicker(datepicker , imgUrl ){
 
 	$(datepicker).datepicker({

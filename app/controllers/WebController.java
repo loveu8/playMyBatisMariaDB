@@ -1063,6 +1063,25 @@ public class WebController extends Controller {
   
   
   /**
+   * 即時載入會員明細個人資料 
+   */
+  public Result ajaxLoadMemberProfile(){
+    Utils_Session utilSsession = new Utils_Session();
+    MemberProfile memberProfile = new MemberProfile();
+    try{
+      String memberNo = utilSsession.getUserNo();
+      Member member = webService.findMemberByMemberNo(memberNo);
+      MemberDetail memberDetail = webService.findMemberDetailByMemberNo(memberNo);
+      memberProfile = new Utils_Signup().genMemberProfile(member , memberDetail);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Logger.info("ajaxLoadMemberProfile = " + Json.toJson(memberProfile));
+    return ok(Json.toJson(memberProfile));
+  }
+  
+  
+  /**
    * <pre>
    * 修改會員個人資料動作 
    * 
@@ -1114,27 +1133,27 @@ public class WebController extends Controller {
           break;
         }
       }
-      Logger.info("Step 2 檢查後，是否允許可以更新與寫入會員資料: " + isAllPass);
+      Logger.info("Step 2 全部欄位檢查後，是否允許可以更新與寫入會員資料: " + isAllPass);
       
       
       // Step 3
       if(isAllPass){
-        // 寫入Member記錄檔
+        // 寫入Member記錄檔，與更新使用者名稱
         Member member = webService.findMemberByMemberNo(memberNo);
-        webService.genMemberChangeLog(member);
-        // 更新使用者名稱
+        boolean insertMemberLogOk = webService.genMemberChangeLog(member) > 0 ? true : false;
         boolean updateUseenameOk = webService.updateMemberUsername(memberNo , memberProfile.getUsername()) > 0 ? true : false ;
         
         // 寫入MemberDetail與記錄檔
         MemberDetail newMemberDetail = utilsSignup.genMemberDetail(memberNo , memberProfile);
         boolean updateMemberDeatilOk = webService.genMemberDetail(newMemberDetail) > 0 ? true : false;
-        boolean updateMemberDetailLogOk = webService.genMemberDetailChangeLog(newMemberDetail) > 0 ? true : false;
+        boolean insertMemberDetailLogOk = webService.genMemberDetailChangeLog(newMemberDetail) > 0 ? true : false;
         
         Logger.info("Step 3 更新或寫入資料是否成功 : updateUseenameOk = " + updateUseenameOk + 
+                    " , insertMemberLogOk = " + insertMemberLogOk +
                     " , updateMemberDeatilOk = " + updateMemberDeatilOk +
-                    " , updateMemberDetailLogOk = " + updateMemberDetailLogOk);
+                    " , insertMemberDetailLogOk = " + insertMemberDetailLogOk);
         
-        if(updateUseenameOk && updateMemberDeatilOk && updateMemberDeatilOk){
+        if(insertMemberLogOk && updateUseenameOk && updateMemberDeatilOk && insertMemberDetailLogOk){
           status = UpdateMemberProfileStatus.S200.status;
           statusDesc = UpdateMemberProfileStatus.S200.statusDesc;
           update = UpdateMemberProfileStatus.S200.update;
@@ -1167,27 +1186,7 @@ public class WebController extends Controller {
     }
     Logger.info("finish doEditProfile = " + Json.toJson(updateMessage));
     return ok(Json.toJson(updateMessage));
-  }
-  
-  
-  /**
-   * 即時載入會員明細個人資料 
-   */
-  public Result ajaxLoadMemberProfile(){
-    Utils_Session utilSsession = new Utils_Session();
-    MemberProfile memberProfile = new MemberProfile();
-    try{
-      String memberNo = utilSsession.getUserNo();
-      Member member = webService.findMemberByMemberNo(memberNo);
-      MemberDetail memberDetail = webService.findMemberDetailByMemberNo(memberNo);
-      memberProfile = new Utils_Signup().genMemberProfile(member , memberDetail);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    Logger.info("ajaxLoadMemberProfile = " + Json.toJson(memberProfile));
-    return ok(Json.toJson(memberProfile));
-  }
-  
+  } 
   
   // 相依性注入 play.libs.ws.WSClient，可以用來呼叫別人寫好的Http服務
   @Inject

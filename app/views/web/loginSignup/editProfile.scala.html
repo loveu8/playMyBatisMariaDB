@@ -31,17 +31,17 @@
 			// 讀取登入與註冊JS
 			$.getScript('@routes.Assets.versioned("javascripts/loginSignup.js")');
 
-			// 讀取profile js
+			// 讀取webUtils.js
 			$.getScript('@routes.Assets.versioned("javascripts/webUtils.js")', function(){
 				// 日曆表初始化
-				initDatePicker('#datepicker' , '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")');
+				initDatePicker('#birthday' , '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")');
 	
 			});
 			
-			// 讀取profile js
+			// 讀取profileUtils.js
 			$.getScript('@routes.Assets.versioned("javascripts/profileUtils.js")', function(){
 
-				initLoadMemberProfile("#headerPicLink" , "#headerPicPreview" , "#datepicker" , '#username' , '#nickname' , '#cellphone' , '#systemMessage',
+				initLoadMemberProfile("#headerPicLink" , "#headerPicPreview" , "#birthday" , '#username' , '#nickname' , '#cellphone' , '#systemMessage',
 						              "http://@request.host" + "@controllers.routes.WebController.ajaxLoadMemberProfile.url");
 				
 				// 圖片觸發事件
@@ -49,7 +49,7 @@
 								    "http://@request.host" + "@controllers.routes.WebController.ajaxCheckHeaderPicLink.url?headerPicLink="); 
 				
 				// 生日觸發事件
-				inputBlurHandler("#datepicker" , "#birthdayVerifyMessage" , 
+				inputBlurHandler("#birthday" , "#birthdayVerifyMessage" , 
 						 		 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckBirthday.url?birthday="); 
  				
 				// 使用者名稱觸發事件
@@ -95,7 +95,7 @@
 			</div>
 			<div class="field-wrap">
 				<label class="lable-field-wrap">生日</label>
-				<input type="text"  autocomplete="off" name="birthday" id="datepicker"/>
+				<input type="text"  autocomplete="off" name="birthday" id="birthday"/>
 				<span id="birthdayVerifyMessage"></span>
 			</div>
 			<div class="field-wrap">

@@ -20,6 +20,7 @@ import pojo.web.signup.status.EmailStatus;
 import pojo.web.signup.status.HeaderPicLinkStatus;
 import pojo.web.signup.status.NicknameStatus;
 import pojo.web.signup.status.PasswordStatus;
+import pojo.web.signup.status.UpdateMemberProfileStatus;
 import pojo.web.signup.status.UsernameStatus;
 import pojo.web.signup.verific.VerificFormMessage;
 import pojo.web.signup.verific.VerificCheckMessage;
@@ -131,6 +132,7 @@ public class Utils_Signup {
   }
 
   
+  // 產生會員資料
   public MemberProfile genMemberProfile(Member member, MemberDetail memberDetail) {
     MemberProfile profile = new MemberProfile();
     profile.setUsername(member.getUsername()!=null && !"".equals(member.getUsername()) ? member.getUsername() : "");
@@ -138,14 +140,22 @@ public class Utils_Signup {
       profile.setHeaderPicLink(memberDetail.getHeaderPicLink()!=null && !"".equals(memberDetail.getHeaderPicLink()) ? memberDetail.getHeaderPicLink() : "");
       profile.setNickname(memberDetail.getNickname()!=null && !"".equals(memberDetail.getNickname()) ? memberDetail.getNickname() : "");
       profile.setCellphone(memberDetail.getCellphone()!=null && !"".equals(memberDetail.getCellphone()) ? memberDetail.getCellphone() : "");
-      profile.setBirthday(memberDetail.getBirthday()!=null && !"".equals(memberDetail.getBirthday()) ? memberDetail.getBirthday() : "");
+      String birthday = "";
+      if(memberDetail.getBirthday()!=null && !"".equals(memberDetail.getBirthday())){
+        String year = memberDetail.getBirthday().substring(0, 4);
+        String month = memberDetail.getBirthday().substring(4, 6);
+        String day = memberDetail.getBirthday().substring(6, 8);
+        birthday = year + "/" + month + "/" + day;
+      }
+      profile.setBirthday(birthday);
     }
     profile.setEditable(member.getMemberNo() == null || "".equals(member.getMemberNo()) ? false : true);
-    profile.setSystemMessage(member.getMemberNo() == null || "".equals(member.getMemberNo()) ? "系統異常，請稍候再嘗試。" : "");
+    profile.setSystemMessage(member.getMemberNo() == null || "".equals(member.getMemberNo()) ? UpdateMemberProfileStatus.SE1.statusDesc : "");
     return profile;
   }
   
-
+  
+  // 驗證頭像
   public VerificCheckMessage checkHeaderPicLink(String headerPicLink , String dbHeaderPicLink , boolean isImg) {
 
     VerificCheckMessage message = new VerificCheckMessage();
@@ -182,6 +192,7 @@ public class Utils_Signup {
   }
 
   
+  // 驗證生日
   public VerificCheckMessage checkBirthday(String birthday, String dbBirthday) {
     VerificCheckMessage message = new VerificCheckMessage();
 
@@ -199,7 +210,7 @@ public class Utils_Signup {
       message.setStatus(BirthDayStatus.S1.status);
       message.setStatusDesc(BirthDayStatus.S1.statusDesc);
       message.setPass(BirthDayStatus.S1.pass);
-    } else if (birthday.equals(dbBirthday)) {
+    } else if (birthday.replaceAll("/", "").equals(dbBirthday)) {
       message.setStatus(BirthDayStatus.S202.status);
       message.setStatusDesc(BirthDayStatus.S202.statusDesc);
       message.setPass(BirthDayStatus.S202.pass);
@@ -229,7 +240,8 @@ public class Utils_Signup {
     return message;
   }
   
-
+  
+  // 驗證使用者名稱 
   public VerificCheckMessage checkEditUsername(String username, String dbUsername,
       boolean isUsedUsername) {
 
@@ -266,7 +278,8 @@ public class Utils_Signup {
     return message;
   }
 
-
+  
+  // 驗證暱稱
   public VerificCheckMessage checkNickname(String nickname , String dbNickname) {
     VerificCheckMessage message = new VerificCheckMessage();
 
@@ -302,7 +315,8 @@ public class Utils_Signup {
     return message;
   }
 
-
+  
+  // 驗證手機號碼
   public VerificCheckMessage checkCellphone(String cellphone, String dbCellphone,
       boolean isUsedCellphone) {
 
@@ -340,6 +354,7 @@ public class Utils_Signup {
 
   }
   
+  
   /**
    * <pre>
    *  檢查表單各個欄位的資訊
@@ -362,13 +377,14 @@ public class Utils_Signup {
   
   /**
    * <pre>
-   * 整理資料
+   * 整理會員明細資料
    * </pre>
    */
   public MemberDetail genMemberDetail(String memberNo, MemberProfile memberProfile) {
     MemberDetail detail = new MemberDetail();
     detail.setMemberNo(memberNo);
-    detail.setBirthday(memberProfile.getBirthday());
+    // 生日:2017/03/01 => 20170301
+    detail.setBirthday(memberProfile.getBirthday().replaceAll("/", ""));
     detail.setCellphone(memberProfile.getCellphone());
     detail.setHeaderPicLink(memberProfile.getHeaderPicLink());
     detail.setNickname(memberProfile.getNickname());
@@ -391,6 +407,7 @@ public class Utils_Signup {
     return this.genSHA256String(text);
   }
 
+  
   /**
    * 產生忘記密碼sha-256認證字串
    * 
