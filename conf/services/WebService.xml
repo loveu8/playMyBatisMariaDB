@@ -187,7 +187,7 @@
 			#{data.token} ,
 			#{data.checkCode} ,
 			#{data.isUse} ,
-			#{data.createDate} ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') ,
 			#{data.expiryDate} 
 		) ON DUPLICATE KEY UPDATE 
 		memberNo 	= #{data.memberNo},
@@ -196,7 +196,7 @@
 		token 		= #{data.token},
 		checkCode 	= #{data.checkCode},
 		isUse 		= #{data.isUse},
-		createDate  = #{data.createDate},
+		createDate  = createDate,
 		expiryDate  = #{data.expiryDate}
 	</insert>	
 	
@@ -233,7 +233,7 @@
 	</update>
 
 
-	<!-- 會員更換電子信箱表單 -->
+	<!-- 新增會員明細或更新 -->
 	<insert id="genMemberDetail" parameterType="pojo.web.MemberDetail">
 		insert into
 		member_detail

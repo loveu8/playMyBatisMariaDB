@@ -357,14 +357,19 @@ public class Utils_Signup {
   
   /**
    * <pre>
-   *  檢查表單各個欄位的資訊
+   * 傳入頁面會員明細資料
+   * 
    * </pre>
    */
-  public Map<String , VerificCheckMessage> checkMemberProfile(MemberProfile memberProfile , boolean isImg , 
-                                                              String dbUsername , boolean isUsedUsername ,
-                                                              String dbBirthday ,
-                                                              String dbCellphone, boolean isUsedCellphone ,
-                                                              String dbNickname , String dbHeaderPicLink) {
+  public Map<String , VerificCheckMessage> checkMemberProfile(MemberProfile memberProfile ,Member member , MemberDetail memberDetail, 
+                                                              boolean isImg , boolean isUsedUsername , boolean isUsedCellphone ) {
+    
+    String dbUsername =  member.getUsername();
+    String dbHeaderPicLink = memberDetail != null ? memberDetail.getHeaderPicLink() : "";
+    String dbBirthday = memberDetail != null ? memberDetail.getBirthday() : "";
+    String dbCellphone = memberDetail != null ? memberDetail.getCellphone() : "" ;
+    String dbNickname = memberDetail != null ? memberDetail.getNickname() : "";
+    
     Map<String , VerificCheckMessage> results = new HashMap<String , VerificCheckMessage>();
     results.put("headerPicLink", checkHeaderPicLink(memberProfile.getHeaderPicLink() , dbHeaderPicLink , isImg));
     results.put("nickname", checkNickname(memberProfile.getNickname() , dbNickname));
@@ -483,7 +488,6 @@ public class Utils_Signup {
       String token = java.util.UUID.randomUUID().toString();
       Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
       String expiryDate = formatter.format(new Date(new Date().getTime() + limitTime));
-      String createDate = formatter.format(new Date());
 
       data.setMemberNo(memberNo);
       data.setOldEmail(oldEmail);
@@ -491,7 +495,6 @@ public class Utils_Signup {
       data.setToken(token);
       data.setUse(false);
       data.setCheckCode(new AESEncrypter().randomString(6));
-      data.setCreateDate(createDate);
       data.setExpiryDate(expiryDate);
 
     } catch (Exception e) {

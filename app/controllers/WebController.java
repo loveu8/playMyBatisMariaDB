@@ -1109,20 +1109,15 @@ public class WebController extends Controller {
 
       // Step 1
       MemberProfile memberProfile = formFactory.form(MemberProfile.class).bindFromRequest().get();
-      HttpHelper httpHelper = new HttpHelper(ws);
       memberNo = utilSsession.getUserNo();
-      boolean isImg = httpHelper.checkImgUrl(memberProfile.getHeaderPicLink());
+      Member member = webService.findMemberByMemberNo(memberNo);
+      MemberDetail memberDetail = webService.findMemberDetailByMemberNo(memberNo);
+      boolean isImg = new HttpHelper(ws).checkImgUrl(memberProfile.getHeaderPicLink());
       boolean isUsedUsername = webService.checkMemberByUsername(memberProfile.getUsername());
-      String dbUsername = webService.findMemberByMemberNo(memberNo).getUsername();
-      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
-      String dbHeaderPicLink = detail != null ? detail.getHeaderPicLink() : "";
-      String dbBirthday = detail != null ? detail.getBirthday() : "";
-      String dbCellphone = detail != null ? detail.getCellphone() : "" ;
-      String dbNickname = detail != null ? detail.getNickname() : "";
       boolean isUsedCellphone = webService.checkMemberDetailByCellphone(memberProfile.getCellphone());
-      verificResults = utilsSignup.checkMemberProfile(memberProfile , isImg , dbUsername, 
-                                                      isUsedUsername , dbBirthday , dbCellphone , 
-                                                      isUsedCellphone , dbNickname , dbHeaderPicLink);
+      verificResults = utilsSignup.checkMemberProfile(memberProfile , member , memberDetail ,
+                                                      isImg , isUsedUsername , isUsedCellphone );
+      
       Logger.info("Step 1 檢驗結果 : " + Json.toJson(verificResults));
       
       // Step 2
@@ -1133,13 +1128,12 @@ public class WebController extends Controller {
           break;
         }
       }
-      Logger.info("Step 2 全部欄位檢查後，是否允許可以更新與寫入會員資料: " + isAllPass);
+      Logger.info("Step 2 全部欄位檢查後，是否允許可以更新與寫入會員資料 : " + isAllPass);
       
       
       // Step 3
       if(isAllPass){
         // 寫入Member記錄檔，與更新使用者名稱
-        Member member = webService.findMemberByMemberNo(memberNo);
         boolean insertMemberLogOk = webService.genMemberChangeLog(member) > 0 ? true : false;
         boolean updateUseenameOk = webService.updateMemberUsername(memberNo , memberProfile.getUsername()) > 0 ? true : false ;
         
@@ -1148,10 +1142,10 @@ public class WebController extends Controller {
         boolean updateMemberDeatilOk = webService.genMemberDetail(newMemberDetail) > 0 ? true : false;
         boolean insertMemberDetailLogOk = webService.genMemberDetailChangeLog(newMemberDetail) > 0 ? true : false;
         
-        Logger.info("Step 3 更新或寫入資料是否成功 : updateUseenameOk = " + updateUseenameOk + 
-                    " , insertMemberLogOk = " + insertMemberLogOk +
-                    " , updateMemberDeatilOk = " + updateMemberDeatilOk +
-                    " , insertMemberDetailLogOk = " + insertMemberDetailLogOk);
+        Logger.info("Step 3 更新或寫入資料是否成功 : updateUseenameOk(更新使用者名稱) : " + updateUseenameOk + 
+                    " , insertMemberLogOk(寫入會員log檔) : " + insertMemberLogOk +
+                    " , updateMemberDeatilOk(寫入或更新會員明細) : " + updateMemberDeatilOk +
+                    " , insertMemberDetailLogOk(寫入會員明細log檔) : " + insertMemberDetailLogOk);
         
         if(insertMemberLogOk && updateUseenameOk && updateMemberDeatilOk && insertMemberDetailLogOk){
           status = UpdateMemberProfileStatus.S200.status;
