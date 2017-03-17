@@ -3,13 +3,9 @@ package aop;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSessionManager;
-import org.apache.ibatis.session.TransactionIsolationLevel;
 
 import play.cache.DefaultCacheApi;
 import play.data.FormFactory;
-import play.libs.Json;
 import play.mvc.Controller;
 import services.WebService;
 

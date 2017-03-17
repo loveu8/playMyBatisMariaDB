@@ -9,7 +9,7 @@
 	@views.html.web.loginSignup.loginSignupLibs()
 	
 	@views.html.web.headerJqueryuiLibs()
-	
+		
 	<style>	
 	#headerPicPreview {
 	   max-height: 300px;
@@ -36,38 +36,38 @@
 				// 日曆表初始化
 				initDatePicker('#birthday' , '@routes.Assets.versioned("javascripts/jquery-ui-1.12.1/images/calendar.gif")');
 	
-			});
-			
-			// 讀取profileUtils.js
-			$.getScript('@routes.Assets.versioned("javascripts/profileUtils.js")', function(){
+				// 讀取profileUtils.js
+				$.getScript('@routes.Assets.versioned("javascripts/profileUtils.js")', function(){
 
-				initLoadMemberProfile("#headerPicLink" , "#headerPicPreview" , "#birthday" , '#username' , '#nickname' , '#cellphone' , '#systemMessage',
-						              "http://@request.host" + "@controllers.routes.WebController.ajaxLoadMemberProfile.url");
+					initLoadMemberProfile("#headerPicLink" , "#headerPicPreview" , "#birthday" , '#username' , '#nickname' , '#cellphone' , '#systemMessage',
+							              "http://@request.host" + "@controllers.routes.WebController.ajaxLoadMemberProfile.url");
+					
+					// 圖片觸發事件
+					imgInputBlurHandler("#headerPicLink" , "#headerPicPreview" , "#headerPicLinkVerifyMessage" , 
+									    "http://@request.host" + "@controllers.routes.WebController.ajaxCheckHeaderPicLink.url?headerPicLink="); 
+					
+					// 生日觸發事件
+					inputBlurHandler("#birthday" , "#birthdayVerifyMessage" , 
+							 		 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckBirthday.url?birthday="); 
+	 				
+					// 使用者名稱觸發事件
+					inputBlurHandler("#username" , "#usernameVerifyMessage" , 
+									 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckUsername.url?username="); 
+								
+					// 匿稱觸發事件
+					inputBlurHandler("#nickname" , "#nicknameVerifyMessage" , 
+									 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckNickname.url?nickname="); 
+					
+					// 手機號碼觸發事件
+					inputBlurHandler("#cellphone" , "#cellphoneVerifyMessage" , 
+									 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckCellphone.url?cellphone="); 
+					
+					// 表單驗證
+					profileHandler('#editProfile','#systemMessage','#headerPicPreview','VerifyMessage');
 				
-				// 圖片觸發事件
-				imgInputBlurHandler("#headerPicLink" , "#headerPicPreview" , "#headerPicLinkVerifyMessage" , 
-								    "http://@request.host" + "@controllers.routes.WebController.ajaxCheckHeaderPicLink.url?headerPicLink="); 
+				});
 				
-				// 生日觸發事件
-				inputBlurHandler("#birthday" , "#birthdayVerifyMessage" , 
-						 		 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckBirthday.url?birthday="); 
- 				
-				// 使用者名稱觸發事件
-				inputBlurHandler("#username" , "#usernameVerifyMessage" , 
-								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckUsername.url?username="); 
-							
-				// 匿稱觸發事件
-				inputBlurHandler("#nickname" , "#nicknameVerifyMessage" , 
-								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckNickname.url?nickname="); 
-				
-				// 手機號碼觸發事件
-				inputBlurHandler("#cellphone" , "#cellphoneVerifyMessage" , 
-								 "http://@request.host" + "@controllers.routes.WebController.ajaxCheckCellphone.url?cellphone="); 
-				
-				// 表單驗證
-				profileHandler('#editProfile','#systemMessage','#headerPicPreview','VerifyMessage');
-			
-			});
+			});	
 
 		});		
 			

@@ -6,7 +6,6 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import play.Logger;
 import play.libs.Json;
-import play.mvc.Result;
 import pojo.web.Member;
 import pojo.web.MemberLoginStatus;
 import pojo.web.MemberStatus;

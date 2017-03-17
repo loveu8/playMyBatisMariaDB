@@ -75,7 +75,7 @@ function imgInputBlurHandler(inputName , preImgName , verifyMessage, ajaxUrl){
 }
 
 
-// 修改表單驗證
+// 修改表單驗證與更新
 function profileHandler(editProfile , systemMessage , headerPicPreview , VerifyMessage){
   var frm = $(editProfile);
   frm.submit(function (ev) {
