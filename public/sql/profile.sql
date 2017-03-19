@@ -39,9 +39,9 @@ FROM DUAL;
 -- 會員明細
 -- member_detail
 -- memberNo	會員編號
--- headerPicLink 大頭照網址
+-- headerPicLink 頭像網址
 -- birthday 生日
--- nickName 暱稱
+-- nickname 暱稱
 -- cellphone 手機號碼
 -- createDate 建立日期
 -- modifyDate 修改日期
@@ -65,9 +65,9 @@ ENGINE=InnoDB
 -- 會員明細修改紀錄表單
 -- member_detail
 -- memberNo	會員編號
--- headerPicLink 大頭照網址
+-- headerPicLink 頭像網址
 -- birthday 生日
--- nickName 暱稱
+-- nickname 暱稱
 -- cellphone 手機號碼
 -- createDate 建立日期
 
