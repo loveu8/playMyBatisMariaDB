@@ -13,6 +13,7 @@ public class VerificFormMessage {
 
   // 狀態碼描述
   private String statusDesc;
+  
 
   public String getInputName() {
     return inputName;

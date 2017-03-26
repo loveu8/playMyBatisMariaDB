@@ -16,7 +16,7 @@
 			#{signupRequest.username} ,
 			DATE_FORMAT(NOW() , '%Y%m%d%H%i%s') ,
 			DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
-		);
+		)
 	</insert>
 
 
@@ -163,5 +163,114 @@
 	<select id="checkMemberByMemberNoAndPassword" parameterType="String" resultType="boolean">
 		SELECT COUNT(1) FROM member_main WHERE memberNo = #{no} AND password = #{password}
 	</select>
+	
+	
+ 	<!-- 更換信箱，撈取使用者信箱，尚未修改信箱，若有尚未修改信箱，且未逾期未使用，一樣顯示給使用者知道 -->
+	<select id="getMemberEmails" parameterType="String" resultType="pojo.web.email.MemberChangeEmail">
+		SELECT
+			(SELECT email FROM member_main WHERE memberNo = #{memberNo} ) AS originalEmail ,
+			(SELECT newEmail FROM member_changeEmail 
+	 		 WHERE memberNo = #{memberNo} AND expiryDate > (DATE_FORMAT(NOW() , '%Y%m%d%H%i%s')) AND isUse = 0) AS unAuthEmail
+		FROM DUAL
+	</select>
+
+
+	<!-- 會員更換電子信箱表單 -->
+	<insert id="genMemberSendChangeEmail" parameterType="pojo.web.email.MemberSendChangeEmail">
+		insert into
+		member_changeEmail(memberNo , oldEmail , newEmail , token , checkCode , isUse , createDate , expiryDate)
+		values
+		( 
+			#{data.memberNo} , 
+			#{data.oldEmail} ,
+			#{data.newEmail} ,
+			#{data.token} ,
+			#{data.checkCode} ,
+			#{data.isUse} ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') ,
+			#{data.expiryDate} 
+		) ON DUPLICATE KEY UPDATE 
+		memberNo 	= #{data.memberNo},
+		oldEmail 	= #{data.oldEmail},
+		newEmail 	= #{data.newEmail},
+		token 		= #{data.token},
+		checkCode 	= #{data.checkCode},
+		isUse 		= #{data.isUse},
+		createDate  = createDate,
+		expiryDate  = #{data.expiryDate}
+	</insert>	
+	
+	
+ 	<!-- 使用會員編號與密碼確認該會員存在 -->
+	<select id="getMemberSendChangeEmailByToken" parameterType="String" resultType="pojo.web.email.MemberSendChangeEmail">
+		SELECT * , DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') as dbTime FROM member_changeEmail WHERE token = #{token}
+	</select>
+	
+	
+	<!--  更新會員電子信箱 -->
+	<update id="updateMemberEmail">
+		UPDATE member_main SET email = #{newEmail} WHERE memberNo = #{memberNo}
+	</update>	
+	
+	
+    <!-- 檢查是否有重覆的手機號碼-->
+	<select id="checkMemberDetailByCellphone" parameterType="Map" resultType="boolean">
+		SELECT CASE WHEN EXISTS (SELECT 1 FROM member_detail de WHERE de.cellphone=#{cellphone})
+		       THEN 1 ELSE 0 END isUsedCellphone
+		FROM DUAL
+	</select>
 		
+		
+	<!-- 根據手機號碼查詢會員明細資料 -->
+	<select id="findMemberDetailByMemberNo" parameterType="String" resultType="pojo.web.MemberDetail">
+		SELECT * FROM member_detail WHERE memberNo = #{memberNo}
+	</select>	
+	
+	
+	<!--  更新會員使用者名稱 -->
+	<update id="updateMemberUsername">
+		UPDATE member_main SET username = #{newUsername} , modifyDate = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') WHERE memberNo = #{memberNo}
+	</update>
+
+
+	<!-- 新增會員明細或更新 -->
+	<insert id="genMemberDetail" parameterType="pojo.web.MemberDetail">
+		insert into
+		member_detail
+		(memberNo , nickname , birthday , cellphone , headerPicLink , createDate , modifyDate)
+		values
+		( 
+			#{data.memberNo} , 
+			#{data.nickname} ,
+			#{data.birthday} ,
+			#{data.cellphone} ,
+			#{data.headerPicLink} ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
+		) ON DUPLICATE KEY UPDATE 
+		memberNo 		= memberNo ,
+		nickname 		= #{data.nickname} ,
+		birthday 		= #{data.birthday} ,
+		cellphone 		= #{data.cellphone} ,
+		headerPicLink 	= #{data.headerPicLink} ,
+		createDate  	= createDate ,
+		modifyDate  	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	</insert>	
+	
+	
+	<!-- 會員明細記錄檔 -->
+	<insert id="genMemberDetailChangeLog" parameterType="pojo.web.MemberDetail">
+		insert into
+		member_detail_log(memberNo , nickname , birthday , cellphone , headerPicLink , createDate)
+		values
+		( 
+			#{data.memberNo} , 
+			#{data.nickname} ,
+			#{data.birthday} ,
+			#{data.cellphone} ,
+			#{data.headerPicLink} ,
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+	
 </mapper>

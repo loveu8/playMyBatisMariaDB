@@ -5,8 +5,11 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import pojo.web.Member;
+import pojo.web.MemberDetail;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
+import pojo.web.email.MemberChangeEmail;
+import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.SignupRequest;
 
 public interface WebService {
@@ -58,5 +61,32 @@ public interface WebService {
 
   /** 根據會員編號 , 與密碼 , 確認該會員存在*/
   public boolean checkMemberByMemberNoAndPassword(@Param("no")String no, @Param("password")String oldPassword);
+  
+  /** 更換信箱，撈取使用者信箱，尚未修改信箱 */
+  public MemberChangeEmail getMemberEmails(@Param("memberNo")String memberNo);
+  
+  /** 寫入更換信箱相關資訊 */
+  public int genMemberSendChangeEmail(@Param("data")MemberSendChangeEmail data);
+  
+  /** 撈取更換信箱表單相關資訊 */
+  public MemberSendChangeEmail getMemberSendChangeEmailByToken(@Param("token")String token);
+
+  /** 更新使用者的電子信箱 */
+  public int updateMemberEmail(@Param("memberNo") String memberNo, @Param("newEmail") String newEmail);
+
+  /** 檢查使用者手機是否重覆 */
+  public boolean checkMemberDetailByCellphone(@Param("cellphone") String cellphone);
+  
+  /** 用手機號碼 尋找會員明細*/
+  public MemberDetail findMemberDetailByMemberNo(@Param("memberNo") String memberNo);
+  
+  /** 更新使用者的使用者名稱 */
+  public int updateMemberUsername(@Param("memberNo") String memberNo, @Param("newUsername") String newUsername);
+  
+  /** 寫入或更新memberDetail資料 */
+  public int genMemberDetail(@Param("data") MemberDetail memberDetail);
+  
+  /** 寫入memberDetailLog資料 */
+  public int genMemberDetailChangeLog(@Param("data") MemberDetail memberDetail);
   
 }

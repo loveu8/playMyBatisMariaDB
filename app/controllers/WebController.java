@@ -1,33 +1,42 @@
 package controllers;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-
 import annotation.AuthCheck;
-import test.db.FooDAO;
 import play.Logger;
 import play.data.FormFactory;
 import play.libs.Json;
+import play.libs.ws.WSClient;
 import play.mvc.Controller;
 import play.mvc.Result;
 import pojo.web.Member;
+import pojo.web.MemberDetail;
+import pojo.web.MemberProfile;
 import pojo.web.MemberToken;
 import pojo.web.MemberLoginStatus;
 import pojo.web.MemberStatus;
 import pojo.web.MemberTokenType;
-import pojo.web.auth.UserSession;
 import pojo.web.email.Email;
+import pojo.web.email.MemberChangeEmail;
+import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.EditPasswordRequest;
 import pojo.web.signup.request.ResetPasswordRequest;
 import pojo.web.signup.request.SignupRequest;
+import pojo.web.signup.status.UpdateMemberProfileStatus;
+import pojo.web.signup.update.UpdateMessage;
+import pojo.web.signup.update.UpdateType;
 import pojo.web.signup.verific.VerificFormMessage;
+import pojo.web.signup.verific.VerificCheckMessage;
 import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
 import views.html.web.loginSignup.*;
+import utils.enc.EncAndDeCodeTool;
+import utils.http.HttpHelper;
 import utils.mail.Utils_Email;
 import utils.session.Utils_Session;
 
@@ -711,6 +720,592 @@ public class WebController extends Controller {
     return redirect(controllers.routes.WebController.login().url());
   }
   
+  
+  /**
+   * <pre>
+   *  Stage 1-1 
+   *  點選修改信箱功能，顯示相關資訊
+   *  若有尚未修改信箱且尚未逾期，也會顯示在畫面上
+   *  
+   *  Step 1 : 驗證是否是登入狀態中(AuthCheck)
+   *  Step 2 : 抓取使用者memberNo
+   *  Step 3 : 抓取使用者註冊信箱，尚未認證信箱
+   *  
+   *  Ok     : 顯示修改信箱頁面
+   *  
+   * </pre>
+   */
+  @AuthCheck
+  public Result editEmail(){
+    
+    // Step 2
+    String memberNo = new Utils_Session().getUserNo();
+    Logger.info("memberNo = " + memberNo);
+    if( memberNo == null || "".equals(memberNo) ){
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x2");
+      return ok(changeEmail.render(null));
+    }
+ 
+    // Step 3
+    MemberChangeEmail data = null;
+    try{
+      data = this.webService.getMemberEmails(memberNo);
+    } catch (Exception e){
+      e.printStackTrace();
+      return ok(changeEmail.render(null));
+    } finally {
+      if(data==null || data.getOriginalEmail()==null  || "".equals(data.getOriginalEmail())){
+        flash().put("error", "讀取會員資料忙碌中，請稍後再嘗試，謝謝。0x3");
+        return ok(changeEmail.render(null));
+      }
+    }
+
+    Logger.info("data = " + Json.toJson(data));
+    
+    return ok(changeEmail.render(data));
+  } 
+  
+  
+  /**
+   * <pre>
+   * Stage 1-2
+   * 
+   * 開始進行修改電子信箱資料驗整
+   * 
+   * Step 1 : 驗證是否是登入狀態中(AuthCheck)
+   * Step 2 : 驗證表單資料
+   * Step 3 : 信箱是否有填寫
+   * Step 4 : 信箱檢查是否使用中
+   * 
+   * OK 1 : 產生更換信箱相關資料
+   * Ok 2 : 寫入更換信箱表單
+   * Ok 3 : 寄送更換信箱認證碼信件
+   * 
+   *</pre> 
+   */
+  @AuthCheck
+  public Result changeEmail(){ 
+    
+    // Step 2
+    MemberChangeEmail data = null;
+    try{
+      data = formFactory.form(MemberChangeEmail.class).bindFromRequest().get();
+    } catch(Exception e){
+      e.printStackTrace();
+    } finally {
+      if(data==null){
+        flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x4");
+        return ok(changeEmail.render(null));
+      }
+    }
+    
+    // Step 3
+    if(data.getNewEmail()==null || "".equals(data.getNewEmail())){
+      flash().put("error", "請填入要修改的信箱，謝謝。0x5");
+      return ok(changeEmail.render(data));
+    }
+    
+    // Step 4
+    boolean isExists = false;
+    Member member =null;
+    try{
+      isExists = this.webService.checkMemberByEmail(data.getNewEmail());
+      member = this.webService.findMemberByMemberNo(new Utils_Session().getUserNo());
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x6");
+      return ok(changeEmail.render(data));
+    } 
+    if(isExists || data.getNewEmail().equals(member.getEmail())){
+      flash().put("error", "該電子信箱使用中，請更換其他電子信箱，謝謝。0x7");
+      return ok(changeEmail.render(data));
+    }
+    
+    MemberSendChangeEmail sendData = null;
+    int isWriteOk = 0;
+    boolean isSendOk = false;
+    try {
+      // OK 1
+      String memberNo = new Utils_Session().getUserNo();
+      String oldEmail = data.getOriginalEmail();
+      String newEmail = data.getNewEmail();
+      sendData = new Utils_Signup().genMemberSendChangeEmail(memberNo, oldEmail, newEmail);
+      if(sendData==null){
+        flash().put("error", "產生修改信箱資料發生錯誤，請聯絡管理者，謝謝。0x8");
+        return ok(changeEmail.render(data));
+      }
+      
+      // OK 2
+      isWriteOk = this.webService.genMemberSendChangeEmail(sendData);
+      if(isWriteOk==0){
+        flash().put("error", "產生寄信資料發生錯誤，請聯絡管理者，謝謝。0x9");
+        return ok(changeEmail.render(data));
+      }
+      
+      // OK 3
+      Utils_Email utilsEmail = new Utils_Email(); 
+      String userName = this.webService.findMemberByMemberNo(memberNo).getUsername();
+      Email mail = utilsEmail.genMemberSendChangeEmailData(userName,sendData);
+      isSendOk = utilsEmail.sendMail(mail);
+      if(!isSendOk){
+        flash().put("error", "寄送更換信箱信件發生錯誤，請重新使用修改信箱功能，謝謝。0x10");
+        return ok(changeEmail.render(data));
+      }
+            
+    } catch(Exception e) {
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍後再嘗試修改電子信箱，謝謝。0x11");
+      return ok(changeEmail.render(data));
+    } finally {
+      Logger.info("isWriteOk = " + isWriteOk + " , isSendOk = " + isSendOk + " , sendData = " + (sendData!=null ? Json.toJson(sendData) : "轉換傳送信件格式錯誤"));
+    }
+    
+    return ok(sendChangeEmailOk.render());
+  }
+  
+  
+  /**
+   * <pre>
+   * Stage 2-1
+   * 
+   * 重設電子信箱信件寄送回來後，顯示相關資訊
+   * 
+   * Step 1 : 檢查電子信箱信件連結是否有資料
+   * Step 2 : 檢查Token，是否可以查詢到會員資料
+   * Step 3 : 檢查Token，是否使用過了
+   * Step 4 : 檢查Token，是否逾期了
+   * 
+   * OK : 檢查通過，可以進行重設電子信箱動作，並把Token儲存在表單裡
+   * 
+   * </pre>
+   */
+  public Result authNewEmail(){
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
+    // Step 1
+    String token = "";
+    try{
+      token = request().getQueryString("token");
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "重設電子信箱連結有誤，請確認是否有點選正確，謝謝。0x1");
+      return ok(authNewEmail.render(""));
+    }
+    
+    // Step 2
+    MemberSendChangeEmail data = null;
+    try{
+      data = webService.getMemberSendChangeEmailByToken(token);
+    } catch(Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return ok(authNewEmail.render(""));
+    } finally {
+      if(data == null){
+        flash().put("error", "重設電子信箱連結有誤，請確認是否有點選正確，謝謝。0x2");
+        return ok(authNewEmail.render(""));
+      }
+    }
+    
+    // Step 3
+    if(data.isUse()){
+      flash().put("error", "重設電子信箱連結已失效，請重新使用修改信箱功能，謝謝。0x3");
+      play.Logger.warn("memberToken  = " + Json.toJson(data));
+      return ok(authNewEmail.render(""));
+    }
+    
+    // Step 4
+    long    dbTime      = Long.parseLong(data.getDbTime());     // 資料庫時間
+    long    expiryDate  = Long.parseLong(data.getExpiryDate()); // 逾期時間
+    play.Logger.info("dbTime = " + dbTime + ", expiryDate  = " + expiryDate);
+    if(dbTime > expiryDate){
+      flash().put("error", "重設電子信箱連結已經超過24小時，請重新使用修改信箱功能，謝謝。0x4");
+      return ok(authNewEmail.render(""));
+    } 
+    
+    // Ok
+    return ok(authNewEmail.render(token));
+  }
+  
+  
+  /**
+   * <pre>
+   * Stage 2-2
+   * 
+   * 開始進行修改電子信箱資料驗證
+   * 
+   * Step 1 : 檢查電子信箱信件連結是否有資料
+   * Step 2 : 檢查Token，是否可以查詢到會員資料
+   * Step 3 : 檢查Token，是否使用過了
+   * Step 4 : 檢查Token，是否逾期了
+   * Step 5 : 驗證碼是否正確
+   * 
+   * Ok 1 : 寫入會員修改資料紀錄
+   * Ok 2 : 會員的電子信箱進行更新
+   * Ok 3 : 會員修改電子信箱表單，更新成使用過
+   * Ok 4 : 寄信到新的電子信箱，已更新
+   * 
+   * </pre>
+   */
+  public Result doAuthNewEmail(){
+    // 清除暫存錯誤訊息
+    flash().clear();
+    
+    // Step 1
+    String token = "";
+    try{
+      token = formFactory.form().bindFromRequest().get().getData().get("token").toString();
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "重設電子信箱連結有誤，請確認是否有點選正確，謝謝。0x1");
+      return ok(authNewEmail.render(""));
+    }
+    
+    // Step 2
+    MemberSendChangeEmail data = null;
+    try{
+      data = webService.getMemberSendChangeEmailByToken(token);
+    } catch(Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return ok(authNewEmail.render(""));
+    } finally {
+      if(data == null){
+        flash().put("error", "重設電子信箱連結有誤，請確認是否有點選正確，謝謝。0x2");
+        return ok(authNewEmail.render(""));
+      }
+    }
+    
+    // Step 3
+    if(data.isUse()){
+      flash().put("error", "重設電子信箱連結已失效，請重新使用修改信箱功能，謝謝。0x3");
+      play.Logger.warn("memberToken  = " + Json.toJson(data));
+      return ok(authNewEmail.render(""));
+    }
+    
+    // Step 4
+    long    dbTime      = Long.parseLong(data.getDbTime());     // 資料庫時間
+    long    expiryDate  = Long.parseLong(data.getExpiryDate()); // 逾期時間
+    play.Logger.info("dbTime = " + dbTime + ", expiryDate  = " + expiryDate);
+    if(dbTime > expiryDate){
+      flash().put("error", "重設電子信箱連結已經超過24小時，請重新使用修改信箱功能，謝謝。0x4");
+      return ok(authNewEmail.render(""));
+    } 
+    
+    // Step 5
+    String checkCode = "";
+    try{
+      checkCode = formFactory.form().bindFromRequest().get().getData().get("checkCode").toString();
+    } catch (Exception e){
+      e.printStackTrace();
+      flash().put("error", "系統忙碌中，請稍候再嘗試，謝謝。");
+      return ok(authNewEmail.render(""));
+    }
+    if(!data.getCheckCode().equals(checkCode)){
+      flash().put("error", "驗證碼輸入錯誤，請重新輸入，謝謝。0x5");
+      return ok(authNewEmail.render(token));
+    }
+    
+    int isLogMemberOk = 0;
+    int isUpdateEmailOk = 0;
+    int isUpdateUseOk = 0;
+    boolean isSendOk = false;
+    
+    try{
+      // Ok 1
+      Member beforeUpdatemember = this.webService.findMemberByMemberNo(data.getMemberNo());
+      isLogMemberOk = this.webService.genMemberChangeLog(beforeUpdatemember);
+      
+      // Ok 2
+      String memberNo = data.getMemberNo();
+      String newEmail = data.getNewEmail();
+      isUpdateEmailOk = this.webService.updateMemberEmail(memberNo,newEmail);
+      if(isUpdateEmailOk==0){
+        flash().put("error", "更新會員資料發生錯誤，請聯絡管理者，謝謝。0x6");
+        return ok(authNewEmail.render(token));
+      }
+      
+      // Ok 3
+      data.setUse(true);
+      isUpdateUseOk = this.webService.genMemberSendChangeEmail(data);
+      if(isUpdateUseOk==0){
+        flash().put("error", "更新會員資料發生錯誤，請聯絡管理者，謝謝。0x7");
+        return ok(authNewEmail.render(token));
+      }
+      
+      // Ok 4
+      Utils_Email utilsEmail = new Utils_Email(); 
+      Member afterUpdateMember = this.webService.findMemberByMemberNo(memberNo);
+      Email mail = utilsEmail.genMemberChangeEmailOk(afterUpdateMember);
+      isSendOk = utilsEmail.sendMail(mail);
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      play.Logger.info("isLogMemberOk = " + isLogMemberOk + " , isUpdateEmailOk = " + isUpdateEmailOk  + 
+                       " , isUpdateUseOk = " + isUpdateUseOk + " , isSendOk = " + isSendOk);
+    }
+
+    // Clear cookie
+    new Utils_Session().clearClientCookie(response());
+    
+    return ok(changeEmailOk.render());
+  }
+  
+  
+  /**
+   * 進入修改會員個人資料頁面
+   */
+  public Result editProfile(){
+    return ok(editProfile.render());
+  }
+  
+  
+  /**
+   * 即時載入會員明細個人資料 
+   */
+  public Result ajaxLoadMemberProfile(){
+    Utils_Session utilSsession = new Utils_Session();
+    MemberProfile memberProfile = new MemberProfile();
+    try{
+      String memberNo = utilSsession.getUserNo();
+      Member member = webService.findMemberByMemberNo(memberNo);
+      MemberDetail memberDetail = webService.findMemberDetailByMemberNo(memberNo);
+      memberProfile = new Utils_Signup().genMemberProfile(member , memberDetail);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Logger.info("ajaxLoadMemberProfile = " + Json.toJson(memberProfile));
+    return ok(Json.toJson(memberProfile));
+  }
+  
+  
+  /**
+   * <pre>
+   * 修改會員個人資料動作 
+   * 
+   * Step 1 : 確認使用者填入的資料
+   * Step 2 : 確認無誤，寫入使用者資料
+   * Step 3 : 確認更新狀態，回傳更新寫入訊息
+   * 
+   * </pre>
+   */
+  public Result doEditProfile(){
+    Logger.info("start doEditProfile");
+    Date startTime = new Date();
+    boolean isAllPass = false;
+    String updateType = "";
+    String status = "";
+    String statusDesc = "";
+    String costTime = "";
+    String memberNo = "";
+    boolean update = false;
+    Map<String , VerificCheckMessage> verificResults = null;
+    Utils_Session utilSsession = new Utils_Session();
+    UpdateMessage updateMessage = new UpdateMessage();
+    Utils_Signup utilsSignup = new Utils_Signup() ;
+    try{
+
+      // Step 1
+      MemberProfile memberProfile = formFactory.form(MemberProfile.class).bindFromRequest().get();
+      memberNo = utilSsession.getUserNo();
+      Member member = webService.findMemberByMemberNo(memberNo);
+      MemberDetail memberDetail = webService.findMemberDetailByMemberNo(memberNo);
+      boolean isImg = new HttpHelper(ws).checkImgUrl(memberProfile.getHeaderPicLink());
+      boolean isUsedUsername = webService.checkMemberByUsername(memberProfile.getUsername());
+      boolean isUsedCellphone = webService.checkMemberDetailByCellphone(memberProfile.getCellphone());
+      verificResults = utilsSignup.checkMemberProfile(memberProfile , member , memberDetail ,
+                                                      isImg , isUsedUsername , isUsedCellphone );
+      
+      Logger.info("Step 1 檢驗結果 : " + Json.toJson(verificResults));
+      
+      // Step 2
+      isAllPass = false;
+      for(String key : verificResults.keySet()){
+        isAllPass = verificResults.get(key).isPass();
+        if(!isAllPass){
+          break;
+        }
+      }
+      Logger.info("Step 2 全部欄位檢查後，是否允許可以更新與寫入會員資料 : " + isAllPass);
+      
+      
+      // Step 3
+      if(isAllPass){
+        // 寫入Member記錄檔，與更新使用者名稱
+        boolean insertMemberLogOk = webService.genMemberChangeLog(member) > 0 ? true : false;
+        boolean updateUseenameOk = webService.updateMemberUsername(memberNo , memberProfile.getUsername()) > 0 ? true : false ;
+        
+        // 寫入MemberDetail與記錄檔
+        MemberDetail newMemberDetail = utilsSignup.genMemberDetail(memberNo , memberProfile);
+        boolean updateMemberDeatilOk = webService.genMemberDetail(newMemberDetail) > 0 ? true : false;
+        boolean insertMemberDetailLogOk = webService.genMemberDetailChangeLog(newMemberDetail) > 0 ? true : false;
+        
+        Logger.info("Step 3 更新或寫入資料是否成功 : updateUseenameOk(更新使用者名稱) : " + updateUseenameOk + 
+                    " , insertMemberLogOk(寫入會員log檔) : " + insertMemberLogOk +
+                    " , updateMemberDeatilOk(寫入或更新會員明細) : " + updateMemberDeatilOk +
+                    " , insertMemberDetailLogOk(寫入會員明細log檔) : " + insertMemberDetailLogOk);
+        
+        if(insertMemberLogOk && updateUseenameOk && updateMemberDeatilOk && insertMemberDetailLogOk){
+          status = UpdateMemberProfileStatus.S200.status;
+          statusDesc = UpdateMemberProfileStatus.S200.statusDesc;
+          update = UpdateMemberProfileStatus.S200.update;
+        } else {
+          status = UpdateMemberProfileStatus.SE1.status;
+          statusDesc = UpdateMemberProfileStatus.SE1.statusDesc;
+          update = UpdateMemberProfileStatus.SE1.update;
+        }
+      } else {
+        status = UpdateMemberProfileStatus.E1.status;
+        statusDesc = UpdateMemberProfileStatus.E1.statusDesc;
+        update = UpdateMemberProfileStatus.E1.update;
+      }
+      
+    } catch (Exception e){
+      e.printStackTrace();
+      status = UpdateMemberProfileStatus.SE1.status;
+      statusDesc = UpdateMemberProfileStatus.SE1.statusDesc;
+      update = UpdateMemberProfileStatus.SE1.update;
+    } finally {
+      costTime = (new Date().getTime() - startTime.getTime()) + " ms";
+      updateType = UpdateType.updateMemberProfile;
+      updateMessage.setUpdateType(updateType);
+      updateMessage.setStatus(status);
+      updateMessage.setStatusDesc(statusDesc);
+      updateMessage.setUpdate(update);
+      updateMessage.setCostTime(costTime);
+      updateMessage.setVerificResults(verificResults);
+      
+    }
+    Logger.info("finish doEditProfile = " + Json.toJson(updateMessage));
+    return ok(Json.toJson(updateMessage));
+  } 
+  
+  // 相依性注入 play.libs.ws.WSClient，可以用來呼叫別人寫好的Http服務
+  @Inject
+  WSClient ws;
+  
+  
+  /**
+   * 即時檢核圖片 
+   */
+  public Result ajaxCheckHeaderPicLink(){
+    String encodeUrl = "";
+    String headerPicLink = "";
+    String dbHeaderPicLink = "";
+    boolean isImg = false;
+    Utils_Session utilSsession = new Utils_Session();
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
+    try{
+      HttpHelper httpHelper = new HttpHelper(ws);
+      encodeUrl = request().getQueryString("headerPicLink");
+      headerPicLink = tool.urlAndBase64Decode(encodeUrl);
+      isImg = httpHelper.checkImgUrl(headerPicLink);
+      String memberNo = utilSsession.getUserNo();
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      dbHeaderPicLink = detail != null ? detail.getHeaderPicLink() : "";
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    VerificCheckMessage verificInfo = new Utils_Signup().checkHeaderPicLink(headerPicLink , dbHeaderPicLink, isImg);
+    return ok(Json.toJson(verificInfo));
+  }
+  
+  /**
+   * 即時檢核使用者生日 
+   */
+  public Result ajaxCheckBirthday(){
+    String encBirthday = "";
+    String birthday = "";
+    String dbBirthday = "";
+    Utils_Session utilSsession = new Utils_Session();
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
+    try{
+      encBirthday = request().getQueryString("birthday");
+      birthday = tool.urlAndBase64Decode(encBirthday);
+      String memberNo = utilSsession.getUserNo();
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      dbBirthday = detail != null ? detail.getBirthday() : "";
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    VerificCheckMessage verificInfo = new Utils_Signup().checkBirthday(birthday, dbBirthday);
+    return ok(Json.toJson(verificInfo));
+  }
+  
+  /**
+   * 即時檢核使用者名稱 
+   */
+  public Result ajaxCheckUsername(){
+    String encUsername = "";
+    String username = "";
+    String dbUsername = "";
+    boolean isUsedUsername = true;
+    Utils_Session utilSsession = new Utils_Session();
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
+    try {
+      encUsername = request().getQueryString("username");
+      username = tool.urlAndBase64Decode(encUsername);
+      isUsedUsername = webService.checkMemberByUsername(username);
+      dbUsername = webService.findMemberByMemberNo(utilSsession.getUserNo()).getUsername();
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    
+    VerificCheckMessage verificInfo = new Utils_Signup().checkEditUsername(username , dbUsername, isUsedUsername);
+    return ok(Json.toJson(verificInfo));
+  }
+
+  
+  /**
+   * 即時檢核暱稱 
+   */
+  public Result ajaxCheckNickname(){
+    String encNickname = "";
+    String dbNickname = "";
+    String nickname = "";
+    Utils_Session utilSsession = new Utils_Session();
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
+    try {
+      encNickname = request().getQueryString("nickname");
+      String memberNo = utilSsession.getUserNo();
+      nickname = tool.urlAndBase64Decode(encNickname);
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      dbNickname = detail != null ? detail.getNickname() : "";
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    
+    VerificCheckMessage verificInfo = new Utils_Signup().checkNickname(nickname , dbNickname);
+    return ok(Json.toJson(verificInfo));
+  }
+  
+  
+  /**
+   * 即時檢核手機號碼
+   */
+  public Result ajaxCheckCellphone(){
+    String encCellphone = "";
+    String cellphone = "";
+    String dbCellphone = "";
+    boolean isUsedCellphone = true;
+    Utils_Session utilSsession = new Utils_Session();
+    EncAndDeCodeTool tool = new EncAndDeCodeTool();
+    try {
+      encCellphone = request().getQueryString("cellphone");
+      cellphone = tool.urlAndBase64Decode(encCellphone);
+      String memberNo = utilSsession.getUserNo();
+      isUsedCellphone = webService.checkMemberDetailByCellphone(cellphone);
+      MemberDetail detail = webService.findMemberDetailByMemberNo(memberNo);
+      dbCellphone = detail != null ? detail.getCellphone() : "";
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+    
+    VerificCheckMessage verificInfo = new Utils_Signup().checkCellphone(cellphone, dbCellphone , isUsedCellphone);
+    return ok(Json.toJson(verificInfo));
+  }
   
   
 }

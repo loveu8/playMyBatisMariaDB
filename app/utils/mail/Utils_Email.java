@@ -19,8 +19,8 @@ import com.typesafe.config.ConfigFactory;
 import play.libs.Json;
 import pojo.web.Member;
 import pojo.web.email.Email;
-import services.Impl.WebServiceImpl;
-import utils.signup.Utils_Signup;
+import pojo.web.email.MemberSendChangeEmail;
+
 
 public class Utils_Email {
   
@@ -58,6 +58,32 @@ public class Utils_Email {
     email.setText("");
     email.setContent("<h2>您好 "+ member.getUsername()+"您的密碼已在"+ time +" , 重設成功。</h2> ");
     play.Logger.info("genResetPasswordOk email = " + Json.toJson(email));
+    return email;
+  }
+  
+  public Email genMemberChangeEmailOk(Member member){
+    Format formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    String time = formatter.format(new Date());
+    Email email = new Email();
+    email.setFrom("littleqkstar@gmail.com");
+    email.setTo(member.getEmail());
+    email.setSubject("[STAR] - 電子信箱修改成功");
+    email.setText("");
+    email.setContent("<h2>您好 "+ member.getUsername()+"您的電子信箱已在"+ time +" , 修改成功。</h2> ");
+    play.Logger.info("genEditPasswordOk email = " + Json.toJson(email));
+    return email;
+  }
+  
+  public Email genMemberSendChangeEmailData(String userName , MemberSendChangeEmail sendData) {
+    Email email = new Email();
+    email.setFrom("littleqkstar@gmail.com");
+    email.setTo(sendData.getNewEmail());
+    email.setSubject("[STAR] - 修改註冊信箱");
+    email.setText("");
+    email.setContent("<h2>您好 "+ userName +"，請在24小時內，點選以下修改註冊信箱連結後，輸入驗證碼，完成認證動作，謝謝!!</h2> " +
+                      "<h3>驗證碼 : " + sendData.getCheckCode() + "</h3>" +
+                      "<a href='" +"http://127.0.0.1:9000/web/authNewEmail?token="+sendData.getToken()+"'>修改註冊信箱連結</a>");
+    play.Logger.info("forgotPassword email = " + Json.toJson(email));
     return email;
   }
   
@@ -151,6 +177,7 @@ public class Utils_Email {
     
     return props;
   }
+
   
  
 }

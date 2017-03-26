@@ -10,8 +10,11 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import pojo.web.Member;
+import pojo.web.MemberDetail;
 import pojo.web.MemberToken;
 import pojo.web.auth.UserSession;
+import pojo.web.email.MemberChangeEmail;
+import pojo.web.email.MemberSendChangeEmail;
 import pojo.web.signup.request.SignupRequest;
 import services.WebService;
 
@@ -92,6 +95,51 @@ public class WebServiceImpl implements WebService {
   @Override
   public boolean checkMemberByMemberNoAndPassword(String no, String oldPassword) {
     return this.webService.checkMemberByMemberNoAndPassword(no , oldPassword);
+  }
+
+  @Override
+  public MemberChangeEmail getMemberEmails(@Param("memberNo") String memberNo) {
+    return this.webService.getMemberEmails(memberNo);
+  }
+
+  @Override
+  public int genMemberSendChangeEmail(MemberSendChangeEmail data) {
+    return this.webService.genMemberSendChangeEmail(data);
+  }
+  
+  @Override
+  public MemberSendChangeEmail getMemberSendChangeEmailByToken(@Param("token")String token){
+    return this.webService.getMemberSendChangeEmailByToken(token);
+  }
+  
+  @Override
+  public int updateMemberEmail(@Param("memberNo")String memberNo , @Param("newEmail")String newEmail){
+    return this.webService.updateMemberEmail(memberNo , newEmail);
+  }
+  
+  @Override
+  public boolean checkMemberDetailByCellphone(@Param("cellphone") String cellphone ){
+    return this.webService.checkMemberDetailByCellphone(cellphone);
+  }
+  
+  @Override
+  public MemberDetail findMemberDetailByMemberNo(@Param("memberNo") String memberNo ){
+    return this.webService.findMemberDetailByMemberNo(memberNo);
+  }
+  
+  @Override
+  public int updateMemberUsername(@Param("memberNo") String memberNo, @Param("newUsername") String newUsername){
+    return this.webService.updateMemberUsername(memberNo , newUsername);
+  }
+  
+  @Override
+  public int genMemberDetail(@Param("data") MemberDetail memberDetail){
+    return this.webService.genMemberDetail(memberDetail);
+  }
+  
+  @Override
+  public int genMemberDetailChangeLog(@Param("data") MemberDetail memberDetail){
+    return this.webService.genMemberDetailChangeLog(memberDetail);
   }
   
 }

@@ -202,6 +202,46 @@ GET		/acid/annotationACIDWithHelperException	controllers.AcidController.annotati
 
 # chapter 12_5 - end
 #------------------------------------
+# chapter 13 - start
+
+# http://127.0.0.1:9000/web/editEmail
+GET		/web/editEmail						controllers.WebController.editEmail()
+
+# http://127.0.0.1:9000/web/changeEmail
+POST	/web/changeEmail					controllers.WebController.changeEmail()
+
+# http://127.0.0.1:9000/web/authNewEmail
+GET		/web/authNewEmail					controllers.WebController.authNewEmail()
+
+# http://127.0.0.1:9000/web/doAuthNewEmail
+POST	/web/authNewEmail					controllers.WebController.doAuthNewEmail()
+
+# http://127.0.0.1:9000/web/editProfile
+GET		/web/editProfile					controllers.WebController.editProfile()
+
+# http://127.0.0.1:9000/web/doEditProfile
+POST	/web/editProfile					controllers.WebController.doEditProfile()
+
+# http://127.0.0.1:9000/web/ajaxLoadMemberProfile
+GET		/web/ajaxLoadMemberProfile			controllers.WebController.ajaxLoadMemberProfile()
+
+# http://127.0.0.1:9000/web/ajaxCheckHeaderPicLink
+GET		/web/ajaxCheckHeaderPicLink			controllers.WebController.ajaxCheckHeaderPicLink()
+
+# http://127.0.0.1:9000/web/ajaxCheckBirthday
+GET		/web/ajaxCheckBirthday				controllers.WebController.ajaxCheckBirthday()
+
+# http://127.0.0.1:9000/web/ajaxCheckUsername
+GET		/web/ajaxCheckUsername				controllers.WebController.ajaxCheckUsername()
+
+# http://127.0.0.1:9000/web/ajaxCheckNickname
+GET		/web/ajaxCheckNickame				controllers.WebController.ajaxCheckNickname()
+
+# http://127.0.0.1:9000/web/ajaxCheckCellphone
+GET		/web/ajaxCheckCellphone				controllers.WebController.ajaxCheckCellphone()
+
+# chapter 13 - end
+#------------------------------------
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
