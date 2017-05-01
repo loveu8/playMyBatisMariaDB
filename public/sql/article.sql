@@ -3,7 +3,6 @@
 -- articleNo 	 		文章編號( 索引鍵)
 -- postMemberNo  		文章作者的會員編號   (index)
 -- publishMemberNo      文章發表到的會員編號 (index)
--- postAllow     		非本人發文，是否允許發文
 -- privacy       		文章隱私 , public 公開 , protected 朋友才可以看 , private 自己可看
 -- hidden		 		是否刪除(隱藏)
 -- createDate    		創立日期
@@ -12,7 +11,6 @@ CREATE TABLE `article_main` (
    `articleNo`     	VARCHAR(20)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
    `postMemberNo`  	VARCHAR(15)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
    `publishMemberNo`VARCHAR(15)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
-   `postAllow`      BOOL		  NOT NULL NULL COLLATE  'utf8_unicode_ci',
    `privacy`	    VARCHAR(15)   NOT NULL DEFAULT 'public' COLLATE 'utf8_unicode_ci',
    `hidden`		    BOOL		  NOT NULL NULL COLLATE  'utf8_unicode_ci',
    `createDate`     VARCHAR(50)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
@@ -48,17 +46,13 @@ DELIMITER ;
 
 -- 文章主要資料表紀錄表單
 -- articleNo 	 		文章編號( 索引鍵)
--- postMemberNo  		文章作者的會員編號   (index)
--- publishMemberNo      文章發表到的會員編號 (index)
--- postAllow     		非本人發文，是否允許發文
+-- memberNo  		文章作者的會員編號   (index)
 -- privacy       		文章隱私 , public 公開 , protected 朋友才可以看 , private 自己可看
 -- hidden		 		是否刪除(隱藏)
 -- createDate    		創立日期
 CREATE TABLE `article_main_log` (
    `articleNo`     	VARCHAR(20)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
-   `postMemberNo`  	VARCHAR(15)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
-   `publishMemberNo`VARCHAR(15)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
-   `postAllow`      BOOL		  NOT NULL NULL COLLATE  'utf8_unicode_ci',
+   `memberNo`  	VARCHAR(15)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
    `privacy`	    VARCHAR(15)   NOT NULL DEFAULT 'public' COLLATE 'utf8_unicode_ci',
    `hidden`		    BOOL		  NOT NULL NULL COLLATE  'utf8_unicode_ci',
    `createDate`     VARCHAR(50)   NOT NULL NULL COLLATE  'utf8_unicode_ci',
@@ -175,28 +169,18 @@ ENGINE=InnoDB
 
 -- 文章分享資料表
 -- article_share
--- articleNo 		分享的文章編號        (索引鍵)
--- postMemberNo     原發表文章的會員編號   (index)
--- shareMemberNo    分享的會員編號        (index)
--- publishMemberNo  文章發表到的會員編號   (index)
--- postAllow     	本人分享，是否允許發文
+-- articleNo 		文章編號        (索引鍵)
+-- memberNo         分享的會員編號   (index)
 -- seqno        	分享序號
--- hidden       	隱藏文章
 -- createDate   	創立日期
 -- modifyDate   	修改時間
 CREATE TABLE `article_share` (
    `articleNo`   	 	VARCHAR(20)   NOT NULL NULL COLLATE 'utf8_unicode_ci',
-   `postMemberNo`    	VARCHAR(15)   NOT NULL NULL COLLATE 'utf8_unicode_ci',  
-   `shareMemberNo`    	VARCHAR(15)   NOT NULL NULL COLLATE 'utf8_unicode_ci',  
-   `publishMemberNo`    VARCHAR(15)   NOT NULL NULL COLLATE 'utf8_unicode_ci',
-   `postAllow`      	BOOL		  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-   `seqno`       	 	VARCHAR(100)  NOT NULL NULL COLLATE 'utf8_unicode_ci',
-   `hidden`		 	 	BOOL		  NOT NULL NULL COLLATE 'utf8_unicode_ci',
+   `memberNo`    		VARCHAR(15)   NOT NULL NULL COLLATE 'utf8_unicode_ci',  
    `createDate`  	 	VARCHAR(50)   NOT NULL NULL COLLATE 'utf8_unicode_ci',
    `modifyDate`  	 	VARCHAR(50)   NOT NULL NULL COLLATE 'utf8_unicode_ci',
-   CONSTRAINT pk_share 	PRIMARY KEY (articleNo , postMemberNo , seqno),
-	index (postMemberNo) ,
-	index (publishMemberNo)
+   CONSTRAINT pk_share 	PRIMARY KEY (articleNo , memberNo ),
+	index (shareMemberNo) 
 )
 COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
