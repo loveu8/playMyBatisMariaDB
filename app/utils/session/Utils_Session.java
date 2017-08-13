@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.cache.CacheApi;
@@ -27,6 +28,7 @@ public class Utils_Session {
   
   /**Cookie and Session for Java Date getTime use*/
   public final long maxAgeLong =  (60 * 60 * 24) * 14 * 1000;
+  
   
   /** 
    * <pre>
@@ -64,6 +66,7 @@ public class Utils_Session {
     return userSession;
   }
 
+  
   /**
    * <pre>
    * 登入之後，設定瀏覽器Cookie與伺服的Cache，儲存會員登入資訊
@@ -80,6 +83,7 @@ public class Utils_Session {
     this.setCache(cache, userSession , maxAge);
     this.setCookie(response , userSession , maxAge , path , domain , secure);
   }
+  
   
   /**
    *寫入Server Cache 
@@ -129,6 +133,7 @@ public class Utils_Session {
     return request.cookies().get("sessionId").value();
   }
 
+  
   /** 取得使用者瀏覽器的Cookie 加簽資料*/
   public String getClientSessionSign(Request request) {
     if(request.cookies().get("sessionSign")==null){
@@ -137,6 +142,7 @@ public class Utils_Session {
     return request.cookies().get("sessionSign").value();
   }
 
+  
   /** 伺服器是否使用者的cookie資料*/
   public boolean isCacheHaveThisSession(DefaultCacheApi cache, String sessionId) {
     play.Logger.info("cache get sessionId = " + cache.get(sessionId));
@@ -174,10 +180,12 @@ public class Utils_Session {
     response.discardCookie("sessionSign");
   }
   
+  
   /** 清除使用者Server上的Session */
   public void clearServerSession(String userSessionId){
     injector().instanceOf(DefaultCacheApi.class).remove(userSessionId);
   }
+  
   
   /** 
    * 檢查是否超過24小時 
@@ -205,6 +213,7 @@ public class Utils_Session {
     return isRewrite ;
   }
 
+  
   /**
    * <pre>
    *
@@ -265,6 +274,41 @@ public class Utils_Session {
   }
   
   
+  /**
+   * <pre>
+   *
+   * 根據使用者的Cookie取出會員編號
+   * 在使用會員編號，查詢使用者名稱
+   * 
+   * Step 1 : 檢查使用者是否有usrno
+   * Step 2 : 查詢member_main回傳使用者名稱
+   * 
+   *</pre>
+   * 
+   */
+  public String getUserName(){
+    // Step 1
+    String uerNo = this.getUserNo();
+    if("".equals(uerNo)){
+      play.Logger.warn("查詢使用者名稱，沒有使用者編號，無法取得使用者名稱。0x1.1");
+      return "";
+    }
+    
+    // Step 2
+    String username = "";
+    try{
+      username = this.injector().instanceOf(WebService.class).findMemberByMemberNo(uerNo).getUsername();
+    } catch(Exception e){
+      e.printStackTrace();
+      if("".equals(username)){
+        play.Logger.warn("db查詢使用者名稱錯誤，無法取得使用者名稱。0x2.1");
+        return "";
+      }
+    }
+    return username;
+  }
+  
+  
   // 查詢是否有該會員Session資料
   private UserSession getUserSession(String sessionId){
     try{
@@ -285,4 +329,3 @@ public class Utils_Session {
   
   
 }
-

@@ -12,6 +12,7 @@ import play.data.FormFactory;
 import play.libs.Json;
 import play.libs.ws.WSClient;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import pojo.web.Member;
 import pojo.web.MemberDetail;
@@ -34,6 +35,7 @@ import pojo.web.signup.verific.VerificCheckMessage;
 import services.WebService;
 import utils.signup.Utils_Signup;
 import views.html.web.index;
+import views.html.web.article.*;
 import views.html.web.loginSignup.*;
 import utils.enc.EncAndDeCodeTool;
 import utils.http.HttpHelper;
@@ -353,7 +355,7 @@ public class WebController extends Controller {
       
   @AuthCheck
   public Result doLogin(){
-    return ok("登入成功");
+    return redirect(controllers.routes.WebController.timeLine().url());
   }
   
   // 登出
@@ -1307,5 +1309,13 @@ public class WebController extends Controller {
     return ok(Json.toJson(verificInfo));
   }
   
+  
+  public Result userTimeLine(String username){
+    return ok(userTimeLine.render());
+  }
+
+  public Result timeLine(){
+    return ok(timeLine.render());
+  }
   
 }

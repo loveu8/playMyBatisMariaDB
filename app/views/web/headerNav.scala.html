@@ -1,17 +1,24 @@
 @import utils.session.Utils_Session; var utilsSession = new Utils_Session();
 
+
 <!-- Nav -->
 <nav id="nav">
 	<ul>
 		<li id="nav_index"><a href="@controllers.routes.WebController.index.url">首頁</a></li>
 		<li id="nav_user">
-			<a>我的世界</a>
+			@if(utilsSession.isClinetHaveCookie(request)){
+				<a href="@controllers.routes.WebController.userTimeLine(utilsSession.getUserName()).url">我的世界</a>
+			} else {
+				<a>我的世界</a>
+			}
 			<ul>
-				<li><a href="@controllers.routes.WebController.login.url">登入</a></li>
 				@if(utilsSession.isClinetHaveCookie(request)){
+					<li><a href="@controllers.routes.WebController.timeLine.url">關注動態</a></li>
 					<li><a href="@controllers.routes.WebController.editPassword.url">修改密碼</a></li>
 					<li><a href="@controllers.routes.WebController.editEmail.url">修改信箱</a></li>
 					<li><a href="@controllers.routes.WebController.editProfile.url">編輯個人資料</a></li>
+				} else {
+					<li><a href="@controllers.routes.WebController.login.url">登入</a></li>
 				}
 				<li><a href="@controllers.routes.WebController.logout.url">登出</a></li>
 			</ul>
