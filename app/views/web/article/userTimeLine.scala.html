@@ -6,6 +6,50 @@
 	
 	@views.html.web.headerLibs()
 			
+  	<script>
+	  $(document).ready(function() {
+	    var showChar = 100;  // 設定最長字數
+	    var ellipsestext = "...";
+	    var moretext = "更多內容 >";
+	    var lesstext = "少點內容 <";
+	    
+	    $('.more').each(function() {
+	        var content = $(this).html();
+	        var html;
+	        if(content.length > showChar) {
+	            var c = content.substr(0, showChar);
+	            var h = content.substr(showChar, content.length - showChar);
+	            html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a class="morelink">' + moretext + '</a></span>';
+	        } else {
+	        	html = content;
+	        }
+	        // 調整畫面間距
+	        html = '<br>' + html + '<br>'
+	        $(this).html(html);
+	    });
+		 
+	    $(".morelink").click(function(){
+	        if($(this).hasClass("less")) {
+	            $(this).removeClass("less");
+	            $(this).html(moretext);
+	        } else {
+	            $(this).addClass("less");
+	            $(this).html(lesstext);
+	        }
+	        $(this).parent().prev().toggle();
+	        $(this).prev().toggle();
+	        return false;
+	    });
+	  });
+  	</script>
+  	<style>
+	  	.morecontent span {
+	    	display: none;
+		}
+		.morelink {
+		    display: block;
+		}
+  	</style>
   </head>
 
   <body>
@@ -25,9 +69,9 @@
 									<article class="box post">
 										<h4><a href="#">關於Java</a></h4>
 										<a class="icon fa-clock-o">阿星 2017/9/13 AM 10:53</a>
-										<p>Java是一種廣泛使用的電腦程式設計語言，擁有跨平台、物件導向、泛型程式設計的特性，廣泛應用於企業級Web應用開發和行動應用開發。
-											<br><a class="icon fa-comments">詳細內容</a>
-										</p>
+										<span class="more">
+											Java是一種廣泛使用的電腦程式設計語言，擁有跨平台、物件導向、泛型程式設計的特性，廣泛應用於企業級Web應用開發和行動應用開發。
+										</span>
 										<a class="icon fa-comments">回覆</a>
 									</article>
 								</div>
@@ -41,20 +85,36 @@
 									<article class="box post">
 										<h4><a href="#">關於JavaScript</a></h4>
 										<a class="icon fa-clock-o">阿星 2017/7/13 AM 7:53</a>
-										<p>
+										<span class="more">
 											介紹 JavaScript 的基本資料， 讓大家了解自己是否須要學習， 並為有志學習的初學者打好基礎。
-										</p>
+										</span>
 										<a class="icon fa-comments">回覆</a>
 									</article>
 								</div>
 							</div>
 						</div>
-						<hr>
+						<div class="9u 12u(mobile)"><hr></div>
+						<div class="row">
+							<div class="9u 12u(mobile)">
+								<div class="content content-center">
+									<!-- Featured Post -->
+									<article class="box post">
+										<h4><a href="#">關於JavaScript</a></h4>
+										<a class="icon fa-clock-o">阿星 2017/6/13 AM 7:53</a>
+							    		<span class="more">
+								      		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+									    	<p>小張: 因為比賽的壓力太大 有些選手們承受不住 所以彼此間開始有言語和肢體上的衝突 眼看著爭執越演越烈身為守望者的巴德看不下去了 他使出了凝滯命域 讓大家停止動作靜下來好好思考一下 最後祝英雄聯盟6歲生日快樂</p>
+									  		<p>Aoi Yeh ahq: 西門大將猜拳看誰上XD Ziv公證人 另外兩個 別別別打我!! 都是你在雷!!!安哥笑著看戲 綠茶跟夜夜我就不懂了</p>
+								    	</span>
+										<a class="icon fa-comments">回覆</a>
+									</article>
+								</div>
+							</div>
+						</div>
 					</section>
 				</div>
 			</div>
 		</div>
 	</div>	
-	
   </body>
 </html>
