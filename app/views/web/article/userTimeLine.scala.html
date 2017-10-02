@@ -15,16 +15,20 @@
 	    
 	    $('.more').each(function() {
 	        var content = $(this).html();
+	        console.log('before : ' + content);
 	        var html;
+	        console.log(content.length);
 	        if(content.length > showChar) {
 	            var c = content.substr(0, showChar);
 	            var h = content.substr(showChar, content.length - showChar);
-	            html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a class="morelink">' + moretext + '</a></span>';
+	            html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span>' + 
+	            	   '<span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a class="morelink">' + moretext + '</a></span>';
 	        } else {
 	        	html = content;
 	        }
 	        // 調整畫面間距
-	        html = '<br>' + html + '<br>'
+	        html = '<br>' + html + '<br>';
+	        console.log('after : ' + html);
 	        $(this).html(html);
 	    });
 		 
@@ -103,6 +107,7 @@
 										<a class="icon fa-clock-o">阿星 2017/6/13 AM 7:53</a>
 							    		<span class="more">
 								      		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+									    	<br><br>
 									    	<p>小張: 因為比賽的壓力太大 有些選手們承受不住 所以彼此間開始有言語和肢體上的衝突 眼看著爭執越演越烈身為守望者的巴德看不下去了 他使出了凝滯命域 讓大家停止動作靜下來好好思考一下 最後祝英雄聯盟6歲生日快樂</p>
 									  		<p>Aoi Yeh ahq: 西門大將猜拳看誰上XD Ziv公證人 另外兩個 別別別打我!! 都是你在雷!!!安哥笑著看戲 綠茶跟夜夜我就不懂了</p>
 								    	</span>
