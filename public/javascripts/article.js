@@ -1,3 +1,21 @@
+function replyFnc(){
+	var inputText = 
+		'<form action="" id="confirmationForm" method="post">'
+		+'<textarea id="confirmationText" class="text" cols="30" rows ="5" name="confirmationText" form="confirmationForm"></textarea>'
+		+'<button type="submit" class = "submitButton">回覆</button>'
+		+'<button type="button" onclick = "restoreComments()" class="submitButton">取消</button>'
+		+'</form>';
+	$(this).append(inputText);
+	$(this).unbind("click");
+}
+
+function restoreComments(){
+	   $("#confirmationForm").remove();
+	   $(".icon.fa-comments").each(function() {
+		   $(this).bind( 'click', replyFnc);
+	   });
+}
+
 $(document).ready(function() {
     var showChar = 100;  // 設定最長字數
     var ellipsestext = "...";
@@ -30,20 +48,7 @@ $(document).ready(function() {
         return false;
     });
     
-    function restoreComments(){
-   	   $("confirmationForm").remove();
-   	   $('.icon.fa-comments').bind("click");
-    }
     
-    $(".icon.fa-comments").click(function(){
-    	var inputText = 
-    		'<form action="" name="confirmationForm" method="post">'
-    		+'<textarea id="confirmationText" class="text" cols="30" rows ="5" name="confirmationText" form="confirmationForm"></textarea>'
-    		+'<input type="submit" value="回覆" class="submitButton">'
-    		+'<input type="submit" value="取消" onclick = "restoreComments()" class="submitButton">'
-    		+'</form>';
-    	$(this).append(inputText);
-    	$(this).unbind("click");
-    });
-    
+    $(".icon.fa-comments").click(replyFnc);
+        
 });
