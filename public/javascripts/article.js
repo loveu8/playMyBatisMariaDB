@@ -26,7 +26,7 @@ function restoreComments(){
 	$('#confirmationForm').remove();
 }
 
-$(document).ready(function() {
+function refactorFnc (){
     var showChar = 100;  // 設定最長字數
     var ellipsestext = "...";
     var moretext = "更多內容 >";
@@ -60,5 +60,8 @@ $(document).ready(function() {
     
     // 設定回覆按鈕事件
     $(".icon.fa-comments").click(replyFnc);
-        
+}
+
+$(document).ready(function() {
+	refactorFnc();
 });
