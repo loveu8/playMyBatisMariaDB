@@ -244,10 +244,11 @@ GET		/web/ajaxCheckCellphone				controllers.WebController.ajaxCheckCellphone()
 #------------------------------------
 # chapter 14 - start
 
-GET		/web/:username						controllers.WebController.userTimeLine(username:String)
+GET		/web/article/newArticle				controllers.WebController.newArticle()
 
-GET		/web/attention/timeLine				controllers.WebController.timeLine()
+GET		/web/article/:username				controllers.WebController.userTimeLine(username:String)
 
+GET		/web/article/timeLine				controllers.WebController.timeLine()
 
 # chapter 14 - end
 #------------------------------------

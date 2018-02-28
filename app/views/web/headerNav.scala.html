@@ -13,6 +13,7 @@
 			}
 			<ul>
 				@if(utilsSession.isClinetHaveCookie(request)){
+					<li><a href="@controllers.routes.WebController.newArticle.url">發表新文章</a></li>
 					<li><a href="@controllers.routes.WebController.timeLine.url">關注動態</a></li>
 					<li><a href="@controllers.routes.WebController.editPassword.url">修改密碼</a></li>
 					<li><a href="@controllers.routes.WebController.editEmail.url">修改信箱</a></li>
@@ -26,7 +27,9 @@
 		<li id="nav_signup">
 			<a href="@controllers.routes.WebController.signup.url">註冊</a>
 			<ul>
-				<li><a href="@controllers.routes.WebController.resendAuthEmail.url">重發認證信</a></li>
+				@if(!utilsSession.isClinetHaveCookie(request)){
+					<li><a href="@controllers.routes.WebController.resendAuthEmail.url">重發認證信</a></li>
+				}
 				<li><a href="@controllers.routes.WebController.forgotPassword.url">忘記密碼</a></li>
 			</ul>
 		</li>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>發表新文章</title> 
+	@views.html.web.headerLibs()
+	@views.html.web.loginSignup.loginSignupLibs()
+</head>
+
+<body>
+	<div id="page-wrapper">
+		<div id="select_nav_user">@views.html.web.headerNav()</div>
+	</div>
+	<div id="main-wrapper">
+		<div>
+			<div class="form">
+				<div class="tab-content">
+					<div id="signup">
+						<form action="" method="post" id="articleForm">
+							<div class="field-wrap">
+								<label class="lable-field-wrap">文章名稱</label> 
+								<input type="text" required autocomplete="off" name="article-header" />
+								@if(flash.containsKey("username")) { 
+									<span style="color: red;">@flash.get("username")</span>
+								}
+							</div>
+							<div class="field-wrap">
+								<label class="lable-field-wrap">文章內容</label>
+								<textarea id="article-content" class="text" cols="30" rows ="5" name="article-content" form="articleForm"></textarea>
+								@if(flash.containsKey("email")) { 
+									<span style="color: red;">@flash.get("article-content")</span>
+								}
+							</div>
+							<a> 
+								<input type="submit" value="送出文章" class="button button-block">
+							</a>
+						</form>
+					</div>
+				</div>
+				<!-- tab-content -->
+			</div>
+			<!-- /form -->
+		</div>
+	</div>
+
+</body>
+</html>

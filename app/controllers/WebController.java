@@ -1310,6 +1310,10 @@ public class WebController extends Controller {
   }
   
   
+  public Result newArticle(){
+    return ok(newArticle.render());
+  }
+  
   public Result userTimeLine(String username){
     return ok(userTimeLine.render());
   }
