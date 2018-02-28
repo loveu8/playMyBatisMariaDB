@@ -15,7 +15,6 @@ function replyFnc(){
 	$(this).hide();
 	// 新增reply form
 	$(this).after(inputText);
-	console.log('reply form create ok!!');
 }
 
 // 移除表單
